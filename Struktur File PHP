@@ -1,0 +1,72 @@
+Menu   Nama File				              Lokasi File		Ket
+
+A. Transaksi
+
+      1. barangKlr.php                    (/)
+         -> fetchKeluar.php               (action/barangKeluar)
+         -> fetchSelectedKeluar.php       (action/barangKeluar)
+         -> simpanKeluar.php              (action/barangKeluar)
+         -> hapusKeluar.php               (action/barangKeluar)
+         -> barangKlr.js
+
+      2. barangMsk.php			            (/)
+         -> fetchMasuk.php			         (action/barangMasuk)
+         -> fetchSelectedMasuk.php        (action/barangMasuk)
+         -> simpanMasuk.php               (action/barangMasuk)
+         -> hapusMasuk.php                (action/barangMasuk)
+         -> barangMsk.js
+
+B. Claim
+
+      1. tambahClaim.php                  (/)
+         -> simpanClaim.php               (action/claim)       
+         -> claim.js                      (action/claim)     
+         -> fetchAutoCompleteDot.php      (action/claim)
+         -> fetchAutoCompleteKerusakan.php(action/claim)
+         -> fetchAutoCompletePattern.php  (action/claim)
+         -> fetchAutoCompleteSales.php    (action/claim)
+         -> fetchAutoCompleteToko.php     (action/claim)
+
+      2. dataClaim.php                    (/)
+         -> simpanNotaPenggantian.php     (action/claim)
+         -> fetchClaim.php                (action/claim)
+         -> printNota.php                 (action/claim)
+
+      3. notaPenggantian.php              (/)
+         -> fetchNotaPenggantian.php      (action/claim)
+         -> printNota.php                 (action/claim)
+
+
+C. E-Faktur
+      1. efaktur.php                      (/)
+         -> editEfaktur.php               (action/efaktur)
+         -> fetchEfaktur.php              (action/efaktur)
+         -> fetchSelectedEfaktur.php      (action/efaktur)
+         -> hapusEfaktur.php              (action/efaktur)
+         -> simpanEfaktur.php             (action/efaktur)
+
+
+D. Master Barang
+	
+      1. barang.php                       (/)      
+         -> fetchBarang.php               (action/barang)
+         -> fetchSelectedBarang.php       (action/barang)
+         -> fetchSelectedDetailBarang.php (action/barang)
+         -> simpanBarang.php              (action/barang)
+         -> editBarang.php                (action/barang)
+         -> hapusBarang.php               (action/barang)
+
+      2. rak.php                          (/)      
+         -> editRak.php                   (action/rak)
+         -> fetchRak.php                  (action/rak)
+         -> fetchSelectedRak.php          (action/rak)
+         -> hapusRak.php                  (action/rak)
+         -> simpanRak.php                 (action/rak)
+
+      3. kategori.php                     (/)      
+         -> editKategori.php              (action/kategori)
+         -> fetchKategori.php             (action/kategori)
+         -> fetchSelectedKategori.php     (action/kategori)
+         -> hapusKategori.php             (action/kategori)
+         -> simapanKategori.php           (action/kategori)
+	

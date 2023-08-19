@@ -1,0 +1,315 @@
+.widget-title .tambah { /* button tambah center */
+    margin-top:3.2px;
+    margin-left:3px
+}
+.modal-form {
+    width: 700px;
+    margin-left: -340px;
+}
+.modal-body.modal-full.tinggi {
+    height: 416px;
+}
+
+.modal-body.modal-full.tinggi-sedang {
+    height: 150px;
+}
+
+.choiceChosen, .productChosen {
+  width: 200px ;
+}
+
+.titik2{
+    padding-left: 130px;
+    margin-top: -20px;
+    font-weight: bold;
+}
+
+.icon-circle-arrow-right:before{
+    font-size: 11px;
+    color: #a0a0a0;
+}
+
+.kanan {
+    float: left;
+    position: relative;
+    margin: -24px 0 0 162px;
+}
+
+#sidebar > ul > li > ul.sub > li > a:hover, #sidebar > ul > li > ul.sub > li.active > a{
+    background: #2a4256;
+    transition-duration: 500ms;
+    transition-property: width, background;
+    transition-timing-function: ease;
+    -webkit-transition-duration: 500ms;
+    -webkit-transition-property: width, background;
+    -webkit-transition-timing-function: ease;
+}
+
+.center {
+    text-align: center;
+}
+
+.div-hide {
+    display: none;
+}
+
+form {
+    margin: 0;
+}
+
+/* css popup */
+
+/* untuk pemakaian di blog/website anda, yang di copy hanya css di bawah ini*/
+
+  /* style untuk link popup */
+  a.popup-link {
+    padding:17px 0;
+    text-align: center;
+    margin:7% auto;
+    position: relative;
+    width: 300px;
+    color: #fff;
+    text-decoration: none;
+    background-color: #FFBA00;
+    border-radius: 3px;
+    box-shadow: 0 5px 0px 0px #eea900;
+    display: block;
+  }
+  a.popup-link:hover {
+    background-color: #ff9900;
+    box-shadow: 0 3px 0px 0px #eea900;
+    -webkit-transition:all 1s;
+    -moz-transition:all 1s;
+    transition:all 1s;
+  }
+  /* end link popup*/
+
+  /*style untuk popup */  
+  #popup {
+    visibility: hidden;
+    opacity: 0;
+    margin-top: -292px;
+  }
+  #popup:target {
+    visibility:visible;
+    opacity: 1;
+    background-color: rgba(0,0,0,0.8);
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:0;
+    z-index: 99999999999;
+    -webkit-transition:all 1s;
+    -moz-transition:all 1s;
+    transition:all 1s;
+  }
+
+  @media (min-width: 768px){
+    .popup-container {
+      width:600px;
+    }
+  }
+  @media (max-width: 767px){
+    .popup-container {
+      width:100%;
+    }
+  }
+  .popup-container {
+    position: relative;
+    margin: 7% auto;
+    padding: 30px 50px;
+    background-color: #fafafa;
+    color:#333;
+    border-radius: 3px;
+  }
+
+  a.popup-close {
+    position: absolute;
+    top:3px;
+    right:3px;
+    background-color: #333;
+    padding:7px 10px;
+    font-size: 9px;
+    text-decoration: none;
+    line-height: 1;
+    color:#fff;
+  }
+
+  /* style untuk isi popup */
+
+  .popup-form {
+    margin: 10px 6px -6px -25px;
+  }
+    .popup-form h2 {
+      margin-bottom: 20px;
+      margin-top: -26px;
+      font-size: 29px;
+      text-transform: uppercase;
+      text-align: center;
+      font-weight: bold;
+    }
+    .popup-form .input-group {
+      margin:10px auto;
+    }
+      .popup-form .input-group input {
+        padding:17px;
+        text-align: center;
+        margin-bottom: 10px;
+        border-radius:3px;
+        font-size: 16px; 
+        display: block;
+        width: 100%;
+      }
+      .popup-form .input-group input:focus {
+        outline-color:#FB8833; 
+      }
+      .popup-form .input-group input[type="email"] {
+        border:0px;
+        position: relative;
+      }
+      .popup-form .input-group input[type="submit"] {
+        background-color: #FB8833;
+        color: #fff;
+        border: 0;
+        cursor: pointer;
+      }
+      .popup-form .input-group input[type="submit"]:focus {
+        box-shadow: inset 0 3px 7px 3px #ea7722;
+      }
+
+div.percent {
+    position: absolute;
+    right: 18px;
+    top: 69px;
+}
+
+.modal-footer1 {
+    padding: 14px 15px 15px;
+    margin-bottom: 0;
+    text-align: right;
+    background-color: #f5f5f5;
+    border-top: 1px solid #ddd;
+    -webkit-border-radius: 0 0 6px 6px;
+    -moz-border-radius: 0 0 6px 6px;
+    border-radius: 0 0 6px 6px;
+    -webkit-box-shadow: inset 0 1px 0 #fff;
+    -moz-box-shadow: inset 0 1px 0 #fff;
+    box-shadow: inset 0 1px 0 #fff;
+}
+
+.pop-footer {
+    text-align: right;
+    padding-top: 15px;
+}
+
+.loading {position: absolute;left: 50%;color: rgba(0, 136, 204, 0.65);padding-top: 8px;}
+
+.paddding-top {
+    padding-top: 169px;
+    padding-left: 202px;
+    padding-right: 212px;
+}
+
+
+.batas-atas {
+    margin-top: -12px;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.modal-form-tinggi{
+    width: 1018px;
+    margin-left: -507px;
+}
+
+.control-group.no-nota {
+    position: absolute;
+    margin-left: 540px;
+    margin-top: -63px;
+}
+
+.no-nota2 {
+    margin-left: 644px;
+    margin-top: -63px;
+}
+
+.batas {
+    margin-top: -13px;
+    border-bottom: 1px solid #eee;
+}
+
+.bawah {
+    position: absolute;
+    top: 42px;
+}
+
+.posisi-kanan {
+    left: 302px;
+    top: 15px;
+    position: absolute;
+}
+
+.control-group.dealer {
+    position: absolute;
+    left: 40%;
+    top: 35.9%;
+}
+
+.control-group.tanggal {
+    position: absolute;
+    left: 66%;
+    top: 35.9%;
+}
+
+span.add-on {
+    display: block;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+
+.form-horizontal .form-actions {
+    padding-left: 0;
+    text-align: center;
+}
+
+td input.error {
+    border-color: #b94a48;
+}
+
+td input.error.success {
+    border-color: #468847;
+}
+
+td span.error.help-inline {
+    color: #b94a48;
+}
+
+p.help-block.catatan 
+{
+  margin-top: 2px;color: rgba(0, 0, 0, 0.44);
+}
+
+.modal-body.modal-full.tinggi2
+{
+  height: 364px;
+}
+
+.tglKlr 
+{
+  margin-top: -39px;
+}
+
+.input-kecil
+{
+  width: 100px;
+}
+
+.input-tengah
+{
+  width: 141px;
+}

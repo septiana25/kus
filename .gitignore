@@ -1,0 +1,6 @@
+*.xlsx
+*.xls
+*.pdf
+*.sql
+database/
+

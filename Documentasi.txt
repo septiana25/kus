@@ -1,0 +1,8 @@
+24-07-2017-> membuat fungsi print nota penggantian di menu nota penggantian
+	  -> edit file tambahClaim.php no pengaduan, no portal
+27-07-2017-> membuat laporan nota Claim
+28-07-2017-> membut laporan claim
+30-07-2017-> merubah looping insert di updateSaldo.php
+	  -> if level untuk eksekusi update saldo baru di dataClaim.php
+31-07-2017-> membuat laporan claim print
+15-11-2017->toko di ganti jadi id_toko
