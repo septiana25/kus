@@ -2,5 +2,10 @@
 *.xls
 *.pdf
 *.sql
+*.rar
+*.zip
+*.tar.gz
+*.tar
+*.gz
 database/
 
