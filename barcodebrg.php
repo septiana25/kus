@@ -83,7 +83,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign-alt"></i> FORM INPUT BARCODE BARANG</h3>
             </div>
-            <form class="cmxform form-horizontal" id="submitBarang" action="action/barang/simpanBarang.php" method="POST">
+            <form class="cmxform form-horizontal" id="submitBarang" action="#" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group ">
                         <label class="control-label"><strong>Nama Barang</strong>
