@@ -68,10 +68,10 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                                     <input class="span12" type="text" id="qty" name="qty" autocomplete="off" placeholder="Quantiti Ban">
                                 </div>
                             </div>
-                            <div class="control-group">
+                            <div class="control-group ">
                                 <label class="control-label">Pilih Satuan</label>
                                 <div class="controls">
-                                    <select id="satuan" name="satuan" class="span12" data-placeholder="Choose a Category" tabindex="1">
+                                    <select tabindex="0" id="satuan" name="satuan" class="span12" data-placeholder="Choose a Category" tabindex="1">
                                         <option value="">Pilih Satuan...</option>
                                         <option value="koli">Koli</option>
                                         <option value="kardus">Kardus</option>

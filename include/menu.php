@@ -85,6 +85,7 @@
                       <ul class="sub">
                           <li id="activeBarang"><a class="" href="barang.php">Data Barang</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeBarcodeBrg"><a class="" href="barcodebrg.php">Barcode Barang</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activeBarcodeRak"><a class="" href="barcoderak.php">Barcode Rak</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeKoreksiPlus"><a class="" href="koreksiBarang.php?p=plus">Koreksi Plus</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeKoreksiMin"><a class="" href="koreksiBarang.php?p=minus">Koreksi Minus</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeRak"><a class="" href="rak.php">Lokasi Rak</a><i class="icon-circle-arrow-right kanan"></i></li>
