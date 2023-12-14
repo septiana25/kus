@@ -1,4 +1,3 @@
-let tabel;
 $(document).ready(function() {
 	$(".choiceChosen").chosen();
 	//mengambil data div class div-request
@@ -12,8 +11,16 @@ $(document).ready(function() {
 
 	}
 	
-
-
+	$('#tabelBarcode').DataTable({
+		'ajax' : 'action/barcodebrg/fetchBarcode.php',
+		'order':[],
+		'columnDefs': [
+			{
+				'targets': -1, // This targets the last column
+				'className': 'd-none-mobile' // This adds the class
+			}
+		]
+	});
 
 });// /document
 

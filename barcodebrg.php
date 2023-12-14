@@ -10,7 +10,13 @@ require_once 'include/header.php';
 require_once 'include/menu.php';
 echo "<div class='div-request div-hide'>barcodebrg</div>";
 ?>
-
+<style>
+    @media screen and (max-width: 631px) {
+        .d-none-mobile {
+            display: none;
+        }
+    }
+</style>
 <!-- BEGIN PAGE -->
 <div id="main-content">
     <!-- BEGIN PAGE CONTAINER-->
@@ -48,7 +54,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                     <div class="widget-title">
                         <?php
                         if ($_SESSION['aksi'] == "1") {
-                            echo '<a href="#addModalBarcodebrg" role="button" class="btn btn-primary tambah" id="addBarcodebrBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>';
+                            echo '<a href="barcodebrgInput.php" role="button" class="btn btn-primary tambah"> <i class=" icon-plus"></i>Tambah Data</a>';
                         }
                         ?>
                         <span class="tools">
@@ -57,13 +63,14 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                         </span>
                     </div>
                     <div class="widget-body">
-                        <table class="table table-striped table-bordered" id="tabelBarang">
+                        <table class="table table-striped table-bordered" id="tabelBarcode">
                             <thead>
                                 <tr>
                                     <th>Barcode</th>
                                     <th>Nama Barang</th>
-                                    <th>QTY</th>
                                     <th>Satuan</th>
+                                    <th>QTY</th>
+                                    <th class="d-none-mobile">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
