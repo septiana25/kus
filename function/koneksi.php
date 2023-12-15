@@ -2,7 +2,7 @@
 
 $server   = "localhost";
 $username = "root";
-$password = "cilisung";
+$password = "";
 $database = "inventoriKUS";
 
 // Create connection
