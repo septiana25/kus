@@ -5,11 +5,10 @@ $username = "root";
 $password = "cilisung";
 $database = "inventoriKUS";
 
-//db connection
+// Create connection
 $koneksi  = new mysqli($server, $username, $password, $database);
-//check connection
-if ($koneksi->connect_error) {
-	die("Koneksi Gagal : " . $koneksi->$connect_error);
-} else {
-	//echo "Koneksi Berhasil";
+
+// Check connection
+if ($koneksi->connect_errno) {
+	exit("Failed to connect to MySQL: (" . $koneksi->connect_errno . ") " . $koneksi->connect_error);
 }
