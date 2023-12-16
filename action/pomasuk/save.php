@@ -24,7 +24,7 @@ try {
 
     $checkNoPO = $masuk->getNoPO($noPO, $tgl);
 
-    $checkBarcodeBrg = $barcodeBarang->fetchByItem($barang);
+    $checkBarcodeBrg = $barcodeBarang->getByItem($barang);
     $resultBarcodeBrg = $checkBarcodeBrg->fetch_array();
     $idBrg  = $resultBarcodeBrg['id_brg'];
 
