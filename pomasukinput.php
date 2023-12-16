@@ -8,9 +8,14 @@ $bulan          = date("m");
 
 require_once 'include/header.php';
 require_once 'include/menu.php';
-echo "<div class='div-request div-hide'>barcodebrg</div>";
+echo "<div class='div-request div-hide'>pomasuk</div>";
 ?>
 
+<style>
+    .form-horizontal .width-label {
+        width: 176px !important;
+    }
+</style>
 <!-- BEGIN PAGE -->
 <div id="main-content">
     <!-- BEGIN PAGE CONTAINER-->
@@ -19,7 +24,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
         <div class="row-fluid">
             <div class="span12">
                 <h3 class="page-title">
-                    Tambah Barcode Barang
+                    Tambah PO Masuk
                 </h3>
                 <ul class="breadcrumb">
                     <li>
@@ -27,11 +32,11 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                         <span class="divider">/</span>
                     </li>
                     <li>
-                        Master Barang
+                        Transaksi
                         <span class="divider">/</span>
                     </li>
                     <li class="active">
-                        Barcode Barang
+                        PO Masuk
                     </li>
 
                 </ul>
@@ -52,9 +57,28 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                         </span>
                     </div>
                     <div class="widget-body">
-                        <form class="form-horizontal" id="submitBarcode" action="action/barcodebrg/save.php" method="POST">
+                        <form class="form-horizontal" id="submitPoMasuk" action="action/pomasuk/save.php" method="POST">
                             <div class="control-group">
                                 <div id="pesan"></div>
+                            </div>
+                            <div class="control-group" style="margin-bottom: 0px;">
+                                <label class="control-label width-label" for="tgl">Tanggal</label>
+                                <div class="input-append date datepicker" id="dp3" data-date="<?php echo date("Y-m-d") ?>" data-date-format="yyyy-mm-dd">
+                                    <input id="tgl" name="tgl" class="input-xlarge" size="16" type="text" value="<?php echo date("Y-m-d") ?>" readonly="true">
+                                    <span class="add-on"><i class="icon-calendar"></i></span>
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="nopo">Surat Jalan</label>
+                                <div class="controls">
+                                    <input class="span12" type="text" id="nopo" name="nopo" onkeyup="convertToUpperCase(this)" autocomplete="off" placeholder="Surat Jalan">
+                                </div>
+                            </div>
+                            <div class="control-group">
+                                <label class="control-label" for="nopol">Plat Nomor</label>
+                                <div class="controls">
+                                    <input class="span12" type="text" id="nopol" name="nopol" onkeyup="convertToUpperCase(this)" autocomplete="off" placeholder="Ketik Ukuran Ban">
+                                </div>
                             </div>
                             <div class="control-group">
                                 <label class="control-label" for="item">Barang</label>
@@ -68,23 +92,10 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                                     <input class="span12" type="number" id="qty" name="qty" autocomplete="off" placeholder="Quantiti Ban">
                                 </div>
                             </div>
-                            <div class="control-group ">
-                                <label class="control-label">Pilih Satuan</label>
-                                <div class="controls">
-                                    <select tabindex="0" id="satuan" name="satuan" class="span12" data-placeholder="Choose a Category" tabindex="1">
-                                        <option value="">Pilih Satuan...</option>
-                                        <option value="koli">Koli</option>
-                                        <option value="kardus">Kardus</option>
-                                        <option value="karung">Karung</option>
-                                        <option value="set">SET</option>
-                                        <option value="pcs">PCS</option>
-                                    </select>
-                                </div>
-                            </div>
                             <div class="control-group">
-                                <label class="control-label" for="barcode">Barcode</label>
+                                <label class="control-label" for="note">Keterangan</label>
                                 <div class="controls">
-                                    <input class="span12" type="text" id="barcode" name="barcode" autocomplete="off" placeholder="Barcode Ban">
+                                    <input class="span12" type="text" id="note" name="note" onkeyup="convertToUpperCase(this)" autocomplete="off" placeholder="Keterangan">
                                 </div>
                             </div>
                             <div class="form-actions">
@@ -104,4 +115,4 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
 
 <?php require_once 'include/footer.php'; ?>
 
-<script src="jsAction/barcodebrginput.js"></script>
+<script src="jsAction/pomasukinput.js"></script>

@@ -1,16 +1,16 @@
 <?php
 require_once '../../function/koneksi.php';
-require_once '../class/barang.php';
+require_once '../class/pomasuk.php';
 
-$barang = new Barang($koneksi);
+$pomasuk = new PoMasuk($koneksi);
 
 try {
-	$item = $koneksi->real_escape_string($_GET["item"]);
-	$result = $barang->fetchByItem($item);
+	$nopol = $koneksi->real_escape_string($_GET["nopol"]);
+	$result = $pomasuk->fetchNopol($nopol);
 	$data = [];
 	if ($result->num_rows > 0) {
 		while ($row = $result->fetch_array()) {
-			$data[] = $row['brg'];
+			$data[] = $row['no_polisi'];
 		}
 	} else {
 		$data[] = 'Barang tidak ditemukan';
@@ -18,7 +18,7 @@ try {
 
 	echo json_encode($data);
 } catch (\Throwable $th) {
-	echo json_encode(["error" => "An error occurred while fetching items."]);
+	echo json_encode(["error" => "An error occurred while fetching Plat Nomor."]);
 } finally {
 	$koneksi->close();
 }

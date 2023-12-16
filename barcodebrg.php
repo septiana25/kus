@@ -115,7 +115,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                             <p class="titik2">:</p>
                         </label>
                         <div class="controls">
-                            <input class="span12 " id="barcodebrg" name="barcodebrg" type="number" placeholder="Barcode Barang" maxlength="5" onkeydown="validAngka(this)" />
+                            <input class="span12 " id="barcodebrg" name="barcodebrg" type="text" placeholder="Barcode Barang" />
                         </div>
                     </div>
                     <div class="control-group ">
@@ -123,7 +123,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                             <p class="titik2">:</p>
                         </label>
                         <div class="controls">
-                            <input class="span12 " id="qty" name="qty" type="text" placeholder="QTY Barang" maxlength="20" onkeydown="upperCaseF(this)" />
+                            <input class="span12 " id="qty" name="qty" type="number" placeholder="QTY Barang" />
                         </div>
                     </div>
                     <div class="control-group">
