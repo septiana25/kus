@@ -26,7 +26,7 @@ try {
 
     $checkBarcodeBrg = $barcodeBarang->getByItem($barang);
     $resultBarcodeBrg = $checkBarcodeBrg->fetch_array();
-    $idBrg  = $resultBarcodeBrg['id_brg'];
+    $idBrg  = $resultBarcodeBrg['id_barcodebrg'];
 
     if ($checkNoPO->num_rows == 1) {
         handleExistingNoPO($checkBarcodeBrg, $checkNoPO, $pomasuk, $idBrg, $qty, $nopol, $ket, $nama);

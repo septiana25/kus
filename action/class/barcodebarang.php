@@ -27,7 +27,7 @@ class BarocdeBarang
 
     public function getByItem($item)
     {
-        $stmt = $this->conn->prepare("SELECT id_brg FROM barcodebrg JOIN barang USING(id_brg) WHERE brg = ?");
+        $stmt = $this->conn->prepare("SELECT id_brg, id_barcodebrg FROM barcodebrg JOIN barang USING(id_brg) WHERE brg = ?");
         $stmt->bind_param("s", $item);
         $stmt->execute();
         return $stmt->get_result();
