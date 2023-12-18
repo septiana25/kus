@@ -25,13 +25,12 @@
 // var_dump($nama1);
 // echo $nama1;
 if (empty($_POST)) {
-	
+} else {
+	$day = $_POST['day'];
+	$tgl = $_POST['tgl'];
+	$newDate = date("Y-m-d", strtotime($tgl));
+	$tgl2 = date('d-m-Y', strtotime('+' . $day . ' day', strtotime($newDate)));
 }
-else{
-$day = $_POST['day'];
-$tgl = $_POST['tgl'];
-$newDate = date("Y-m-d", strtotime($tgl));
-$tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 
 
 // $tgl1 = "2013-01-23";// pendefinisian tanggal awal
@@ -42,6 +41,7 @@ $tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="UTF-8">
 	<title>Cek Limit Tanggal Jatuh Tempo</title>
@@ -49,30 +49,31 @@ $tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 	<link href="assets/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
 	<link href="assets/datepicker/css/datepicker.css" rel="stylesheet" />
 	<style>
-		    .isi{
-		    	display: block;
-		    	padding-bottom: 21px;
-		    	text-align:  center;
-		    	/* margin: 0 0 10px; */
-		    	font-family:  cursive;
-		    	font-size: 17px;
-		    	font-weight:  bold;
-		    	/* line-height: 20px; */
-		    	/* word-break: break-all; */
-		    	/* word-wrap: break-word; */
-		    	white-space: pre;
-		    	/* white-space: pre-wrap; */
-		    	background-color: #f5f5f5;
-		    	border: 1px solid #ccc;
-		    	border: 1px solid rgba(0,0,0,0.15);
-		    	-webkit-border-radius: 4px;
-		    	-moz-border-radius: 4px;
-		    	border-radius: 4px;
-		    }
+		.isi {
+			display: block;
+			padding-bottom: 21px;
+			text-align: center;
+			/* margin: 0 0 10px; */
+			font-family: cursive;
+			font-size: 17px;
+			font-weight: bold;
+			/* line-height: 20px; */
+			/* word-break: break-all; */
+			/* word-wrap: break-word; */
+			white-space: pre;
+			/* white-space: pre-wrap; */
+			background-color: #f5f5f5;
+			border: 1px solid #ccc;
+			border: 1px solid rgba(0, 0, 0, 0.15);
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			border-radius: 4px;
+		}
 	</style>
 </head>
+
 <body>
-	
+
 	<form action="tes2.php" method="POST" style="padding:50px;">
 
 		<div>
@@ -80,22 +81,19 @@ $tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 			<input class="span6 " id="day" name="day" type="text" placeholder="Lama Jatuh Tempo" maxlength="3" onkeyup="validAngka(this)" required="true" autocomplete="off" />
 			<button type="submit" class="btn btn-success" id="cariLaporanMskBtn"><i class="fa fa-search"></i> Hitung</button>
 		</div>
-		
+
 	</form>
 
 	<div class="isi">
-		<?php 
+		<?php
 
 		if (empty($_POST)) {
-			
-		}
-		else
-		{
-			echo " Tanggal Faktur ".$tgl.",  Lama Jatuh Tempo ".$day." Hari";
-			echo ", Tanggal Jatuh Tempo ".$tgl2;
+		} else {
+			echo " Tanggal Faktur " . $tgl . ",  Lama Jatuh Tempo " . $day . " Hari";
+			echo ", Tanggal Jatuh Tempo " . $tgl2;
 		}
 
-			
+
 
 		?>
 	</div>
@@ -111,16 +109,15 @@ $tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 		$(document).ready(function() {
 
 			$('.datepicker').datepicker({
-			    format: 'dd-mm-yyyy',
+				format: 'dd-mm-yyyy',
 			});
 
 		});
-		function validAngka(a)
-		{
-		  if(!/^[0-9.]+$/.test(a.value))
-		  {
-		  a.value = a.value.substring(0,a.value.length-1000);
-		  }
+
+		function validAngka(a) {
+			if (!/^[0-9.]+$/.test(a.value)) {
+				a.value = a.value.substring(0, a.value.length - 1000);
+			}
 		}
 
 		/*function HurufBesar(a){
@@ -130,10 +127,11 @@ $tgl2= date('d-m-Y', strtotime('+'.$day.' day', strtotime( $newDate )));}
 		}*/
 
 		//pesan error ajax
-		$(document).ajaxError(function(){
+		$(document).ajaxError(function() {
 			alert("Terjadi Kesalahan, Lakukan Refresh Halaman. Lihat error_log");
 		});
 	</script>
 
 </body>
+
 </html>

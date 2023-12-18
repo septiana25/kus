@@ -83,9 +83,9 @@ function handleExistingNoPO($checkBarcodeBrg, $checkNoPO, $pomasuk, $idBrg, $qty
 
     $insertPoMasuk = $pomasuk->insertPoMasuk($idMsk, $idBrg, $qty, $nopol, $status, $ket, $nama);
 
-    if (!$insertPoMasuk['success']) {
+    if (!$insertPoMasuk) {
         $valid['success'] = false;
-        $valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan di PoMasuk.";
+        $valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan di PoMasuk." . $insertPoMasuk;
         return $valid;
     }
 

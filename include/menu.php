@@ -27,7 +27,7 @@
                       </a>
                       <ul class="sub">
                           <li id="activeBarangMasuk"><a class="" href="barangMsk.php">Barang Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activePOMasuk"><a class="" href="pomasukinput.php">PO Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activePOMasuk"><a class="" href="pomasuk.php">PO Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeBarangKeluar"><a class="" href="barangKlr.php">Barang Keluar</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeMutasi"><a class="" href="mutasiRetur.php?p=mutasi">Mutasi Barang</a><i class="icon-circle-arrow-right kanan"></i>
                           </li><li id="activeRetur"><a class="" href="mutasiRetur.php?p=retur&bln=' . date('m') . '&thn=' . date('Y') . '">Retur Barang</a><i class="icon-circle-arrow-right kanan"></i></li>

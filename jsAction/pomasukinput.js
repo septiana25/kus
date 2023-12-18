@@ -57,7 +57,6 @@ $(document).ready(function() {
 		const nopol = $("#nopol").val().trim();
 		const item = $("#item").val().trim();
 		const qty = $("#qty").val().trim();
-		const note = $("#note").val().trim();
 	
 		validateInput(tgl, "#tgl", "Tanggal Masih Kosong");
 		validateInput(nopo, "#nopo", "Surat Jalan Masih Kosong");
@@ -97,7 +96,10 @@ $(document).ready(function() {
 		$(".control-group").removeClass('error').removeClass('success');
 	
 		if (response.success === true) {
-			$("#submitPoMasuk")[0].reset();
+			$("#item").val("");
+			$("#qty").val("");
+			$("#note").val("");
+			
 			displayMessage('#pesan', 'alert alert-success', response.messages);
 		} else if (response.success === false) {
 			displayMessage('#pesan', 'alert alert-error', response.messages);

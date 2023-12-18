@@ -23,4 +23,15 @@ class PoMasuk
         $stmt->bind_param("sssssss", $idMsk, $idBarcode, $qty, $nopol, $status, $ket, $nama);
         return $stmt->execute();
     }
+
+    public function fetchPoMasuk()
+    {
+        $stmt = $this->conn->prepare("SELECT id_pomsk, suratJln, no_polisi, brg, qty_po AS qty, `status` 
+                                        FROM pomasuk
+                                        LEFT JOIN masuk USING(id_msk)
+                                        LEFT JOIN barcodebrg USING(id_barcodebrg)
+                                        LEFT JOIN barang USING(id_brg)");
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
