@@ -16,13 +16,14 @@ try {
     $koneksi->close();
 }
 
-function generateButton($id_brg)
+function generateButton($id_pomsk)
 {
     return '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="#editModalBarang" onclick="editBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-            <li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+            <li><a href="#editModalBarang" onclick="editBarang(' . $id_pomsk . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+            <li><a href="pomasukdetail.php?id=' . $id_pomsk . '"><i class="icon-check-sign"></i> Posting</a></li>
+            <li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id_pomsk . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
         </ul>
     </div>';
 }
@@ -40,6 +41,7 @@ function handleFetchPoMasuk($pomasuk)
             $row['no_polisi'],
             $row['brg'],
             $row['qty'],
+            $row['qty_sisa'],
             $row['status'],
             $button
         );

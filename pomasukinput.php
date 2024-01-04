@@ -24,7 +24,7 @@ echo "<div class='div-request div-hide'>pomasuk</div>";
         <div class="row-fluid">
             <div class="span12">
                 <h3 class="page-title">
-                    Tambah PO Masuk
+                    PO Masuk
                 </h3>
                 <ul class="breadcrumb">
                     <li>
@@ -32,7 +32,7 @@ echo "<div class='div-request div-hide'>pomasuk</div>";
                         <span class="divider">/</span>
                     </li>
                     <li>
-                        Transaksi
+                        Transaksi Barang
                         <span class="divider">/</span>
                     </li>
                     <li class="active">

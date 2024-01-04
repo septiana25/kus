@@ -25,7 +25,7 @@ echo "<div class='div-request div-hide'>pomasuk</div>";
         <div class="row-fluid">
             <div class="span12">
                 <h3 class="page-title">
-                    Barcode Barang
+                    PO Masuk
                 </h3>
                 <ul class="breadcrumb">
                     <li>
@@ -33,11 +33,11 @@ echo "<div class='div-request div-hide'>pomasuk</div>";
                         <span class="divider">/</span>
                     </li>
                     <li>
-                        Master Barang
+                        Transaksi Barang
                         <span class="divider">/</span>
                     </li>
                     <li class="active">
-                        Barcode Barang
+                        PO Masuk
                     </li>
 
                 </ul>
@@ -70,6 +70,7 @@ echo "<div class='div-request div-hide'>pomasuk</div>";
                                     <th>Plat Nomor</th>
                                     <th>Barang</th>
                                     <th>QTY</th>
+                                    <th>Sisa</th>
                                     <th>Status</th>
                                     <th class="d-none-mobile">Action</th>
                                 </tr>
