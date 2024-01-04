@@ -111,7 +111,7 @@ $(document).ready(function() {
 			//ambil data form
 			var form = $(this);
 			//button loading
-			$("#simpanBarangMskBtn").button('loading');
+			//$("#simpanBarangMskBtn").button('loading');
 
 			$.ajax({//proses simpan
 				url : form.attr('action'),
