@@ -17,6 +17,14 @@ $result =  getScanMasuk($id, $koneksi);
 if ($result->status == "fail") {
     echo "<script>location.href='pomasuk.php?message=Belum Ada Data Scan'</script>";
 }
+$ids_to_filter = [206, 207]; // Replace with your list of ids
+
+$filteredResult = array_filter($result->data, function ($item) use ($ids_to_filter) {
+    return !in_array($item->id_masuk_det, $ids_to_filter);
+});
+
+// Re-index the array keys
+$filteredResult = array_values($filteredResult);
 ?>
 <!-- BEGIN PAGE -->
 <div id="main-content">
@@ -83,8 +91,8 @@ if ($result->status == "fail") {
                             </thead>
                             <tbody>
                                 <?php
-                                echo "<form method='post' action='submit.php'>";
-                                foreach ($result->data as $item) {
+                                echo "<form method='post' action='action/barangMasuk/simpanMasuk.php'>";
+                                foreach ($filteredResult as $item) {
                                     $date = new DateTime($item->tanggal_masuk);
                                     $formattedDate = $date->format('Y-m-d');
                                     echo "<tr>";
@@ -95,7 +103,7 @@ if ($result->status == "fail") {
                                     echo "<td> " . $item->item . " </td>";
                                     echo "<td width='10%'> " . $item->rak . " </td>";
                                     echo "<td width='4%'>
-                                            <input type='text' name='qty' value='" . $item->qty . "' class='input-small'/>
+                                            <input type='text' name='jml' value='" . $item->qty . "' class='input-small'/>
                                         </td>";
                                     echo "<td width='10%'>
                                             <input type='text' name='ket' placeholder='Keterangan'/>
