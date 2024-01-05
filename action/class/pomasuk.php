@@ -24,6 +24,14 @@ class PoMasuk
         return $stmt->execute();
     }
 
+    public function saveDetailPO($idMsk, $idPOMsk, $idDetMsk, $idPoMskScanDetail)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO detail_pomasuk (id_msk, id_pomsk, id_det_msk, id_masuk_det) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("iiii", $idMsk, $idPOMsk, $idDetMsk, $idPoMskScanDetail);
+        $success = $stmt->execute();
+        return ['success' => $success, 'id' => $this->conn->insert_id];
+    }
+
     public function fetchPoMasuk()
     {
         $stmt = $this->conn->prepare("SELECT id_pomsk, id_msk, suratJln, no_polisi, brg, qty_po AS qty, qty_sisa, `status` 
@@ -37,11 +45,22 @@ class PoMasuk
 
     public function getPoMasukById($id)
     {
-        $stmt = $this->conn->prepare("SELECT id_pomsk, id_msk 
+        $stmt = $this->conn->prepare("SELECT id_pomsk, id_msk, suratJln
                                         FROM pomasuk
+                                        LEFT JOIN masuk USING(id_msk)
                                         WHERE id_pomsk = ? AND `status` = ?");
         $status = "INPG";
         $stmt->bind_param("ss", $id, $status);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getPoMasukDetailById($id)
+    {
+        $stmt = $this->conn->prepare("SELECT id_masuk_det 
+                                        FROM detail_pomasuk
+                                        WHERE id_msk = ?");
+        $stmt->bind_param("s", $id);
         $stmt->execute();
         return $stmt->get_result();
     }
