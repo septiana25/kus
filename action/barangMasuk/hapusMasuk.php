@@ -1,8 +1,8 @@
 <?php
-	require_once '../../function/koneksi.php';
-	require_once '../../function/session.php';
+require_once '../../function/koneksi.php';
+require_once '../../function/session.php';
 
-	$valid['success'] = array('success' => false, 'messages' => array());
+$valid['success'] = array('success' => false, 'messages' => array());
 
 if ($_POST) {
 
@@ -28,101 +28,44 @@ if ($_POST) {
 	//membuat fungsi transaksi
 	$koneksi->begin_transaction();
 
-	if ($cek_msk->num_rows == 1)// masuk ada satu
-	{
+	$insert = "DELETE FROM detail_masuk WHERE id_det_msk=$id_det_msk";
 
-		$insert = "DELETE FROM masuk WHERE id_msk=$id_msk";
+	if ($koneksi->query($insert) === TRUE) {
 
-		if($koneksi->query($insert) === TRUE)
-		{
+		$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
 
-			$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
+		if ($koneksi->query($update) === TRUE) {
 
-			if ($koneksi->query($update) === TRUE)
-			{
+			$valid['success']  = true;
+			$valid['messages'] = "<strong>Success </strong> Data Berhasil Dihapus";
 
-				$valid['success']  = true;
-				$valid['messages'] = "<strong>Success </strong> Data Berhasil Dihapus";
-
-				$sql_success .="success";
-
-			}
-			else
-			{
-
-				$valid['success']  = false;
-				$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus (Saldo Gagal Update). Error-AIG-0A21 ".$koneksi->error;
-			
-			}
-
-		}
-		else
-		{
+			$sql_success .= "success";
+		} else {
 
 			$valid['success']  = false;
-			$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus Di Tabel Masuk. Error-AIG-0A22 ".$koneksi->error;
-		
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus (Saldo Gagal Update). Error-AIG-0A23 " . $koneksi->error;
 		}
+	} else {
 
-	}
-	else
-	{
-
-		$insert = "DELETE FROM detail_masuk WHERE id_det_msk=$id_det_msk";
-
-		if($koneksi->query($insert) === TRUE)
-		{
-
-			$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
-
-			if ($koneksi->query($update) === TRUE)
-			{
-
-				$valid['success']  = true;
-				$valid['messages'] = "<strong>Success </strong> Data Berhasil Dihapus";
-
-				$sql_success .="success";
-
-			}
-			else
-			{
-
-				$valid['success']  = false;
-				$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus (Saldo Gagal Update). Error-AIG-0A23 ".$koneksi->error;
-			
-			}
-
-		}
-		else
-		{
-
-			$valid['success']  = false;
-			$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus Di Tabel Masuk. Error-AIG-0A24 ".$koneksi->error;
-		
-		}
-
+		$valid['success']  = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Dihapus Di Tabel Masuk. Error-AIG-0A24 " . $koneksi->error;
 	}
 
-		
 
 
-/*====================< Fungsi Rollback dan Commit >========================*/
-	if ($sql_success)
-	{
+	/*====================< Fungsi Rollback dan Commit >========================*/
+	if ($sql_success) {
 
-		$koneksi->commit();//simpan semua data simpan
+		$koneksi->commit(); //simpan semua data simpan
 
-	}
-	else
-	{
+	} else {
 
-		$koneksi->rollback();//batal semua data simpan
+		$koneksi->rollback(); //batal semua data simpan
 
 	}
-/*====================< Fungsi Rollback dan Commit >========================*/
+	/*====================< Fungsi Rollback dan Commit >========================*/
 
 	$koneksi->close();
 
 	echo json_encode($valid);
-
 }
