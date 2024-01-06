@@ -15,7 +15,7 @@ function getScanMasuk($id_pomsk, $koneksi)
     $curl = curl_init();
 
     curl_setopt_array($curl, [
-        CURLOPT_URL => "http://localhost:4001/incoming/" . $row['id_msk'],
+        CURLOPT_URL => "http://192.168.1.21:4001/incoming/" . $row['id_msk'],
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
