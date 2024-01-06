@@ -12,7 +12,7 @@ $(document).ready(function() {
 	}
 	
 	$('#dataTabel').DataTable({
-		'ajax' : 'action/pomasuk/fetchpomasuk.php',
+		'ajax' : 'action/pomasuk/fetchPoMasuk.php',
 		'order':[],
 		'columnDefs': [
 			{
