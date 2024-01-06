@@ -43,10 +43,15 @@ function getScanMasuk($id_pomsk, $koneksi)
         $filteredResult = array_filter($response->data, function ($item) use ($ids_to_filter) {
             return !in_array($item->id_masuk_det, $ids_to_filter);
         });
-
         $form = generateForm($filteredResult);
 
-        return $filteredResult;
+        $newResponse = [
+            'status' => 'success',
+            'data' => $response->data,
+            'filter' => $ids_to_filter,
+        ];
+
+        return $newResponse;
     } catch (Exception $e) {
         return 'Error: ' . $e->getMessage();
     } finally {

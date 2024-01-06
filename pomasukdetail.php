@@ -98,6 +98,6 @@ $fetchedData = $result->fetch_array();
 
 <?php require_once 'include/footer.php'; ?>
 
-<script src="jsAction/pomasuk.js"></script>
+<script src="jsAction/pomasukdetail.js"></script>
 
 <script src="assets/chosen/chosen1.jquery.min.js"></script>
