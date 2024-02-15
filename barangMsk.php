@@ -171,6 +171,14 @@ echo "<div class='div-request div-hide'>masuk</div>";
             </div>
           </div>
           <div class="control-group" style="margin-bottom: 15px;">
+            <label for="tahunprod" class="control-label"><strong>Tahun Produksi</strong>
+              <p class="titik2">:</p>
+            </label>
+            <div class="controls">
+              <input class="span12 " id="tahunprod" name="tahunprod" type="text" placeholder="Tahun Produksi" onkeyup="validAngka(this)" />
+            </div>
+          </div>
+          <div class="control-group" style="margin-bottom: 15px;">
             <label for="cname" class="control-label"><strong>Jumlah</strong>
               <p class="titik2">:</p>
             </label>

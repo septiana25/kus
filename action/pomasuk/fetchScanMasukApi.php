@@ -38,12 +38,6 @@ function getScanMasuk($id_pomsk, $koneksi)
         while ($rowPoMasukDetail = $resultPoMasukDetail->fetch_array()) {
             $ids_to_filter[] = $rowPoMasukDetail['id_masuk_det'];
         }
-        //$ids_to_filter = [1]; // Replace with your list of ids
-
-        $filteredResult = array_filter($response->data, function ($item) use ($ids_to_filter) {
-            return !in_array($item->id_masuk_det, $ids_to_filter);
-        });
-        $form = generateForm($filteredResult);
 
         $newResponse = [
             'status' => 'success',

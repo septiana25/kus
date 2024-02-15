@@ -1,27 +1,19 @@
 var tabelMasuk;
 $(document).ready(function() {
-    var config = {
+    const config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
       '.chosen-select-no-single' : {disable_search_threshold:10},
       '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
       
     }
-    for (var selector in config) {
+    for (const selector in config) {
       $(selector).chosen(config[selector]);
     }
     $(".chosen-select").chosen({width: "200%"});
-   /* $(".chosen-select1").chosen({width: "95%"});
-    $(".chosen-select1").on('change', function (event,el) {
-      var selected_element = $(".chosen-select1 option:contains("+el.selected+")");
-      
-      var selected_value  = selected_element.val();
-      var parent_optgroup = selected_element.closest('optgroup').attr('label');
-      
-      selected_element.text(parent_optgroup+' - '+selected_value).trigger("chosen:updated");
-    });*/
+
 	//mengambil data div class div-request
-	var divRequest = $(".div-request").text();
+	const divRequest = $(".div-request").text();
 	// active manu barang
 	$('#activeTransaksi').addClass('active');
 	
@@ -30,222 +22,161 @@ $(document).ready(function() {
 		$('#activeBarangMasuk').addClass('active');
 
 		tabelMasuk = $('#tabelMasuk').DataTable({
-		'ajax' : 'action/barangMasuk/fetchMasuk.php',
-		'order':[]
-	});// manage TabelMasuk
+			'ajax' : 'action/barangMasuk/fetchMasuk.php',
+			'order':[]
+		});// manage TabelMasuk
 
-	$('.datepicker').datepicker();
+		$('.datepicker').datepicker();
 
-	// on click on submit barang masuk dari modal
-	$('#addBarangMskBtnModal').unbind('click').bind('click', function() {
+		// on click on submit barang masuk dari modal
+		$('#addBarangMskBtnModal').unbind('click').bind('click', function() {
 
-	// reset the form text
-	//$("#submitBarangMsk")[0].reset();
-	//remove the error text
-	//$(".help-inline").remove();
+		// submit kategori dari function
+			$('#submitBarangMsk').unbind('submit').bind('submit', function() {
+				
+				const barang   	= $("#barang").val();
+				const rak      	= $("#rak").val();
+				const suratJLN 	= $("#suratJLN").val();
+				const tahunprod = $("#tahunprod").val();
+				const jumlah   	= $("#jml").val();
 
-	//$(".control-group").removeClass('error').removeClass('success');
-	// submit kategori dari function
-	$('#submitBarangMsk').unbind('submit').bind('submit', function() {
-		
-		var barang   = $("#barang").val();
-		var rak      = $("#rak").val();
-		var suratJLN = $("#suratJLN").val();
-		//var ket      = $("#ket").val();
-		var jumlah   = $("#jml").val();
-
-		//cek barang rak jumlah jika kosong
-		if (barang == "") {
-			$("#barang").after('<span class="help-inline">Nama Barang Masuk Masih Kosong</span>');
-			$("#barang").closest('.control-group').removeClass('success');
-			$("#barang").closest('.control-group').addClass('error');
-		}else{
-			$("#barang").closest('.control-group').removeClass('error');
-			$("#barang").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Nama Barang Masuk Masih Kosong')");
-		}
-
-		if (rak == "") {
-			$("#rak").after('<span class="help-inline">Lokasi Rak Masuk Masih Kosong</span>');
-			$("#rak").closest('.control-group').removeClass('success');
-			$("#rak").closest('.control-group').addClass('error');
-		}else{
-			$("#rak").closest('.control-group').removeClass('error');
-			$("#rak").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Lokasi Rak Masuk Masih Kosong')");
-		}
-
-		if (suratJLN == "") {
-			$("#suratJLN").after('<span class="help-inline">Surat JaLan Masuk Masih Kosong</span>');
-			$("#suratJLN").closest('.control-group').removeClass('success');
-			$("#suratJLN").closest('.control-group').addClass('error');
-		}else{
-			$("#suratJLN").closest('.control-group').removeClass('error');
-			$("#suratJLN").closest('.control-group').addClass('success');
-			//$("#suratJLN").closest('span').removeClass();
-			$("span").remove(":contains('Surat JaLan Masuk Masih Kosong')");
-		}
-
-/*		if (ket == "") {
-			$("#ket").after('<span class="help-inline">Keterangan Masuk Masih Kosong</span>');
-			$("#ket").closest('.control-group').removeClass('success');
-			$("#ket").closest('.control-group').addClass('error');
-		}else{
-			$("#ket").closest('.control-group').removeClass('error');
-			$("#ket").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Keterangan Masuk Masih Kosong')");
-		}
-*/
-		if (jumlah == "") {
-			$("#jml").after('<span class="help-inline">Jumlah Masih Kosong</span>');
-			$("#jml").closest('.control-group').removeClass('success');
-			$("#jml").closest('.control-group').addClass('error');
-		}else{
-			$("#jml").closest('.control-group').removeClass('error');
-			$("#jml").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Jumlah Masih Kosong')");
-		}
-		//end cek barang rak jumlah jika kosong
-		//jika semua data terisi
-		if (barang && rak && suratJLN && jumlah) {
-			//ambil data form
-			var form = $(this);
-			//button loading
-			//$("#simpanBarangMskBtn").button('loading');
-
-			$.ajax({//proses simpan
-				url : form.attr('action'),
-				type: form.attr('method'),
-				data: form.serialize(),
-				dataType: 'json',
-				success:function(response) {
-					//button reset
-					$("#simpanBarangMskBtn").button('reset');
-
-					if (response.success == true) {
-
-						tabelMasuk.ajax.reload(null, false);
-
-
-						//reset the form text
-						$("#ket").val("");
-						$("#jml").val("");
-
-						//reset combobox
-						//$("#barang").trigger("chosen:updated");
-						$("#rak").val("");
-						$("#rak").trigger("chosen:updated");
-
-						document.getElementById("suratJLN").focus();
-
-						//remove the error text
-						$(".help-inline").remove();
-						//remove the form error
-						$(".control-group").removeClass('error').removeClass('success');
-
-						//show messages pesan
-						$('#pesan').html('<div class="alert alert-success">'+
-							'<button class="close" data-dismiss="alert">×</button>'+
-							response.messages+'</div>');
-						//fungsi tampil pesan delay
-						$(".alert-success").delay(500).show(10, function() {
-							$(this).delay(4000).hide(10, function() {
-								$(this).remove();
-							});
-						});
-
-					}
-
-					else if (response.success == false) {
-						//remove the error text
-						$(".help-inline").remove();
-						//remove the form error
-						$(".control-group").removeClass('error').removeClass('success');
-						//show messages simapanKategori
-						$('#pesan').html('<div class="alert alert-error">'+
-							'<button class="close" data-dismiss="alert">×</button>'+
-							response.messages+'</div>');
-					}
-
-					else{
-						alert("Error");
-					}
-				}
-
-			});
-
-		}
-
-		return false;
-	});
-	});
-
-
-$('#cariDataLama').unbind('click').bind('click', function(){
-
-	$('#modalCariData').on('shown', function () {
-	  $('#cariBulan').focus();
-	});
-
-	$('#submitCariData').unbind('submit').bind('submit', function(){
-
-		var cariBulan = $('#cariBulan').val();
-		var cariTahun = $('#cariTahun').val();
-
-		if (cariBulan == "") {
-			$("#cariBulan").after('<span class="help-inline">Bulan Masih Kosong</span>');
-			$('#cariBulan').closest('.control-group').removeClass('success');
-			$('#cariBulan').closest('.control-group').addClass('error');
-		}else{
-			$('#cariBulan').closest('.control-group').removeClass('error');
-			$("#cariBulan").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Bulan Masih Kosong')");
-		}
-
-		if (cariTahun == "") {
-			$("#cariTahun").after('<span class="help-inline">Tahun Masih Kosong</span>');
-			$('#cariTahun').closest('.control-group').removeClass('success');
-			$('#cariTahun').closest('.control-group').addClass('error');
-		}else{
-			$('#cariTahun').closest('.control-group').removeClass('error');
-			$("#cariTahun").closest('.control-group').addClass('success');
-			$("span").remove(":contains('Tahun Masih Kosong')");
-		}
-
-		if (cariBulan && cariTahun) {
-
-			var form = $(this);
-			$('#simpanCariBtn').button('loading');
-			$.ajax({
-
-				url  : form.attr('action'),
-				type : form.attr('method'),
-				data : form.serialize(),
-				dataType : 'text',
-				success:function(response){
-
-					$("#modalCariData").modal('hide');
-					$('#simpanCariBtn').button('reset');
-
-
-					var mywindow = window.open('', 'Laporan Transaksi', 'height=380,width=700');
-					mywindow.document.write(response);
-					
-				}
-
-
-			});
-
-		}
-
-		return false;
-	});
+				//cek barang rak jumlah jika kosong
+				validateField('barang', barang, 'Nama Barang Masuk Masih Kosong');
+				validateField('rak', rak, 'Lokasi Rak Masuk Masih Kosong');
+				validateField('suratJLN', suratJLN, 'Surat JaLan Masuk Masih Kosong');
+				validateField('tahunprod', tahunprod, 'Tahun Produksi Masih Kosong');
+				validateField('jml', jumlah, 'Jumlah Masih Kosong');
 	
-});
+				//jika semua data terisi
+				if (barang && rak && suratJLN && tahunprod &&  jumlah) {
+					//ambil data form
+					const form = $(this);
+					//button loading
+					//$("#simpanBarangMskBtn").button('loading');
+
+					$.ajax({//proses simpan
+						url : form.attr('action'),
+						type: form.attr('method'),
+						data: form.serialize(),
+						dataType: 'json',
+						success:function(response) {
+							//button reset
+							$("#simpanBarangMskBtn").button('reset');
+
+							if (response.success == true) {
+
+								tabelMasuk.ajax.reload(null, false);
+								//reset the form text
+								$("#ket").val("");
+								$("#jml").val("");
+
+								//reset combobox
+								//$("#barang").trigger("chosen:updated");
+								$("#rak").val("");
+								$("#rak").trigger("chosen:updated");
+
+								document.getElementById("suratJLN").focus();
+
+								//remove the error text
+								removeError();
+
+								//show messages pesan
+								showMessage('success', response.messages);
+							}
+
+							else if (response.success == false) {
+								showMessage('error', response.messages);
+							}else{
+								alert("Error");
+							}
+						}
+					});
+				}
+				return false;
+			});
+		});
+
+
+		$('#cariDataLama').unbind('click').bind('click', function(){
+
+			$('#modalCariData').on('shown', function () {
+			$('#cariBulan').focus();
+			});
+
+			$('#submitCariData').unbind('submit').bind('submit', function(){
+
+				const cariBulan = $('#cariBulan').val();
+				const cariTahun = $('#cariTahun').val();
+
+				validateField('cariBulan', cariBulan, 'Bulan Masih Kosong');
+				validateField('cariTahun', cariTahun, 'Tahun Masih Kosong');
+
+				if (cariBulan && cariTahun) {
+
+					const form = $(this);
+					$('#simpanCariBtn').button('loading');
+					$.ajax({
+
+						url  : form.attr('action'),
+						type : form.attr('method'),
+						data : form.serialize(),
+						dataType : 'text',
+						success:function(response){
+
+							$("#modalCariData").modal('hide');
+							$('#simpanCariBtn').button('reset');
+
+
+							const mywindow = window.open('', 'Laporan Transaksi', 'height=380,width=700');
+							mywindow.document.write(response);
+							
+						}
+
+
+					});
+
+				}
+
+				return false;
+			});
+			
+		});
 
 
 	} //end if div-request
 
+	function validateField(id, value, errorMessage) {
+		if (value == "") {
+			$(`#${id}`).after(`<span class="help-inline">${errorMessage}</span>`);
+			$(`#${id}`).closest('.control-group').removeClass('success');
+			$(`#${id}`).closest('.control-group').addClass('error');
+		} else {
+			$(`#${id}`).closest('.control-group').removeClass('error');
+			$(`#${id}`).closest('.control-group').addClass('success');
+			$(`span:contains('${errorMessage}')`).remove();
+		}
+	}
+
+	function removeError() {
+		//remove the error text
+		$(".help-inline").remove();
+		//remove the form error
+		$(".control-group").removeClass('error').removeClass('success');
+	}
+	
+	function showMessage(type, message) {
+		//show messages
+		$('#pesan').html(`<div class="alert alert-${type}">`+
+			'<button class="close" data-dismiss="alert">×</button>'+
+			message+'</div>');
+	
+		//fungsi tampil pesan delay
+		$(`.alert-${type}`).delay(500).show(10, function() {
+			$(this).delay(4000).hide(10, function() {
+				$(this).remove();
+			});
+		});
+	}
 
 });//end document ready
 

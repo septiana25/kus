@@ -6,6 +6,7 @@ require_once '../../function/session.php';
 require_once '../class/masuk.php';
 require_once '../class/barang.php';
 require_once '../class/saldo.php';
+require_once '../class/DetailSaldo.php';
 
 $valid['success'] = array('success' => false, 'messages' => array());
 $koneksi->begin_transaction();
@@ -14,6 +15,7 @@ $sql_success   = "";
 $masukClass = new Masuk($koneksi);
 $barangClass = new Barang($koneksi);
 $saldoClass = new Saldo($koneksi);
+$detailSaldoClass = new DetailSaldo($koneksi);
 
 try {
 	$inputs 	= getInputs($koneksi);
@@ -34,7 +36,22 @@ try {
 
 		if ($checkNoPO->num_rows == 1 && $checkNoPOByDate->num_rows == 1) {
 			$idMsk = $resultNoPO['id_msk'];
-			$result = handleCheckItem($barangClass, $masukClass, $saldoClass, $idBrg, $idRak, $idMsk, $tgl, $jml, $jam, $ket, $bulan, $tahun);
+			$result = handleCheckItem(
+				$barangClass,
+				$masukClass,
+				$saldoClass,
+				$detailSaldoClass,
+				$idBrg,
+				$idRak,
+				$idMsk,
+				$tgl,
+				$tahunprod,
+				$jml,
+				$jam,
+				$ket,
+				$bulan,
+				$tahun
+			);
 			if ($result['success']) {
 				$valid['success']  = true;
 				$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
@@ -42,7 +59,22 @@ try {
 			}
 		} elseif ($checkNoPO->num_rows == 0 && $checkNoPOByDate->num_rows == 0) {
 			$idMsk = handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin);
-			$result = handleCheckItem($barangClass, $masukClass, $saldoClass, $idBrg, $idRak, $idMsk, $tgl, $jml, $jam, $ket, $bulan, $tahun);
+			$result = handleCheckItem(
+				$barangClass,
+				$masukClass,
+				$saldoClass,
+				$detailSaldoClass,
+				$idBrg,
+				$idRak,
+				$idMsk,
+				$tgl,
+				$tahunprod,
+				$jml,
+				$jam,
+				$ket,
+				$bulan,
+				$tahun
+			);
 			if ($result['success']) {
 				$valid['success']  = true;
 				$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
@@ -75,12 +107,13 @@ try {
 function getInputs($koneksi)
 {
 	$inputs = [
-		"idBrg" => trim($koneksi->real_escape_string($_POST["id_brg"])),
+		"idBrg" 	=> trim($koneksi->real_escape_string($_POST["id_brg"])),
 		"idRak" 	=> trim($koneksi->real_escape_string($_POST["id_rak"])),
 		"tgl" 		=> trim($koneksi->real_escape_string($_POST["tgl"])),
 		"suratJLN" 	=> trim($koneksi->real_escape_string($_POST["suratJLN"])),
+		"tahunprod" => trim($koneksi->real_escape_string($_POST["tahunprod"])),
 		"jml" 		=> trim($koneksi->real_escape_string($_POST["jml"])),
-		"ket" 	=> trim(
+		"ket" 		=> trim(
 			$koneksi->real_escape_string(
 				isset($_POST["ket"]) && !empty($_POST["ket"]) ? $_POST["ket"] : ""
 			)
@@ -90,8 +123,22 @@ function getInputs($koneksi)
 	return $inputs;
 }
 
-function handleCheckItem($barangClass, $masukClass, $saldoClass, $idBrg, $idRak, $idMsk, $tgl, $jml, $jam, $ket, $bulan, $tahun)
-{
+function handleCheckItem(
+	$barangClass,
+	$masukClass,
+	$saldoClass,
+	$detailSaldoClass,
+	$idBrg,
+	$idRak,
+	$idMsk,
+	$tgl,
+	$tahunprod,
+	$jml,
+	$jam,
+	$ket,
+	$bulan,
+	$tahun
+) {
 	global $valid;
 
 	$checkItem = $barangClass->getItemById($idBrg, $idRak);
@@ -100,12 +147,12 @@ function handleCheckItem($barangClass, $masukClass, $saldoClass, $idBrg, $idRak,
 		$id = $resultItem['id'];
 
 		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket);
-		return handleCheckSaldo($saldoClass, $id, $bulan, $tahun, $jml, $tgl);
+		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} elseif ($checkItem->num_rows == 0) {
 		$id = handleNewItem($barangClass, $idBrg, $idRak);
 
 		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket);
-		return handleCheckSaldo($saldoClass, $id, $bulan, $tahun, $jml, $tgl);
+		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} else {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Detail Barang Duplikat. Di Tabel Saldo ";
@@ -173,28 +220,69 @@ function handleNewSaldo($saldoClass, $id, $tgl, $saldoAkhir)
 	return $insertSaldo;
 }
 
-function handleUpdateSaldo($saldoClass, $id, $saldoAkhir)
+function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml)
 {
 	global $valid;
 
 	try {
-		$updateSaldo = $saldoClass->update($id, $saldoAkhir);
+		$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByid($id, $tahunprod);
+	} catch (Exception $e) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diambil. Di Tabel Saldo. Error: " . $e->getMessage();
+		return $valid;
+	}
+
+	if ($checkDetailSaldo->num_rows == 0) {
+		$insertDetailSaldo = $detailSaldoClass->save($id, $tahunprod, $jml);
+
+		if (!$insertDetailSaldo['success']) {
+			$valid['success'] = false;
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+			return $valid;
+		}
+
+		return $insertDetailSaldo;
+	} elseif ($checkDetailSaldo->num_rows == 1) {
+		$resultDetailSaldo = $checkDetailSaldo->fetch_array();
+		$totalJumlah = $resultDetailSaldo['jumlah'] + $jml;
+		$updateDetailSaldo = $detailSaldoClass->update($id, $tahunprod, $totalJumlah);
+
+		if (!$updateDetailSaldo['success']) {
+			$valid['success'] = false;
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+			return $valid;
+		}
+
+		return $updateDetailSaldo;
+	} else {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Detail Saldo Duplikat. Di Tabel Saldo ";
+	}
+}
+
+function handleUpdateSaldo($saldoClass, $detailSaldoClass, $idSaldo, $id, $tahunprod, $jml, $saldoAkhir)
+{
+	global $valid;
+
+	try {
+		$updateSaldo = $saldoClass->update($idSaldo, $saldoAkhir);
+		$detailSaldo = handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml);
 	} catch (Exception $e) {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diupdate. Di Tabel Saldo. Error: " . $e->getMessage();
 		return $valid;
 	}
 
-	if (!$updateSaldo['success'] || $updateSaldo['affected_rows'] == 0) {
-		$valid['success'] = false;
-		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diupdate. Di Tabel Saldo ";
-		return $valid;
+	if ($updateSaldo['success'] && $detailSaldo['success']) {
+		return $updateSaldo;
 	}
 
-	return $updateSaldo;
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Diupdate. Di Tabel Saldo & Detail Saldo";
+	return $valid;
 }
 
-function handleCheckSaldo($saldoClass, $id, $month, $year, $jml, $tgl)
+function handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $month, $year, $tahunprod, $jml, $tgl)
 {
 	global $valid;
 
@@ -208,8 +296,8 @@ function handleCheckSaldo($saldoClass, $id, $month, $year, $jml, $tgl)
 
 	$resultSaldo = $checkSaldo->fetch_array();
 	if ($checkSaldo->num_rows == 1) {
-		$total_saldo = $resultSaldo['saldo_akhir'] + $jml;
-		return  handleUpdateSaldo($saldoClass, $resultSaldo['id_saldo'], $total_saldo);
+		$totalSaldo = $resultSaldo['saldo_akhir'] + $jml;
+		return handleUpdateSaldo($saldoClass, $detailSaldoClass, $resultSaldo['id_saldo'], $id, $tahunprod, $jml, $totalSaldo);
 	} elseif ($checkSaldo->num_rows == 0) {
 		return handleNewSaldo($saldoClass, $id, $tgl, $jml);
 	} else {
