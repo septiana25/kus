@@ -24,6 +24,14 @@ class Masuk
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
 
+    public function saveTahunProd($id_det_msk, $tahunprod)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO tahunprod_masuk (id_det_msk, tahunprod) VALUES (?, ?)");
+        $stmt->bind_param("is", $id_det_msk, $tahunprod);
+        $success = $stmt->execute();
+        return ['success' => $success];
+    }
+
     public function getNoPOByDate($noPO, $tgl)
     {
         $stmt = $this->conn->prepare("SELECT id_msk FROM masuk WHERE tgl = ? AND suratJln = ?");

@@ -146,12 +146,12 @@ function handleCheckItem(
 	if ($checkItem->num_rows == 1) {
 		$id = $resultItem['id'];
 
-		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket);
+		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
 		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} elseif ($checkItem->num_rows == 0) {
 		$id = handleNewItem($barangClass, $idBrg, $idRak);
 
-		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket);
+		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
 		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} else {
 		$valid['success'] = false;
@@ -190,34 +190,42 @@ function handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin)
 	return $insertMasuk['id'];
 }
 
-function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket)
+function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod)
 {
 	global $valid;
 
 	$insertMasukDetail = $masukClass->saveDetail($idMsk, $id, $jam, $jml, $ket);
+	$insertTahunProd = $masukClass->saveTahunProd($insertMasukDetail['id'], $tahunprod);
 
-	if (!$insertMasukDetail['success']) {
-		$valid['success'] = false;
-		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk ";
-		return $valid;
+	if ($insertMasukDetail['success'] && $insertTahunProd['success']) {
+		return $insertMasukDetail['id'];
 	}
 
-	return $insertMasukDetail['id'];
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk ";
+	return $valid;
 }
 
-function handleNewSaldo($saldoClass, $id, $tgl, $saldoAkhir)
+function handleNewSaldo($saldoClass, $detailSaldoClass, $id, $tgl, $tahunprod, $jml)
 {
 	global $valid;
 
-	$insertSaldo = $saldoClass->save($id, $tgl, $saldoAkhir);
-
-	if (!$insertSaldo['success']) {
+	try {
+		$insertSaldo = $saldoClass->save($id, $tgl, $jml);
+		$detailSaldo = handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml);
+	} catch (Exception $e) {
 		$valid['success'] = false;
-		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo. Error: " . $e->getMessage();
 		return $valid;
 	}
 
-	return $insertSaldo;
+	if ($insertSaldo['success'] && $detailSaldo['success']) {
+		return $insertSaldo;
+	}
+
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+	return $valid;
 }
 
 function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml)
@@ -299,7 +307,7 @@ function handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $month, $year, $t
 		$totalSaldo = $resultSaldo['saldo_akhir'] + $jml;
 		return handleUpdateSaldo($saldoClass, $detailSaldoClass, $resultSaldo['id_saldo'], $id, $tahunprod, $jml, $totalSaldo);
 	} elseif ($checkSaldo->num_rows == 0) {
-		return handleNewSaldo($saldoClass, $id, $tgl, $jml);
+		return handleNewSaldo($saldoClass, $detailSaldoClass, $id, $tgl, $tahunprod, $jml);
 	} else {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Di Tabel Saldo ";
