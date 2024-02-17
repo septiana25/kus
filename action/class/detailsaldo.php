@@ -17,14 +17,14 @@ class DetailSaldo
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
 
-    public function update($id, $tahunprod, $jml)
+    public function update($id_detailsaldo, $jml)
     {
-        $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = ? WHERE id = ? AND tahunprod = ?");
+        $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = ? WHERE id_detailsaldo = ?");
 
         if ($stmt === false) {
             return ['success' => false, 'message' => "Prepare failed: " . $this->conn->error];
         }
-        $stmt->bind_param("iis", $jml, $id, $tahunprod);
+        $stmt->bind_param("ii", $jml, $id_detailsaldo);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed"];
@@ -33,9 +33,17 @@ class DetailSaldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
-    public function getDetailSaldoByid($id, $tahunprod)
+    public function getDetailSaldoByid($id)
     {
-        $stmt = $this->conn->prepare("SELECT id, jumlah, tahunprod FROM detail_saldo WHERE id = ? AND tahunprod = ?");
+        $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id = ? ORDER BY tahunprod ASC");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getDetailSaldoByidAndYearProd($id, $tahunprod)
+    {
+        $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id = ? AND tahunprod = ?");
         $stmt->bind_param("is", $id, $tahunprod);
         $stmt->execute();
         return $stmt->get_result();

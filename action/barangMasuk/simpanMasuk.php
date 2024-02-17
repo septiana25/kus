@@ -28,7 +28,10 @@ try {
 	$tahun         = SUBSTR($tgl, 0, -6);
 
 	$checkSaldoLastDate    = $saldoClass->getSaldoByLastDate();
-	if ($checkSaldoLastDate == $bulan) {
+	$monthSaldoLastDate = SUBSTR($checkSaldoLastDate, 5, -3);
+	$yearSaldoLastDate = SUBSTR($checkSaldoLastDate, 0, -6);
+
+	if ($monthSaldoLastDate == $bulan && $yearSaldoLastDate == $tahun) {
 
 		$checkNoPO = $masukClass->getNoPO($suratJLN);
 		$checkNoPOByDate = $masukClass->getNoPOByDate($suratJLN, $tgl);
@@ -233,7 +236,7 @@ function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml)
 	global $valid;
 
 	try {
-		$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByid($id, $tahunprod);
+		$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByidAndYearProd($id, $tahunprod);
 	} catch (Exception $e) {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diambil. Di Tabel Saldo. Error: " . $e->getMessage();
@@ -252,8 +255,9 @@ function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml)
 		return $insertDetailSaldo;
 	} elseif ($checkDetailSaldo->num_rows == 1) {
 		$resultDetailSaldo = $checkDetailSaldo->fetch_array();
+		$idDetailSaldo = $resultDetailSaldo['id_detailsaldo'];
 		$totalJumlah = $resultDetailSaldo['jumlah'] + $jml;
-		$updateDetailSaldo = $detailSaldoClass->update($id, $tahunprod, $totalJumlah);
+		$updateDetailSaldo = $detailSaldoClass->update($idDetailSaldo, $totalJumlah);
 
 		if (!$updateDetailSaldo['success']) {
 			$valid['success'] = false;
@@ -265,6 +269,7 @@ function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml)
 	} else {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Detail Saldo Duplikat. Di Tabel Saldo ";
+		return $valid;
 	}
 }
 
@@ -311,5 +316,6 @@ function handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $month, $year, $t
 	} else {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Di Tabel Saldo ";
+		return $valid;
 	}
 }
