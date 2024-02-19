@@ -12,7 +12,7 @@ class DetailSaldo
     {
 
         $stmt = $this->conn->prepare("INSERT INTO detail_saldo (id, tahunprod, jumlah) VALUES (?, ?, ?)");
-        $stmt->bind_param("iii", $id, $tahunprod, $jml);
+        $stmt->bind_param("isi", $id, $tahunprod, $jml);
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
@@ -33,10 +33,19 @@ class DetailSaldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function getDetailSaldoByidDetailsaldo($id_detailsaldo)
+    {
+        $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id_detailsaldo = ?");
+        $stmt->bind_param("i", $id_detailsaldo);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getDetailSaldoByid($id)
     {
-        $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id = ? ORDER BY tahunprod ASC");
-        $stmt->bind_param("i", $id);
+        $saldoZeo = 0;
+        $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id = ? AND jumlah != ? ORDER BY tahunprod ASC");
+        $stmt->bind_param("ii", $id, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
     }

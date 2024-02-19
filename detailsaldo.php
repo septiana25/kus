@@ -143,7 +143,7 @@ if ($row == null) {
                     <div class="control-group">
                         <label class="control-label" for="tahunprod">Tahun Produksi</label>
                         <div class="controls">
-                            <input class="span12" type="number" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi" min="1000" max="9999" onkeyup="validAngka(this)">
+                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)">
                         </div>
                     </div>
                     <div class="control-group">

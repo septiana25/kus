@@ -82,4 +82,18 @@ class Saldo
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getSaldoByidJoinDetailByDate($id, $month, $year)
+    {
+        $saldoZeo = 0;
+        $stmt = $this->conn->prepare("SELECT id_detailsaldo, rak,  tahunprod, jumlah
+        FROM detail_saldo
+        LEFT JOIN detail_brg USING(id)
+        LEFT JOIN rak USING(id_rak)
+        LEFT JOIN saldo USING(id)
+        WHERE id_brg = ? AND MONTH(tgl) = ? AND YEAR(tgl) = ? AND jumlah != ?");
+        $stmt->bind_param("iiii", $id, $month, $year, $saldoZeo);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }

@@ -1,5 +1,6 @@
 <?php
 require_once '../../function/koneksi.php';
+require_once '../../function/session.php';
 require_once '../class/pomasuk.php';
 
 $pomasuk = new PoMasuk($koneksi);

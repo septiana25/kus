@@ -37,7 +37,15 @@ $(document).ready(function() {
 
 	$('.datepicker').datepicker();
 
-	//$('#addBarangKlrBtnModal').unbind('click').bind('click', function(){
+	$("#id_brg").change(function () {
+		$("#id_brg option:selected").each(function () {
+			const id_brg = $(this).val();
+			console.log(id_brg);
+			$.post("action/barangKeluar/fetchSelectedRakSaldo.php", { id_brg: id_brg }, function(data){
+				$("#id_rak").html(data);
+			});            
+		});		
+	});
 
 	$('#submitBarangKlr').unbind('submit').bind('submit', function()
 	{
@@ -47,7 +55,7 @@ $(document).ready(function() {
 		var toko       = $("#id_toko").val();
 		//var keterangan = $("#keterangan").val();
 		var id_brg     = $("#id_brg").val();
-		var rak        = $("#rak").val();
+		var rak        = $("#id_rak").val();
 		var jumlah     = $("#jumlah").val();
 
 
@@ -104,12 +112,12 @@ $(document).ready(function() {
 		}
 
 		if (rak == "") {
-			$("#rak").after('<span class="help-inline">Lokasi Rak Keluar Masih Kosong</span>');
-			$('#rak').closest('.control-group').removeClass('success');
-			$('#rak').closest('.control-group').addClass('error');
+			$("#id_rak").after('<span class="help-inline">Lokasi Rak Keluar Masih Kosong</span>');
+			$('#id_rak').closest('.control-group').removeClass('success');
+			$('#id_rak').closest('.control-group').addClass('error');
 		}else{
-			$('#rak').closest('.control-group').removeClass('error');
-			$("#rak").closest('.control-group').addClass('success');
+			$('#id_rak').closest('.control-group').removeClass('error');
+			$("#id_rak").closest('.control-group').addClass('success');
 			$("span").remove(":contains('Lokasi Rak Keluar Masih Kosong')");
 			
 		}
@@ -130,7 +138,7 @@ $(document).ready(function() {
 			//
 			var form = $(this);
 			//
-			$("#simpanBarangKlrBtn").button('loading');
+			//$("#simpanBarangKlrBtn").button('loading');
 
 			$.ajax({//
 				url : form.attr('action'),
@@ -139,7 +147,7 @@ $(document).ready(function() {
 				dataType: 'json',
 				success:function(response) {
 					//
-					$("#simpanBarangKlrBtn").button('reset');
+					//$("#simpanBarangKlrBtn").button('reset');
 
 					 if (response.success == true) {
 						tabelKeluar.ajax.reload(null, false);
@@ -147,13 +155,12 @@ $(document).ready(function() {
 						//reset the form text
 						//$("#submitBarangKlr")[0].reset();
 						$('#id_brg').val('');
-						$('#rak').val('');
+						$('#id_rak').val('');
 						$('#jumlah').val('');
 						//remove the error text
 						$(".help-inline").remove();
 						//reset combobox
 						$("#id_brg").trigger("chosen:updated");
-						$("#rak").trigger("chosen:updated");
 						//remove the form error
 						$(".control-group").removeClass('error').removeClass('success');
 						//show messages pesan
@@ -509,7 +516,7 @@ function hapusKeluar(id_det_klr = null)
 				// remove keluar btn clicked to remove the keluar function
 				$("#hapusKeluarBtn").unbind('click').bind('click', function() {
 				// remove keluar btn
-				$("#hapusKeluarBtn").button('loading');
+				//$("#hapusKeluarBtn").button('loading');
 
 					$.ajax({
 					url: 'action/barangKeluar/hapusKeluar.php',
@@ -519,7 +526,7 @@ function hapusKeluar(id_det_klr = null)
 					success:function(response) {
 						if(response.success == true) {
 							//button reset
-							$("#hapusKeluarBtn").button('reset');
+							//$("#hapusKeluarBtn").button('reset');
 							// close the modal 
 							$("#hapusModalKeluar").modal('hide');
 
