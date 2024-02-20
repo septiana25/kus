@@ -66,13 +66,15 @@ echo "<div class='div-request div-hide'>barang</div>";
                         <table class="table table-striped table-bordered" id="tabelBarang">
                             <thead>
                                 <tr>
-                                    <th width="8%">No Urut</th>
-                                    <th width="10%">Kode Barang</th>
+                                    <th width="5%">No Urut</th>
+                                    <th width="8%">Kode Barang</th>
                                     <th>Nama Barang</th>
-                                    <th width="9%">Lokasi Rak</th>
+                                    <th width="8%">Lokasi Rak</th>
                                     <th width="11%">Kategori</th>
                                     <th width="8%">Saldo Awal</th>
-                                    <th width="9%">Saldo Akhir</th>
+                                    <th width="5%">Tahun</th>
+                                    <th width="5%">Saldo</th>
+                                    <th width="8%">Saldo Akhir</th>
                                     <?php
                                     if ($_SESSION['level'] == "administrator") {
                                         echo '<th width="8%" class="hidden-phone">Action</th>';

@@ -37,10 +37,12 @@ class Saldo
 
     public function getAllSaldo($month, $year)
     {
-        $stmt = $this->conn->prepare("SELECT b.id_brg AS id_brg, nourt, kdbrg, b.brg AS brg, d.rak AS rak, saldo_awal, saldo_akhir, kat, id
+        $saldoZeo = 0;
+        $stmt = $this->conn->prepare("SELECT b.id_brg AS id_brg, nourt, kdbrg, b.brg AS brg, d.rak AS rak, saldo_awal, saldo_akhir, kat, id, tahunprod, jumlah
         FROM(
-        SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl
+        SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl, tahunprod, jumlah
         FROM detail_brg
+        LEFT JOIN detail_saldo USING(id)
         LEFT JOIN rak USING(id_rak)
         LEFT JOIN saldo USING(id)
         WHERE MONTH(tgl)= ? AND YEAR(tgl)= ?
@@ -49,8 +51,8 @@ class Saldo
         SELECT id_brg, kdbrg, brg, nourt, kat
         FROM barang
         JOIN kat USING(id_kat)
-        )b ON b.id_brg=d.id_brg WHERE saldo_akhir !=0 ORDER BY rak, b.brg ASC");
-        $stmt->bind_param("ii", $month, $year);
+        )b ON b.id_brg=d.id_brg WHERE saldo_akhir != ? ORDER BY rak, b.brg ASC");
+        $stmt->bind_param("iii", $month, $year, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
     }

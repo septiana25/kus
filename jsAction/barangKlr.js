@@ -147,7 +147,7 @@ $(document).ready(function() {
 				dataType: 'json',
 				success:function(response) {
 					//
-					//$("#simpanBarangKlrBtn").button('reset');
+					$("#simpanBarangKlrBtn").button('reset');
 
 					 if (response.success == true) {
 						tabelKeluar.ajax.reload(null, false);

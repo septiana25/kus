@@ -45,6 +45,8 @@ function handleFetchPoMasuk($saldoClass, $month, $year)
 			$row['rak'],
 			$row['kat'],
 			$row['saldo_awal'],
+			$row['tahunprod'],
+			$row['jumlah'],
 			$row['saldo_akhir'],
 			$button
 		);
