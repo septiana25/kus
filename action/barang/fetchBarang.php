@@ -1,57 +1,54 @@
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/setjam.php';
-require_once '../../function/session.php';
+//require_once '../../function/session.php';
+require_once '../class/saldo.php';
 
-$tahun          = date("Y");
-$bulan          = date("m");
-$sql = "SELECT b.id_brg AS id_brg, nourt, kdbrg, b.brg, d.rak, saldo_awal, saldo_akhir, kat, id
-			FROM(
-			SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl
-			FROM detail_brg
-			LEFT JOIN rak USING(id_rak)
-			LEFT JOIN saldo USING(id)
-			WHERE MONTH(tgl)=$bulan  AND YEAR(tgl)=$tahun
-			)d
-			RIGHT JOIN (
-			SELECT id_brg, kdbrg, brg, nourt, kat
-			FROM barang
-			JOIN kat USING(id_kat)
-			)b ON b.id_brg=d.id_brg WHERE saldo_akhir !=0 ORDER BY rak, b.brg ASC";
+$saldoClass = new Saldo($koneksi);
 
+try {
+	$getMondthAndYear = $saldoClass->getSaldoByLastDate();
+	$month = date('m', strtotime($getMondthAndYear));
+	$year = date('Y', strtotime($getMondthAndYear));
+	$result = handleFetchPoMasuk($saldoClass, $month, $year);
 
-$result = $koneksi->query($sql);
+	echo json_encode($result);
+} catch (Exception $e) {
+	echo $e->getMessage();
+} finally {
+	$koneksi->close();
+}
 
-$output = array('data' => array());
+function generateButton($id_brg, $id)
+{
+	return '<div class="btn-group">
+		<button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			<li><a href="detailsaldo.php?id=' . $id . '"><i class="fa fa-qrcode"></i> Detail</a></li>
+			<li><a href="#editModalBarang" onclick="editBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+			<li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+		</ul>
+ 	</div>';
+}
 
-if ($result->num_rows > 0) {
+function handleFetchPoMasuk($saldoClass, $month, $year)
+{
+	$result = $saldoClass->getAllSaldo($month, $year);
+	$output = array('data' => array());
 
 	while ($row = $result->fetch_array()) {
-		$id_brg = $row[0];
-
-		$button = '<div class="btn-group">
-         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
-         <ul class="dropdown-menu">
-		 <li><a href="detailsaldo.php?id=' . $row['id'] . '"><i class="fa fa-qrcode"></i> Detail</a></li>
-             <li><a href="#editModalBarang" onclick="editBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-             <li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
-         </ul>
-      </div>';
-
-
-
+		$button = generateButton($row['id_brg'], $row['id']);
 		$output['data'][] = array(
-			$row[1],
-			$row[2],
-			utf8_encode($row[3]),
-			$row[4],
-			$row[7],
-			$row[5],
-			$row[6],
+			$row['nourt'],
+			$row['kdbrg'],
+			$row['brg'],
+			$row['rak'],
+			$row['kat'],
+			$row['saldo_awal'],
+			$row['saldo_akhir'],
 			$button
 		);
-	} //while
-} //if
-$koneksi->close();
+	}
 
-echo json_encode($output);
+	return $output;
+}

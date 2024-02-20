@@ -35,6 +35,26 @@ class Saldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function getAllSaldo($month, $year)
+    {
+        $stmt = $this->conn->prepare("SELECT b.id_brg AS id_brg, nourt, kdbrg, b.brg AS brg, d.rak AS rak, saldo_awal, saldo_akhir, kat, id
+        FROM(
+        SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl
+        FROM detail_brg
+        LEFT JOIN rak USING(id_rak)
+        LEFT JOIN saldo USING(id)
+        WHERE MONTH(tgl)= ? AND YEAR(tgl)= ?
+        )d
+        LEFT JOIN (
+        SELECT id_brg, kdbrg, brg, nourt, kat
+        FROM barang
+        JOIN kat USING(id_kat)
+        )b ON b.id_brg=d.id_brg WHERE saldo_akhir !=0 ORDER BY rak, b.brg ASC");
+        $stmt->bind_param("ii", $month, $year);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getSaldoByLastDate()
     {
         $stmt = $this->conn->prepare("SELECT tgl FROM saldo ORDER BY id_saldo DESC LIMIT 0,1");
