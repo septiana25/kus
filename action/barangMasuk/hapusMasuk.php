@@ -1,10 +1,14 @@
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
+require_once '../class/detailsaldo.php';
+require_once '../class/masuk.php';
 
 $valid['success'] = array('success' => false, 'messages' => array());
 
 if ($_POST) {
+	$detailSaldoClass = new DetailSaldo($koneksi);
+	$masukClass = new Masuk($koneksi);
 
 	$id_det_msk = $koneksi->real_escape_string($_POST['id_det_msk']);
 
@@ -21,6 +25,7 @@ if ($_POST) {
 	$rowSaldo    = $cek_saldo->fetch_array();
 	$id_saldo    = $rowSaldo['id_saldo'];
 	$total       = $rowSaldo['saldo_akhir'];
+	$jml		 = $rowBrg['jml_msk'];
 	$total_akhir = $total - $rowBrg['jml_msk'];
 
 	$sql_success = "";
@@ -34,7 +39,12 @@ if ($_POST) {
 
 		$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
 
-		if ($koneksi->query($update) === TRUE) {
+		$result =  handleIdDetailSaldo($masukClass, $detailSaldoClass, $id_det_msk, $id);
+		$idDetailSaldo = $result['idDetailSaldo'];
+		$jumlahSaldo = $result['jumlah'];
+		$updateDetailSaldo = handleUpdateDetailSaldo($detailSaldoClass, $masukClass, $idDetailSaldo, $id_det_msk, $jml, $jumlahSaldo);
+
+		if ($koneksi->query($update) === TRUE && $updateDetailSaldo['success']) {
 
 			$valid['success']  = true;
 			$valid['messages'] = "<strong>Success </strong> Data Berhasil Dihapus";
@@ -68,4 +78,44 @@ if ($_POST) {
 	$koneksi->close();
 
 	echo json_encode($valid);
+}
+
+function handleIdDetailSaldo($masukClass, $detailSaldoClass, $idDetMasuk, $id)
+{
+	global $valid;
+	$checkTahunProd = $masukClass->getDetailMasukTahunProd($idDetMasuk);
+
+	if ($checkTahunProd->num_rows === 0) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Tidak Ditemukan. Di Tabel Tahun Prod Keluar";
+		return $valid;
+	}
+
+	$resultTahunProd = $checkTahunProd->fetch_array();
+	$tahunprod = $resultTahunProd['tahunprod'];
+	$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByidAndYearProd($id, $tahunprod);
+
+	if ($checkDetailSaldo->num_rows === 0) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Tidak Ditemukan. Di Tabel Detail Saldo";
+		return $valid;
+	}
+
+	$resultDetailSaldo = $checkDetailSaldo->fetch_array();
+
+	return ['idDetailSaldo' => $resultDetailSaldo['id_detailsaldo'], 'jumlah' => $resultDetailSaldo['jumlah']];
+}
+
+function handleUpdateDetailSaldo($detailSaldoClass, $masukClass, $idDetailSaldo, $idDetMasuk, $jml, $jumlahSaldo)
+{
+
+	$totalJumlah = $jumlahSaldo - $jml;
+	$updateDetailSaldo = $detailSaldoClass->update($idDetailSaldo, $totalJumlah);
+	$deleteDetailMasukTahunProd = $masukClass->deleteDetailMasukTahunProd($idDetMasuk);
+
+	if ($updateDetailSaldo['success'] && $deleteDetailMasukTahunProd['success']) {
+		return $updateDetailSaldo;
+	}
+
+	return ['success' => false, 'message' => "gagal update detail saldo"];
 }

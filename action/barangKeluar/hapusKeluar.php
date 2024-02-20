@@ -48,8 +48,10 @@ if ($_POST) //jika  id detail masuk ada
 
 			$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
 
-			$idDetailSaldo =  handleIdDetailSaldo($keluarClass, $detailSaldoClass, $id_det_klr, $id);
-			$updateDetailSaldo = handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $id_det_klr, $jml);
+			$result =  handleIdDetailSaldo($keluarClass, $detailSaldoClass, $id_det_klr, $id);
+			$idDetailSaldo = $result['idDetailSaldo'];
+			$jumlahSaldo = $result['jumlah'];
+			$updateDetailSaldo = handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $id_det_klr, $jml, $jumlahSaldo);
 
 			if ($koneksi->query($update) === TRUE && $updateDetailSaldo['success']) {
 
@@ -77,9 +79,10 @@ if ($_POST) //jika  id detail masuk ada
 
 			$update = "UPDATE saldo SET saldo_akhir=$total_akhir WHERE id_saldo=$id_saldo";
 
-			$idDetailSaldo =  handleIdDetailSaldo($keluarClass, $detailSaldoClass, $id_det_klr, $id);
-
-			$updateDetailSaldo = handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $id_det_klr, $jml);
+			$result =  handleIdDetailSaldo($keluarClass, $detailSaldoClass, $id_det_klr, $id);
+			$idDetailSaldo = $result['idDetailSaldo'];
+			$jumlahSaldo = $result['jumlah'];
+			$updateDetailSaldo = handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $id_det_klr, $jml, $jumlahSaldo);
 
 			if ($koneksi->query($update) === TRUE && $updateDetailSaldo['success']) {
 
@@ -138,30 +141,19 @@ function handleIdDetailSaldo($keluarClass, $detailSaldoClass, $idDetKeluar, $id)
 	}
 
 	$resultDetailSaldo = $checkDetailSaldo->fetch_array();
-	$idDetailSaldo = $resultDetailSaldo['id_detailsaldo'];
 
-	return $idDetailSaldo;
+	return ['idDetailSaldo' => $resultDetailSaldo['id_detailsaldo'], 'jumlah' => $resultDetailSaldo['jumlah']];
 }
 
-function handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $idDetKeluar, $jml)
+function handleUpdateDetailSaldo($detailSaldoClass, $keluarClass, $idDetailSaldo, $idDetKeluar, $jml, $jumlahSaldo)
 {
-	global $valid;
-
-	try {
-		$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByidDetailsaldo($idDetailSaldo);
-	} catch (Exception $e) {
-		$valid['success'] = false;
-		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diambil. Di Tabel Saldo. Error: " . $e->getMessage();
-		return $valid;
-	}
-
-	$resultDetailSaldo = $checkDetailSaldo->fetch_array();
-	$idDetailSaldo = $resultDetailSaldo['id_detailsaldo'];
-	$totalJumlah = $resultDetailSaldo['jumlah'] + $jml;
+	$totalJumlah = $jumlahSaldo + $jml;
 	$updateDetailSaldo = $detailSaldoClass->update($idDetailSaldo, $totalJumlah);
-	$deleteDetailKeluarTahunProd = $keluarClass->deleteDetailKeluarTahunProd($idDetKeluar);
+	$deleteDetailMasukTahunProd = $keluarClass->deleteDetailKeluarTahunProd($idDetKeluar);
 
-	if ($updateDetailSaldo['success'] && $deleteDetailKeluarTahunProd['success']) {
+	if ($updateDetailSaldo['success'] && $deleteDetailMasukTahunProd['success']) {
 		return $updateDetailSaldo;
 	}
+
+	return ['success' => false, 'message' => "gagal update detail saldo"];
 }

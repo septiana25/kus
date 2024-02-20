@@ -28,8 +28,12 @@ class Keluar
     {
         $stmt = $this->conn->prepare("DELETE FROM tahunprod_keluar WHERE id_det_klr=?");
         $stmt->bind_param("i", $id_det_klr);
-        $success = $stmt->execute();
-        return ['success' => $success];
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
     public function getDetailKeluarTahunProd($id_det_klr)

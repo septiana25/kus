@@ -198,7 +198,7 @@ function hapusMasuk(id_det_msk = null){
 				// remove categories btn clicked to remove the categories function
 				$("#hapusMasukBtn").unbind('click').bind('click', function() {
 					// remove categories btn
-					$("#hapusMasukBtn").button('loading');
+					//$("#hapusMasukBtn").button('loading');
 
 					$.ajax({
 					url: 'action/barangMasuk/hapusMasuk.php',
@@ -210,7 +210,7 @@ function hapusMasuk(id_det_msk = null){
 						if(response.success == true) 
 						{
 							//button reset
-							$("#hapusMasukBtn").button('reset');
+							//$("#hapusMasukBtn").button('reset');
 							// close the modal 
 							$("#hapusModalMasuk").modal('hide');
 

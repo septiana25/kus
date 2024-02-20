@@ -55,4 +55,24 @@ class Masuk
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
+
+    public function deleteDetailMasukTahunProd($id_det_msk)
+    {
+        $stmt = $this->conn->prepare("DELETE FROM tahunprod_masuk WHERE id_det_msk=?");
+        $stmt->bind_param("i", $id_det_msk);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function getDetailMasukTahunProd($id_det_msk)
+    {
+        $stmt = $this->conn->prepare("SELECT tahunprod FROM tahunprod_masuk WHERE id_det_msk =?");
+        $stmt->bind_param("i", $id_det_msk);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
