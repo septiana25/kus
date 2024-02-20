@@ -52,7 +52,7 @@ $(document).ready(function() {
 					//ambil data form
 					const form = $(this);
 					//button loading
-					//$("#simpanBarangMskBtn").button('loading');
+					$("#simpanBarangMskBtn").button('loading');
 
 					$.ajax({//proses simpan
 						url : form.attr('action'),
@@ -198,7 +198,7 @@ function hapusMasuk(id_det_msk = null){
 				// remove categories btn clicked to remove the categories function
 				$("#hapusMasukBtn").unbind('click').bind('click', function() {
 					// remove categories btn
-					//$("#hapusMasukBtn").button('loading');
+					$("#hapusMasukBtn").button('loading');
 
 					$.ajax({
 					url: 'action/barangMasuk/hapusMasuk.php',

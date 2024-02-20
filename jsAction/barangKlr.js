@@ -138,7 +138,7 @@ $(document).ready(function() {
 			//
 			var form = $(this);
 			//
-			//$("#simpanBarangKlrBtn").button('loading');
+			$("#simpanBarangKlrBtn").button('loading');
 
 			$.ajax({//
 				url : form.attr('action'),
@@ -516,7 +516,7 @@ function hapusKeluar(id_det_klr = null)
 				// remove keluar btn clicked to remove the keluar function
 				$("#hapusKeluarBtn").unbind('click').bind('click', function() {
 				// remove keluar btn
-				//$("#hapusKeluarBtn").button('loading');
+				$("#hapusKeluarBtn").button('loading');
 
 					$.ajax({
 					url: 'action/barangKeluar/hapusKeluar.php',

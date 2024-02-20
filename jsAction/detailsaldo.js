@@ -64,7 +64,7 @@ $(document).ready(function() {
 	
 		if (tahunprod && qty) {
 			const form = $(this);
-			//$("#save").button('loading');
+			$("#save").button('loading');
 	
 			$.ajax({
 				url : form.attr('action'),

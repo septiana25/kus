@@ -175,7 +175,7 @@ echo "<div class='div-request div-hide'>masuk</div>";
               <p class="titik2">:</p>
             </label>
             <div class="controls">
-              <input class="span12 " id="tahunprod" name="tahunprod" type="text" placeholder="Tahun Produksi" onkeyup="validAngka(this)" />
+              <input class="span12 " id="tahunprod" name="tahunprod" type="text" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)" />
             </div>
           </div>
           <div class="control-group" style="margin-bottom: 15px;">
