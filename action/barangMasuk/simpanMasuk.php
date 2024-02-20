@@ -6,7 +6,7 @@ require_once '../../function/session.php';
 require_once '../class/masuk.php';
 require_once '../class/barang.php';
 require_once '../class/saldo.php';
-require_once '../class/DetailSaldo.php';
+require_once '../class/detailsaldo.php';
 
 $valid['success'] = array('success' => false, 'messages' => array());
 $koneksi->begin_transaction();
