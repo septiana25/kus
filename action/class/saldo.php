@@ -40,7 +40,7 @@ class Saldo
         $saldoZeo = 0;
         $stmt = $this->conn->prepare("SELECT b.id_brg AS id_brg, nourt, kdbrg, b.brg AS brg, d.rak AS rak, saldo_awal, saldo_akhir, kat, id, tahunprod, jumlah
         FROM(
-        SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl, tahunprod, jumlah
+        SELECT id_brg, id, rak, saldo_awal, saldo_akhir, tgl, tahunprod, IFNULL(jumlah, '-') AS jumlah
         FROM detail_brg
         LEFT JOIN detail_saldo USING(id)
         LEFT JOIN rak USING(id_rak)

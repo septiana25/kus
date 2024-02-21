@@ -37,19 +37,21 @@ function handleFetchPoMasuk($saldoClass, $month, $year)
 	$output = array('data' => array());
 
 	while ($row = $result->fetch_array()) {
-		$button = generateButton($row['id_brg'], $row['id']);
-		$output['data'][] = array(
-			$row['nourt'],
-			$row['kdbrg'],
-			$row['brg'],
-			$row['rak'],
-			$row['kat'],
-			$row['saldo_awal'],
-			$row['tahunprod'],
-			$row['jumlah'],
-			$row['saldo_akhir'],
-			$button
-		);
+		if ($row['jumlah'] > 0 || $row['jumlah'] == '-') {
+			$button = generateButton($row['id_brg'], $row['id']);
+			$output['data'][] = array(
+				$row['nourt'],
+				$row['kdbrg'],
+				$row['brg'],
+				$row['rak'],
+				$row['kat'],
+				$row['saldo_awal'],
+				$row['tahunprod'],
+				$row['jumlah'],
+				$row['saldo_akhir'],
+				$button
+			);
+		}
 	}
 
 	return $output;
