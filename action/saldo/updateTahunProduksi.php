@@ -15,7 +15,8 @@ if ($editTahunprod == '') {
 }
 
 try {
-    $result = $detailSaldoClass->updateMonthProd($editIdDetail, $editTahunprod);
+    $result = handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod);
+
     if ($result['affected_rows'] == 0) {
         $valid['success'] = false;
         $valid['messages'] = "Error while updating data";
@@ -28,4 +29,51 @@ try {
     echo json_encode(['error' => 'An error occurred while fetching data.']);
 } finally {
     $koneksi->close();
+}
+
+function handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod)
+{
+    global $valid;
+
+    $checkDetailSaldoByid = $detailSaldoClass->getDetailSaldoByidDetailsaldo($editIdDetail);
+    $data = $checkDetailSaldoByid->fetch_assoc();
+    $jumlahLama = $data['jumlah'];
+    $id = $data['id'];
+
+    $checkDetailSaldoByMonthYear = $detailSaldoClass->getDetailSaldoByidAndYearProd($id, $editTahunprod);
+    if ($checkDetailSaldoByMonthYear->num_rows == 0) {
+        $saveDetailSaldo = $detailSaldoClass->save($id, $editTahunprod, $jumlahLama);
+        if (!$saveDetailSaldo['success']) {
+            $valid['success'] = false;
+            return $valid;
+        }
+
+        $updateSaldoLama = $detailSaldoClass->update($editIdDetail, 0);
+        if ($updateSaldoLama['affected_rows'] == 0) {
+            $valid['success'] = false;
+            return $valid;
+        }
+
+        return $updateSaldoLama;
+    }
+
+    $resultCheckDetailSaldoByMonthYear = $checkDetailSaldoByMonthYear->fetch_assoc();
+    $idDetail = $resultCheckDetailSaldoByMonthYear['id_detailsaldo'];
+    $jumlahBaru = $resultCheckDetailSaldoByMonthYear['jumlah'];
+    $jumlahTotalBaru = $jumlahLama + $jumlahBaru;
+    $jumlahTotalLama = 0;
+
+    $updateSaldobaru = $detailSaldoClass->update($idDetail, $jumlahTotalBaru);
+    if ($updateSaldobaru['affected_rows'] == 0) {
+        $valid['success'] = false;
+        return $valid;
+    }
+
+    $updateSaldoLama = $detailSaldoClass->update($editIdDetail, $jumlahTotalLama);
+    if ($updateSaldoLama['affected_rows'] == 0) {
+        $valid['success'] = false;
+        return $valid;
+    }
+
+    return $updateSaldoLama;
 }
