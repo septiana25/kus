@@ -43,4 +43,15 @@ class Keluar
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getTotalKeluar($month, $year)
+    {
+        $stmt = $this->conn->prepare("SELECT SUM(jml_klr) as total_keluar
+                FROM detail_keluar
+                JOIN keluar USING(id_klr) 
+                WHERE MONTH(tgl)= ? AND YEAR(tgl)= ?");
+        $stmt->bind_param("ii", $month, $year);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }

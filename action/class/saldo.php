@@ -118,4 +118,13 @@ class Saldo
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getTotalSaldo($month, $year)
+    {
+        $stmt = $this->conn->prepare("SELECT SUM(saldo_awal) AS saldo_awal, SUM(saldo_akhir) AS saldo_akhir 
+                            FROM saldo WHERE MONTH(tgl) = ? AND YEAR(tgl) = ?");
+        $stmt->bind_param("ii", $month, $year);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }

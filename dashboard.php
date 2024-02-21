@@ -2,6 +2,9 @@
 require_once 'function/koneksi.php';
 require_once 'function/setjam.php';
 require_once 'function/session.php';
+require_once 'action/class/saldo.php';
+require_once 'action/class/masuk.php';
+require_once 'action/class/keluar.php';
 
 $tahun          = date("Y");
 $bulan          = date("m");
@@ -48,6 +51,77 @@ $query_klr = $koneksi->query("SELECT IFNULL( SUM(jml_klr), 0) AS total_klr
                                     LEFT JOIN detail_keluar USING(id_klr)
                                     WHERE MONTH(tgl)=$bulan AND YEAR(tgl)=$tahun");
 $row_klr = $query_klr->fetch_array(); */
+
+$saldoClass = new Saldo($koneksi);
+$masukClass = new Masuk($koneksi);
+$keluarClass = new Keluar($koneksi);
+
+function handleLastDateSaldo($saldoClass)
+{
+    try {
+        $getMondthAndYear = $saldoClass->getSaldoByLastDate();
+        $month = date('m', strtotime($getMondthAndYear));
+        $year = date('Y', strtotime($getMondthAndYear));
+        return ['month' => $month, 'year' => $year];
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+function handleTotalSaldo($saldoClass)
+{
+
+    try {
+        $monthAndYear = handleLastDateSaldo($saldoClass);
+        $month = $monthAndYear['month'];
+        $year = $monthAndYear['year'];
+        $totalSaldo = $saldoClass->getTotalSaldo($month, $year);
+        $row = $totalSaldo->fetch_assoc();
+        return $row;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+function handleTotalMasuk($saldoClass, $masukClass)
+{
+
+    try {
+        $monthAndYear = handleLastDateSaldo($saldoClass);
+        $month = $monthAndYear['month'];
+        $year = $monthAndYear['year'];
+        $totalMasuk = $masukClass->getTotalMasuk($month, $year);
+        $row = $totalMasuk->fetch_assoc();
+        return $row;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+function handleTotalKeluar($saldoClass, $keluarClass)
+{
+
+    try {
+        $monthAndYear = handleLastDateSaldo($saldoClass);
+        $month = $monthAndYear['month'];
+        $year = $monthAndYear['year'];
+        $totalKeluar = $keluarClass->getTotalKeluar($month, $year);
+        $row = $totalKeluar->fetch_assoc();
+        return $row;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
+$resultTotalSaldos = handleTotalSaldo($saldoClass);
+$saldoAwal = $resultTotalSaldos['saldo_awal'];
+$saldoAkhir = $resultTotalSaldos['saldo_akhir'];
+
+$resultTotalMasuks = handleTotalMasuk($saldoClass, $masukClass);
+$totalMasuk = $resultTotalMasuks['total_masuk'];
+
+$resultTotalKeluars = handleTotalKeluar($saldoClass, $keluarClass);
+$totalKeluar = $resultTotalKeluars['total_keluar'];
 ?>
 
 <!-- BEGIN PAGE -->
@@ -81,14 +155,14 @@ $row_klr = $query_klr->fetch_array(); */
                 <div class="metro-nav-block nav-light-blue">
                     <a data-original-title="" href="#">
                         <i class="icon-tasks"></i>
-                        <div class="info">0</div>
+                        <div class="info"><?= $saldoAkhir ?></div>
                         <div class="status">Saldo Akhir</div>
                     </a>
                 </div>
                 <div class="metro-nav-block nav-block-yellow">
                     <a data-original-title="" href="#">
                         <i class="icon-reorder"></i>
-                        <div class="info">0</div>
+                        <div class="info"><?= $saldoAwal ?></div>
                         <div class="status">Saldo Awal</div>
                     </a>
                 </div>
@@ -102,14 +176,14 @@ $row_klr = $query_klr->fetch_array(); */
                 <div class="metro-nav-block nav-block-green ">
                     <a data-original-title="" href="#">
                         <i class="icon-signin"></i>
-                        <div class="info">0</div>
+                        <div class="info"><?= $totalMasuk ?></div>
                         <div class="status">-</div>
                     </a>
                 </div>
                 <div class="metro-nav-block nav-block-red">
                     <a data-original-title="" href="#">
                         <i class="icon-signout"></i>
-                        <div class="info">0</div>
+                        <div class="info"><?= $totalKeluar ?></div>
                         <div class="status">-</div>
                     </a>
                 </div>
