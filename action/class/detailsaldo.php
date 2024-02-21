@@ -33,6 +33,22 @@ class DetailSaldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateMonthProd($id_detailsaldo, $tahunprod)
+    {
+        $stmt = $this->conn->prepare("UPDATE detail_saldo SET tahunprod = ? WHERE id_detailsaldo = ?");
+
+        if ($stmt === false) {
+            return ['success' => false, 'message' => "Prepare failed: " . $this->conn->error];
+        }
+        $stmt->bind_param("ii", $tahunprod, $id_detailsaldo);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function getDetailSaldoByidDetailsaldo($id_detailsaldo)
     {
         $stmt = $this->conn->prepare("SELECT id_detailsaldo, id, jumlah, tahunprod FROM detail_saldo WHERE id_detailsaldo = ?");

@@ -1,3 +1,4 @@
+let table;
 $(document).ready(function() {
 	$(".choiceChosen").chosen();
 
@@ -10,28 +11,10 @@ $(document).ready(function() {
 		$('#activeBarang').addClass('active');
 	}
 	
-	const tabel = $('#tabelDetailSaldo').DataTable({
+	tabel = $('#tabelDetailSaldo').DataTable({
 		'ajax' : `action/saldo/fetchDetailSaldo.php?id=${id}`,
 		'order':[]
 	});
-
-/* 	$('#rak').typeahead({
-		source: function(rak, result) {
-			$.ajax({
-				url: "action/barcoderak/fetchDetailSaldo.php",
-				method: "POST",
-				data: {rak: rak},
-				dataType: "json",
-				success: function(data) {
-					result($.map(data, function(rak) {
-						return rak;
-					}));
-				}
-			});
-		},
-		items: 10,
-		minLength: 2,
-	}); */
 
 	$('#addDetailSaldo').unbind('click').bind('click', function() {
 
@@ -71,50 +54,108 @@ $(document).ready(function() {
 				type: form.attr('method'),
 				data: form.serialize(),
 				dataType: 'json',
-				success: handleResponse
+				success: function(data) {
+					handleResponse(data, '#addModalDetailSaldo', '#submitDetailSaldo', 'add');
+				}
 			});
 		}
 		return false;
 	});
 
-	function validateInput(value, selector, errorMessage) {
-		if (value === "") {
-			$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
-			$(selector).closest('.control-group').addClass('error');
-		} else {
-			$(selector).closest('.control-group').addClass('success');
-			$(".help-inline").remove();
-		}
-	}
-
-	function handleResponse(response) {
-		$(".help-inline").remove();
-		$(".control-group").removeClass('error').removeClass('success');
-	
-		if (response.success === true) {
-			$("#addModalDetailSaldo").modal('hide');
-			tabel.ajax.reload(null, false);
-			$("#submitDetailSaldo")[0].reset();
-			displayMessage('#pesan', 'alert alert-success', response.messages);
-		} else if (response.success === false) {			
-			displayMessage('#pesan', 'alert alert-error', response.messages);
-		}
-	}
-	
-	function displayMessage(selector, className, message) {
-		$(selector).html(`<div class="${className}">
-			<button class="close" data-dismiss="alert">×</button>
-			${message}
-		</div>`);
-	
-		$(".alert-success").delay(500).show(10, function() {
-			$(this).delay(4000).hide(10, function() {
-				$(this).remove();
-			});
-		});
-	}
-
 });
+
+function editTahunProd(idDetail) {
+	if (!idDetail) {
+		alert("Data Tidak Ditemukan");
+	}
+	
+	$('#editModalDetailSaldo').modal('show');
+	$.ajax({
+		url: 'action/saldo/fetchDetailSaldoById.php',
+		type: 'post',
+		data: {idDetail: idDetail},
+		dataType: 'json',
+		success: function(response) {
+			$('#editIdDetail').val(response.id_detailsaldo);
+			$('#editTahunprod').val(response.tahunprod);
+			$('#editQty').val(response.jumlah);
+
+			$('#editDetailSaldo').unbind('submit').bind('submit', function() {
+				const tahunprod = $("#editTahunprod").val().trim();
+			
+				validateInput(tahunprod, "#editTahunprod", "Tahun Produksi Masih Kosong");
+			
+				if (tahunprod) {
+					const form = $(this);
+					$("#save").button('loading');
+			
+					$.ajax({
+						url : form.attr('action'),
+						type: form.attr('method'),
+						data: form.serialize(),
+						dataType: 'json',
+						success: function(data) {
+							handleResponse(data, '#editModalDetailSaldo', '#submitEditDetailSaldo', 'edit');
+						}
+					});
+				}
+				return false;
+			});
+		}
+	});
+
+}
+
+function handleResponse(response, modalBtn,submitBtn, typeFrom) {
+	$(".help-inline").remove();
+	$(".control-group").removeClass('error').removeClass('success');
+	$("#save").button('reset');
+
+	if (response.success === true) {
+		$(modalBtn).modal('hide');
+		tabel.ajax.reload(null, false);
+		if (typeFrom === 'add') {
+			$(submitBtn).closest("form")[0].reset();
+		}
+		displayMessagePopup(response.messages, 'success');
+	} else if (response.success === false) {			
+		displayMessagePopup(response.messages, 'error');
+	}
+}
+
+function displayMessagePopup(messages, type) {
+    const isSuccessful = type === 'success';
+    const data = {
+        title: isSuccessful ? 'Success!' : 'Error!',
+        image: isSuccessful ? 'img/success-mini.png' : 'img/error-mini.png',
+        class_name: isSuccessful ? 'my-sticky-class' : 'gritter-light'
+    };
+
+    const unique_id = $.gritter.add({
+		title: data.title,
+		text: messages,
+		image: data.image,
+		class_name: data.class_name,
+		time: ''
+	});
+
+    setTimeout(function() {
+        $.gritter.remove(unique_id, {
+            fade: true,
+            speed: 'slow'
+        });
+    }, 6000);
+}
+
+function validateInput(value, selector, errorMessage) {
+	if (value === "") {
+		$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
+		$(selector).closest('.control-group').addClass('error');
+	} else {
+		$(selector).closest('.control-group').addClass('success');
+		$(".help-inline").remove();
+	}
+}
 
 function validAngka(a)
 {

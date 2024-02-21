@@ -102,6 +102,11 @@ if ($row == null) {
                                     <th>Tanggal Produksi</th>
                                     <th>Tahun Produksi</th>
                                     <th>Saldo</th>
+                                    <?php
+                                    if ($_SESSION['level'] == "administrator") {
+                                        echo '<th width="8%">Action</th>';
+                                    }
+                                    ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -115,7 +120,7 @@ if ($row == null) {
             <!-- END ADVANCED TABLE widget-->
         </div>
 
-        <!-- BEGIN MODAL TAMBAH BARCODE RAK-->
+        <!-- BEGIN MODAL TAMBAH DETAIL SALDO-->
         <div id="addModalDetailSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -159,9 +164,41 @@ if ($row == null) {
                 </div>
             </form>
         </div>
+        <!-- END MODAL TAMBAH DETAIL SALDO-->
 
-
-        <!-- END MODAL TAMBAH BARCODE RAK-->
+        <!-- BEGIN MODAL TAMBAH DETAIL SALDO-->
+        <div id="editModalDetailSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Edit Tahun Produksi</h3>
+            </div>
+            <form class="form-horizontal" id="editDetailSaldo" action="action/saldo/updateTahunProduksi.php" method="POST">
+                <div class="modal-body modal-full">
+                    <div class="control-group">
+                        <div id="infosaldo"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editTahunprod">Tahun Produksi</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="editIdDetail" name="editIdDetail" readonly>
+                            <input class="span12" type="text" id="editTahunprod" name="editTahunprod" autocomplete="off" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editQty">QTY</label>
+                        <div class="controls">
+                            <input class="span12" type="number" id="editQty" name="editQty" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Update changes</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL TAMBAH DETAIL SALDO-->
     </div>
     <!-- END PAGE CONTAINER-->
 </div>
