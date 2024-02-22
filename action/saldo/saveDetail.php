@@ -6,6 +6,8 @@ require_once '../class/detailsaldo.php';
 require_once '../class/saldo.php';
 
 $valid['success'] =  array('success' => false, 'messages' => array());
+$koneksi->begin_transaction();
+$sql_success   = "";
 
 $detailsaldoClass = new DetailSaldo($koneksi);
 $saldoClass = new Saldo($koneksi);
@@ -19,6 +21,12 @@ try {
     $valid['success'] = false;
     $valid['messages'] = "<strong>Error! </strong> Terjadi Kesalahan Hubungi Staf IT.";
 } finally {
+    if ($sql_success) {
+        $koneksi->commit();
+    } else {
+        $koneksi->rollback();
+    }
+
     $koneksi->close();
     echo json_encode($valid);
 }
@@ -37,7 +45,7 @@ function getInputs($koneksi)
 
 function handleSaveDetailSaldo($detailsaldoClass, $saldoClass, $id, $tahunprod, $qty)
 {
-    global $valid;
+    global $valid, $sql_success;
 
     $checkSaldoLastDate    = $saldoClass->getSaldoByLastDate();
     $monthSaldoLastDate = SUBSTR($checkSaldoLastDate, 5, -3);
@@ -63,6 +71,7 @@ function handleSaveDetailSaldo($detailsaldoClass, $saldoClass, $id, $tahunprod, 
         if ($updateDetailSaldo['success']) {
             $valid['success'] = true;
             $valid['messages'] = "<strong>Success! </strong>Data Berhasil Diupdate";
+            $sql_success .= "success";
         } else {
             $valid['success'] = false;
             $valid['messages'] = "<strong>Error! </strong> Terjadi Kesalahan Hubungi Staf IT.";
@@ -72,6 +81,7 @@ function handleSaveDetailSaldo($detailsaldoClass, $saldoClass, $id, $tahunprod, 
         if ($saveDetailSaldo['success']) {
             $valid['success'] = true;
             $valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
+            $sql_success .= "success";
         } else {
             $valid['success'] = false;
             $valid['messages'] = "<strong>Error! </strong> Terjadi Kesalahan Hubungi Staf IT.";

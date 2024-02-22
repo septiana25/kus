@@ -8,6 +8,8 @@ $editTahunprod = isset($_POST['editTahunprod']) ? $_POST['editTahunprod'] : '';
 $editIdDetail = isset($_POST['editIdDetail']) ? $_POST['editIdDetail'] : '';
 
 $valid['success'] =  array('success' => false, 'messages' => array());
+$koneksi->begin_transaction();
+$sql_success   = "";
 
 if ($editTahunprod == '') {
     echo json_encode(['error' => 'No data found.']);
@@ -17,18 +19,25 @@ if ($editTahunprod == '') {
 try {
     $result = handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod);
 
-    if ($result['affected_rows'] == 0) {
+    if (!$result['success']) {
         $valid['success'] = false;
         $valid['messages'] = "Error while updating data";
     }
     $valid['success'] = true;
     $valid['messages'] = "Successfully updated";
-    echo json_encode($valid);
+    $sql_success .= "success";
 } catch (\Throwable $th) {
     error_log($th);
-    echo json_encode(['error' => 'An error occurred while fetching data.']);
+    $valid['success'] = false;
+    $valid['messages'] = "An error occurred while fetching data";
 } finally {
+    if ($sql_success) {
+        $koneksi->commit();
+    } else {
+        $koneksi->rollback();
+    }
     $koneksi->close();
+    echo json_encode($valid);
 }
 
 function handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod)
@@ -54,7 +63,8 @@ function handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod)
             return $valid;
         }
 
-        return $updateSaldoLama;
+        $valid['success'] = true;
+        return $valid;
     }
 
     $resultCheckDetailSaldoByMonthYear = $checkDetailSaldoByMonthYear->fetch_assoc();
@@ -75,5 +85,6 @@ function handleUpdateMonthProd($detailSaldoClass, $editIdDetail, $editTahunprod)
         return $valid;
     }
 
-    return $updateSaldoLama;
+    $valid['success'] = true;
+    return $valid;
 }
