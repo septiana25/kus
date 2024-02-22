@@ -10,7 +10,7 @@ try {
 	$getMondthAndYear = $saldoClass->getSaldoByLastDate();
 	$month = date('m', strtotime($getMondthAndYear));
 	$year = date('Y', strtotime($getMondthAndYear));
-	$result = handleFetchPoMasuk($saldoClass, $month, $year);
+	$result = handleFetchAllSaldo($saldoClass, $month, $year);
 
 	echo json_encode($result);
 } catch (Exception $e) {
@@ -31,7 +31,7 @@ function generateButton($id_brg, $id)
  	</div>';
 }
 
-function handleFetchPoMasuk($saldoClass, $month, $year)
+function handleFetchAllSaldo($saldoClass, $month, $year)
 {
 	$result = $saldoClass->getAllSaldo($month, $year);
 	$output = array('data' => array());
