@@ -429,12 +429,14 @@ $(document).ready(function() {
 								"jmlMTSRak": "#jmlMTSRak",
 							},
 						}
+						$("#savaMutasi").button('loading');
 						$.ajax({
 							url  : form.attr('action'),
 							type : form.attr('method'),
 							data : form.serialize(),
 							dataType: 'json',
 							success: function(data) {
+								$("#savaMutasi").button('reset');
 								handleResponse(data, collectButton);
 							}
 						});
