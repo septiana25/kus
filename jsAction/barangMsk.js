@@ -82,10 +82,12 @@ $(document).ready(function() {
 
 								//show messages pesan
 								showMessage('success', response.messages);
+								displayMessagePopup(response.messages, 'success');
 							}
 
 							else if (response.success == false) {
 								showMessage('error', response.messages);
+								displayMessagePopup(response.messages, 'error');
 							}else{
 								alert("Error");
 							}
@@ -394,6 +396,30 @@ function editMasuk(id_det_msk = null){
 		});
 	}
 
+}
+
+function displayMessagePopup(messages, type) {
+    const isSuccessful = type === 'success';
+    const data = {
+        title: isSuccessful ? 'Success!' : 'Error!',
+        image: isSuccessful ? 'img/success-mini.png' : 'img/error-mini.png',
+        class_name: isSuccessful ? 'my-sticky-class' : 'gritter-light'
+    };
+
+    const unique_id = $.gritter.add({
+		title: data.title,
+		text: messages,
+		image: data.image,
+		class_name: data.class_name,
+		time: ''
+	});
+
+    setTimeout(function() {
+        $.gritter.remove(unique_id, {
+            fade: true,
+            speed: 'slow'
+        });
+    }, 6000);
 }
 
 function validAngka(a)

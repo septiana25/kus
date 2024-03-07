@@ -39,59 +39,41 @@ try {
 
 		if ($checkNoPO->num_rows == 1 && $checkNoPOByDate->num_rows == 1) {
 			$idMsk = $resultNoPO['id_msk'];
-			$result = handleCheckItem(
-				$barangClass,
-				$masukClass,
-				$saldoClass,
-				$detailSaldoClass,
-				$idBrg,
-				$idRak,
-				$idMsk,
-				$tgl,
-				$tahunprod,
-				$jml,
-				$jam,
-				$ket,
-				$bulan,
-				$tahun
-			);
-			if ($result['success']) {
-				$valid['success']  = true;
-				$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-				$sql_success .= "success";
-			}
 		} elseif ($checkNoPO->num_rows == 0 && $checkNoPOByDate->num_rows == 0) {
 			$idMsk = handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin);
-			$result = handleCheckItem(
-				$barangClass,
-				$masukClass,
-				$saldoClass,
-				$detailSaldoClass,
-				$idBrg,
-				$idRak,
-				$idMsk,
-				$tgl,
-				$tahunprod,
-				$jml,
-				$jam,
-				$ket,
-				$bulan,
-				$tahun
-			);
-			if ($result['success']) {
-				$valid['success']  = true;
-				$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-				$sql_success .= "success";
-			}
 		} else {
 
 			$valid['success']  = false;
 			$valid['messages'] = "<strong>Warning! </strong> Data Masuk Duplikat. Error-AIG-0A19 Id Masuk ";
+			return $valid;
+		}
+
+		$result = handleCheckItem(
+			$barangClass,
+			$masukClass,
+			$saldoClass,
+			$detailSaldoClass,
+			$idBrg,
+			$idRak,
+			$idMsk,
+			$tgl,
+			$tahunprod,
+			$jml,
+			$jam,
+			$ket,
+			$bulan,
+			$tahun
+		);
+
+		if ($result['success']) {
+			$valid['success']  = true;
+			$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
+			$sql_success .= "success";
 		}
 	} else {
-
 		$valid['success']  = false;
 		$valid['messages'] = "<strong>Warning! </strong> Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005";
+		return $valid;
 	}
 } catch (\Throwable $th) {
 	error_log($th->getMessage());
@@ -146,21 +128,26 @@ function handleCheckItem(
 
 	$checkItem = $barangClass->getItemById($idBrg, $idRak);
 	$resultItem = $checkItem->fetch_array();
+
 	if ($checkItem->num_rows == 1) {
 		$id = $resultItem['id'];
-
-		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
-		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} elseif ($checkItem->num_rows == 0) {
 		$id = handleNewItem($barangClass, $idBrg, $idRak);
-
-		handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
-		return handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 	} else {
 		$valid['success'] = false;
 		$valid['messages'] = "<strong>Error! </strong> Data Detail Barang Duplikat. Di Tabel Saldo ";
 		return $valid;
 	}
+	$handleMasukDetail = handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
+	$handleCheckSaldo = handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
+
+	if ($handleMasukDetail < 0) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Success! </strong>Data Gagal Disimpan. Di Tabel Detail Masuk";
+		return $valid;
+	}
+
+	return $handleCheckSaldo;
 }
 
 function handleNewItem($barangClass, $id_barang, $idRak)
