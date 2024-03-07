@@ -3,553 +3,370 @@ require_once '../../function/koneksi.php';
 require_once '../../function/setjam.php';
 require_once '../../function/session.php';
 
+require_once '../class/masuk.php';
+require_once '../class/barang.php';
+require_once '../class/saldo.php';
+require_once '../class/detailsaldo.php';
+
 $valid['success'] = array('success' => false, 'messages' => array());
+$koneksi->begin_transaction();
+$sql_success   = "";
 
-if ($_POST) {
+$masukClass = new Masuk($koneksi);
+$barangClass = new Barang($koneksi);
+$saldoClass = new Saldo($koneksi);
+$detailSaldoClass = new DetailSaldo($koneksi);
 
-	$asalRakMTSRak = $koneksi->real_escape_string($_POST["asalRakMTSRak"]);
-	$NoMTSRak      = $koneksi->real_escape_string($_POST["NoMTSRak"]);
-	$NoMTSRakAkhr  = $koneksi->real_escape_string($_POST["NoMTSRakAkhr"]);
-	$tglMTSRak     = $koneksi->real_escape_string($_POST["tglMTSRak"]);
-	$ketMTSRak     = $koneksi->real_escape_string($_POST["ketMTSRak"]);
-	$id_brgMTSRak  = $koneksi->real_escape_string($_POST["id_brgMTSRak"]);
-	$id_rakMTSRak  = $koneksi->real_escape_string($_POST["id_rakMTSRak"]);
-	$jmlMTSRak     = $koneksi->real_escape_string($_POST["jmlMTSRak"]);
-	$NoMutasi      = $NoMTSRak.$NoMTSRakAkhr;
-	$namaLogin     = $_SESSION['nama'];
-	
-	//$tgl         = date("Y-m-d");
+try {
+	$inputs 	= getInputs($koneksi);
+	$namaLogin	= $_SESSION['nama'];
+	extract($inputs);
+
 	$jam           = date("H:i:s");
 	$tgl1          = date("Y-m-d H:i:s");
-	$bulan         = SUBSTR($tglMTSRak, 5,-3);
-	$tahun         = SUBSTR($tglMTSRak, 0,-6);
-	
-	//query Barang
-	$cekTglSaldo   = $koneksi->query("SELECT MONTH(tgl) FROM saldo ORDER BY id_saldo DESC LIMIT 0,1");
-	$rowCekTglSldo = $cekTglSaldo->fetch_array();
-	$bulanSaldo    = $rowCekTglSldo[0];
-	
-	//query cek saldo mutasi rak
-	$cekId         = $koneksi->query("SELECT id FROM detail_brg WHERE id_brg = '$id_brgMTSRak'
-					 				  AND id_rak= '$asalRakMTSRak'");
-	$rowId 		   = $cekId->fetch_array();
-	$idMTS         = $rowId['id'];
-	
-	$cekMTSRak     = $koneksi->query("SELECT id_saldo, saldo_akhir FROM saldo WHERE id = '$idMTS' AND MONTH(tgl)= '$bulan'
-									  AND YEAR(tgl)='$tahun'");
-	$rowCekMTSRak  = $cekMTSRak->fetch_assoc();
-	$saldoAsal 	   = $rowCekMTSRak['saldo_akhir'];
-	$id_saldoAsal  = $rowCekMTSRak['id_saldo'];
-
-	if ($cekMTSRak->num_rows == 0)
-	{
-		$sisasaldo = 'Barang Tidak Ada Di Rak Asal ';
-	}
-	else
-	{
-		$sisasaldo = 'Jumlah Terlalu Besar. Error-AIG-0006 Sisa ' .$saldoAsal;
-	}
-
-	$sql_success = "";
-
-	//membuat fungsi transaksi
-	$koneksi->begin_transaction();
-
-	if ($bulanSaldo == $bulan)
-	{
-
-		if ($asalRakMTSRak != $id_rakMTSRak)
-		{
-
-			if ($saldoAsal >= $jmlMTSRak)//cek jika saldo lebih besar dari jumlah
-			{
-				
-				$cekRak = $koneksi->query("SELECT rak FROM rak WHERE id_rak = '$asalRakMTSRak'");
-				$rowRak = $cekRak->fetch_array();
-				$rak    = $rowRak[0];
-
-				//query input dan update brg_msk
-				$masuk    = $koneksi->query("SELECT id_msk FROM masuk  WHERE tgl='$tglMTSRak' 
-											 AND suratJln = '$NoMutasi'");
-				$rowMasuk = $masuk->fetch_array();
-				$id_msk   = $rowMasuk['id_msk'];
-
-				//query detail_brg
-				$detail_brg    = $koneksi->query("SELECT id FROM detail_brg WHERE id_brg = $id_brgMTSRak 
-												  AND id_rak= $id_rakMTSRak");
-				$rowDetail_brg = $detail_brg->fetch_array();
-				$id            = $rowDetail_brg['id'];
-
-				$ceksuratJLN   = $koneksi->query("SELECT id_msk FROM masuk WHERE suratJln='$NoMutasi'");
-
-				$saldo    = $koneksi->query("SELECT id_saldo, saldo_awal, saldo_akhir FROM saldo WHERE id ='$id' 
-											 AND MONTH(tgl)= '$bulan' AND YEAR(tgl)='$tahun'");
-				$rowSaldo = $saldo->fetch_array();
-				$id_saldo = $rowSaldo['id_saldo'];
-
-				//query Barang
-				$brg           = $koneksi->query("SELECT brg FROM barang WHERE id_brg = '$id_brgMTSRak'");
-				$rowBrg        = $brg->fetch_array();
-				$barang        = $rowBrg['brg'];
-
-				$ket           = "Masuk ".$barang;
-
-
-				# -------------------------< action table masuk >---------------------------------
-				
-				if ($masuk->num_rows == 1)//cek jika masuk ada satu
-				{
-
-
-					if ($detail_brg->num_rows == 1)//cek jika detail barang ada satu
-					{
-						
-						$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, rak, jam, jml_msk, ket)
-													  	VALUES  ('$id_msk', '$id', '$rak', '$jam', '$jmlMTSRak', '$ketMTSRak')";
-
-						if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-						{
-
-							if ($saldo->num_rows == 1)//cek jika saldo ada satu
-							{
-
-								$sub_saldo   = $rowSaldo['saldo_akhir'];//get saldo akhir
-								$total_saldo = $sub_saldo + $jmlMTSRak;//saldo akhir tambah jumlah masuk
-
-								$update_saldo = "UPDATE saldo SET saldo_akhir = $total_saldo
-															  WHERE id_saldo  = $id_saldo";
-
-								if ($koneksi->query($update_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-								{
-
-									$saldoSisa =  $saldoAsal-$jmlMTSRak;
-
-									$updateSaldoSisa = "UPDATE saldo SET saldo_akhir = $saldoSisa 
-														WHERE id_saldo = $id_saldoAsal";
-
-									if ($koneksi->query($updateSaldoSisa) === TRUE)
-									{
-
-										$valid['success']  = true;
-										$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-										
-										$sql_success .="success";
-
-										$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-
-									}
-									else
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B25 ".$koneksi->error;
-
-									}
-
-								}
-								else //cek jika data tabel saldo gagal disimpan
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B26 ".$koneksi->error;	
-										
-								}
-
-							}
-							else//cek jika saldo tidak ada atau ganda
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Saldo Tidak Ada/Duplikat. Error-AIG-0B27 Id Detail Barang ".$id;
-
-							}
-							
-						}
-						else //cek jika data tabel detail masuk gagal disimpan
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail masuk Error-AIG-0B28 ".$koneksi->error;
-
-						}				
-
-					}
-					elseif ($detail_brg->num_rows == 0)//cek jika detail barang tidak ada
-					{
-
-						$insert_brg = "INSERT INTO detail_brg (id_brg, id_rak)
-													   VALUES ('$id_brgMTSRak', '$id_rakMTSRak')";
-
-						if ($koneksi->query($insert_brg) === TRUE)//cek jika data tabel masuk berhasil disimpan
-						{
-
-							$id             = $koneksi->insert_id; //get id detail barang 
-
-							$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, rak, jam, jml_msk, ket)
-														VALUES  ('$id_msk', '$id', '$rak', '$jam', '$jmlMTSRak', '$ketMTSRak')";
-
-							if ($koneksi->query($insert_det_msk) === TRUE)
-							{
-								
-								if ($saldo->num_rows == 0)//cek jika saldo kosong
-								{
-									
-									$insert_saldo = "INSERT INTO saldo (id, tgl, saldo_awal, saldo_akhir)
-																    VALUES ('$id', '$tglMTSRak', '0', '$jmlMTSRak')";
-
-									if ($koneksi->query($insert_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-									{
-										
-										$saldoSisa =  $saldoAsal-$jmlMTSRak;
-
-										$updateSaldoSisa = "UPDATE saldo SET saldo_akhir = $saldoSisa 
-															WHERE id_saldo = $id_saldoAsal";
-
-										if ($koneksi->query($updateSaldoSisa) === TRUE)// cek jika saldo sisa berhasil di simpan
-										{
-											
-											$valid['success']  = true;
-											$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-											$sql_success .="success";
-
-											$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-											
-
-										}
-										else //cek jika data tabel saldo gagal disimpan
-										{
-
-											$valid['success']  = false;
-											$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B29 ".$koneksi->error;									
-
-										}
-
-									}
-									else//cek jika data tabel saldo sisa gagal disimpan
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B30 ".$koneksi->error;
-
-									}
-
-								}
-								else//cek jika saldo ada
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Error-AIG-0B31 Id Detail Barang ".$id;
-
-								}
-
-							}
-							else //cek jika data tabel detail masuk gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0B32 ".$koneksi->error;
-
-							}
-
-						}
-						else //cek jika data tabel detail barang gagal disimpan
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail barang Error-AIG-0B33 ".$koneksi->error;
-							
-						}
-
-					}
-					else//cek jika detail barang duplikat
-					{
-
-						$valid['success']  = false;
-						$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Detail Barang. Error-AIG-0B34 Id Detail Barang ".$id;
-
-					}
-
-				}
-				elseif ($masuk->num_rows == 0)//cek jika masuk tidak ada
-				{
-
-					if ($ceksuratJLN->num_rows == 0)// cek jika surat jalan tidak ada
-					{
-
-						if ($detail_brg->num_rows == 1)//cek jika detail barang ada satu
-						{
-						
-							$insert_msk = "INSERT INTO masuk (tgl, suratJln, retur)
-													   VALUES('$tglMTSRak','$NoMutasi', '3')";
-
-							if ($koneksi->query($insert_msk) === TRUE) //cek jika data tabel masuk berhasil disimpan
-							{
-
-								$id_msk = $koneksi->insert_id;
-
-								$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, rak, jam, jml_msk, ket)
-														VALUES  ('$id_msk', '$id', '$rak', '$jam', '$jmlMTSRak', '$ketMTSRak')";
-
-								if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-								{
-
-									if ($saldo->num_rows == 1)//cek jika saldo kosong
-									{
-
-										$sub_saldo   = $rowSaldo['saldo_akhir'];//get saldo akhir
-										$total_saldo = $sub_saldo + $jmlMTSRak;//saldo akhir tambah jumlah masuk
-
-										$update_saldo = "UPDATE saldo SET saldo_akhir = $total_saldo
-																	  WHERE id_saldo  = $id_saldo";
-
-										if ($koneksi->query($update_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-										{
-
-											$saldoSisa =  $saldoAsal-$jmlMTSRak;
-
-											$updateSaldoSisa = "UPDATE saldo SET saldo_akhir = $saldoSisa 
-																WHERE id_saldo = $id_saldoAsal";
-
-											if ($koneksi->query($updateSaldoSisa) === TRUE)// cek jika saldo sisa berhasil di simpan
-											{
-												
-												$valid['success']  = true;
-												$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-												$sql_success .="success";
-
-												$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-
-
-											}
-											else //cek jika data tabel saldo gagal disimpan
-											{
-
-												$valid['success']  = false;
-												$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B35 ".$koneksi->error;									
-
-											}
-
-										}
-										else //cek jika data tabel saldo gagal disimpan
-										{
-
-											$valid['success']  = false;
-											$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B36 ".$koneksi->error;									
-
-										}
-										
-									}
-									else//cek jika saldo ada
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat/Tidak Ada. Error-AIG-0B37 Id Detail Barang ".$id;
-
-									}
-
-								}
-								else //cek jika data tabel detail masuk gagal disimpan
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0B38 ".$koneksi->error;							
-								
-								}
-
-							}
-							else //cek jika data tabel masuk gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Masuk Error-AIG-0B39 ".$koneksi->error;
-								
-							}
-
-						}
-						elseif ($detail_brg->num_rows == 0)//cek jika detail barang tidak ada
-						{
-							
-							$insert_brg = "INSERT INTO detail_brg (id_brg, id_rak)
-														   VALUES ('$id_brgMTSRak', '$id_rakMTSRak')";
-
-							if ($koneksi->query($insert_brg) === TRUE) //cek jika data tabel detail barang berhasil disimpan
-							{ 
-								
-								$id         = $koneksi->insert_id; //get id masuk 
-
-								$insert_msk = "INSERT INTO masuk (tgl, suratJln, retur)
-														   VALUES('$tglMTSRak','$NoMutasi', '3')";
-
-								if ($koneksi->query($insert_msk) === TRUE) //cek jika data tabel masuk berhasil disimpan
-								{
-
-									$id_msk = $koneksi->insert_id;
-
-									$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, rak, jam, jml_msk, ket)
-														VALUES  ('$id_msk', '$id', '$rak', '$jam', '$jmlMTSRak', '$ketMTSRak')";
-
-									if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-									{
-
-										if ($saldo->num_rows == 0)//cek jika saldo kosong
-										{
-
-											$insert_saldo = "INSERT INTO saldo (id, tgl, saldo_awal, saldo_akhir)
-																		    VALUES ('$id', '$tglMTSRak', '0', '$jmlMTSRak')";
-
-											if ($koneksi->query($insert_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-											{
-
-												$saldoSisa =  $saldoAsal-$jmlMTSRak;
-
-												$updateSaldoSisa = "UPDATE saldo SET saldo_akhir = $saldoSisa 
-																	WHERE id_saldo = $id_saldoAsal";
-
-												if ($koneksi->query($updateSaldoSisa) === TRUE)
-												{
-
-													$valid['success']  = true;
-													$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-													$sql_success .="success";
-
-													$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-
-
-												}
-												else
-												{
-
-													$valid['success']  = false;
-													$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B40 ".$koneksi->error;
-
-												}
-
-											}
-											else //cek jika data tabel saldo gagal disimpan
-											{
-
-												$valid['success']  = false;
-												$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0B41 ".$koneksi->error;									
-
-											}
-
-										}
-										else//cek jika saldo ada
-										{
-
-											$valid['success']  = false;
-											$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Error-AIG-0B42 Id Detail Barang ".$id;
-
-										}
-
-									}
-									else //cek jika data tabel detail masuk gagal disimpan
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0B43 ".$koneksi->error;							
-									
-									}
-
-								}
-								else //cek jika data tabel masuk gagal disimpan
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Masuk Error-AIG-0B44 ".$koneksi->error;
-									
-								}
-
-							}
-							else //cek jika data tabel detail barang gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail barang Error-AIG-0B45 ".$koneksi->error;
-								
-							}
-
-						}
-						else//cek jika detail barang duplikat
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Detail Barang.  Error-AIG-0B46 Id Detail Barang ".$id;
-
-						}
-
-					}
-					else//cek jika surat jalan ada
-					{
-
-						$valid['success']  = false;
-						$valid['messages'] = "<strong>Warning! </strong> No Mutasi Sudah Ada Error-AIG-0002 ";
-
-					}
-
-				}
-				else//cek jika masuk duplikat
-				{
-
-					$valid['success']  = false;
-					$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Masuk. Error-AIG-0B47 ".$id_msk;
-
-				}
-
-				# -------------------------< action table masuk >---------------------------------
-
-			}
-			else//cek jika saldo lebih kecil dari jumlah
-			{
-
-				$valid['success']  = false;
-				$valid['messages'] = "<strong>Warning! </strong> ".$sisasaldo;
-
-				/*$valid['success']  = false;
-				$valid['messages'] = "<strong>Warning! </strong> Jumlah Lebih Besar Dari Saldo. Sisa ".$saldoAsal;*/
-
-			}
-
-		}
-		else
-		{
-
+	$bulan         = SUBSTR($tgl, 5, -3);
+	$tahun         = SUBSTR($tgl, 0, -6);
+
+	$checkSaldoLastDate    = $saldoClass->getSaldoByLastDate();
+	$monthSaldoLastDate = SUBSTR($checkSaldoLastDate, 5, -3);
+	$yearSaldoLastDate = SUBSTR($checkSaldoLastDate, 0, -6);
+
+	if ($monthSaldoLastDate == $bulan && $yearSaldoLastDate == $tahun) {
+
+		$noMutasi = $noMutasiAwal . $noMutasiAkhir;
+		$checkNoPO = $masukClass->getNoPO($noMutasi);
+		$checkNoPOByDate = $masukClass->getNoPOByDate($noMutasi, $tgl);
+		$resultNoPO = $checkNoPO->fetch_array();
+
+		$detailSaldo = $detailSaldoClass->getDetailSaldoByidDetailsaldo($idDetailSaldo);
+		$resultDetailSaldo = $detailSaldo->fetch_array();
+		$tahunprod = $resultDetailSaldo['tahunprod'];
+		$idOld = $resultDetailSaldo['id'];
+		$jumlahDetaiLSaldo = $resultDetailSaldo['jumlah'];
+
+		$detailItem = $barangClass->getItemJoinDetail($idOld);
+		$rowItem = $detailItem->fetch_assoc();
+		$idRak = $rowItem['id_rak'];
+		$rakAsal = $rowItem['rak'];
+
+		if ($id_rakMTSRak == $idRak) {
 			$valid['success']  = false;
-			$valid['messages'] = "<strong>Warning! </strong> Tidak Boleh Mutasi Kerak Yang Sama Error-AIG-0B48";
-
+			$valid['messages'] = "Lokasi Pengirim Tidak Boleh Sama Dengan Lokasi Penerima";
+			return $valid;
 		}
 
-	}
-	else
-	{
+		if ($checkNoPO->num_rows == 1 && $checkNoPOByDate->num_rows == 1) {
+			$idMsk = $resultNoPO['id_msk'];
+		} elseif ($checkNoPO->num_rows == 0 && $checkNoPOByDate->num_rows == 0) {
+			$idMsk = handleMasuk($masukClass, $tgl, $noMutasi, $namaLogin);
+		} else {
+			$valid['success']  = false;
+			$valid['messages'] = "<strong>Warning! </strong> No Mutasi Sudah Ada.";
+			return $valid;
+		}
+
+		$result = handleCheckItem(
+			$barangClass,
+			$masukClass,
+			$saldoClass,
+			$detailSaldoClass,
+			$id_brgMutasi,
+			$id_rakMTSRak,
+			$idMsk,
+			$tgl,
+			$tahunprod,
+			$jml,
+			$jam,
+			$ket,
+			$bulan,
+			$tahun,
+			$idOld,
+			$jumlahDetaiLSaldo,
+			$idDetailSaldo,
+			$rakAsal
+		);
+		if ($result['success']) {
+			$valid['success']  = true;
+			$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
+			$sql_success .= "success";
+		}
+	} else {
 
 		$valid['success']  = false;
 		$valid['messages'] = "<strong>Warning! </strong> Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005";
-
-		
 	}
-
-/*====================< Fungsi Rollback dan Commit >========================*/
-	if ($sql_success)
-	{
-
-		$koneksi->commit();//simpan semua data simpan
-
+} catch (\Throwable $th) {
+	error_log($th->getMessage());
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Terjadi Kesalahan Hubungi Staf IT." . $th->getMessage();
+} finally {
+	if ($sql_success) {
+		$koneksi->commit();
+	} else {
+		$koneksi->rollback();
 	}
-	else
-	{
-
-		$koneksi->rollback();//batal semua data simpan
-
-	}
-/*====================< Fungsi Rollback dan Commit >========================*/
-
 	$koneksi->close();
-
 	echo json_encode($valid);
-
 }
-?>
+
+function handleCheckItem(
+	$barangClass,
+	$masukClass,
+	$saldoClass,
+	$detailSaldoClass,
+	$id_brgMutasi,
+	$id_rakMTSRak,
+	$idMsk,
+	$tgl,
+	$tahunprod,
+	$jml,
+	$jam,
+	$ket,
+	$bulan,
+	$tahun,
+	$idOld,
+	$jumlahDetaiLSaldo,
+	$idDetailSaldoOld,
+	$rakAsal
+) {
+	global $valid;
+
+	$checkItem = $barangClass->getItemById($id_brgMutasi, $id_rakMTSRak);
+	$resultItem = $checkItem->fetch_array();
+
+	if ($checkItem->num_rows == 1) {
+		$id = $resultItem['id'];
+	} elseif ($checkItem->num_rows == 0) {
+		$id = handleNewItem($barangClass, $id_brgMutasi, $id_rakMTSRak);
+
+		if ($id === NULL || $id < 0) {
+			$valid['success'] = false;
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Barang";
+			return $valid;
+		}
+	} else {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Detail Barang Duplikat. Di Tabel Saldo ";
+		return $valid;
+	}
+
+	$handleMasukDetail = handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod, $rakAsal);
+	$handleCheckSaldo =  handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl, $idOld, $jumlahDetaiLSaldo, $idDetailSaldoOld);
+
+	if ($handleMasukDetail === NULL || $handleMasukDetail < 0) {
+		return $handleMasukDetail;
+	}
+	return $handleCheckSaldo;
+
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Barang";
+	return $valid;
+}
+
+function handleNewItem($barangClass, $id_barang, $id_rakMTSRak)
+{
+	global $valid;
+
+	$insertDetailItem = $barangClass->saveDetail($id_barang, $id_rakMTSRak);
+
+	if (!$insertDetailItem['success']) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Barang";
+		return $valid;
+	}
+
+	return $insertDetailItem['id'];
+}
+
+function handleMasuk($masukClass, $tgl, $noMutasi, $namaLogin)
+{
+	global $valid;
+
+	$insertMasuk = $masukClass->save($tgl, $noMutasi, $namaLogin, 3);
+
+	if (!$insertMasuk['success']) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Masuk ";
+		return $valid;
+	}
+
+	return $insertMasuk['id'];
+}
+
+function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod, $rakAsal)
+{
+	global $valid;
+
+	$insertMasukDetail = $masukClass->saveDetail($idMsk, $id, $jam, $jml, $ket, $rakAsal);
+	$insertTahunProd = $masukClass->saveTahunProd($insertMasukDetail['id'], $tahunprod);
+
+	if ($insertMasukDetail['success'] && $insertTahunProd['success']) {
+		return $insertMasukDetail['id'];
+	}
+
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk ";
+	return $valid;
+}
+
+function handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml, $jumlahDetaiLSaldo, $idDetailSaldoOld)
+{
+	global $valid;
+
+	try {
+		$checkDetailSaldo = $detailSaldoClass->getDetailSaldoByidAndYearProd($id, $tahunprod);
+	} catch (Exception $e) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diambil. Di Tabel Saldo. Error: " . $e->getMessage();
+		return $valid;
+	}
+
+	$updateDetailSaldoOld = $detailSaldoClass->update($idDetailSaldoOld, $jumlahDetaiLSaldo - $jml);
+
+	if (!$updateDetailSaldoOld['success']) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan";
+		return $valid;
+	}
+
+	if ($checkDetailSaldo->num_rows == 0) {
+		$insertDetailSaldo = $detailSaldoClass->save($id, $tahunprod, $jml);
+
+		if (!$insertDetailSaldo['success']) {
+			$valid['success'] = false;
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+			return $valid;
+		}
+
+		return $insertDetailSaldo;
+	} elseif ($checkDetailSaldo->num_rows == 1) {
+		$resultDetailSaldo = $checkDetailSaldo->fetch_array();
+		$idDetailSaldo = $resultDetailSaldo['id_detailsaldo'];
+		$totalJumlah = $resultDetailSaldo['jumlah'] + $jml;
+		$updateDetailSaldo = $detailSaldoClass->update($idDetailSaldo, $totalJumlah);
+
+		if ($updateDetailSaldo['affected_rows'] == 0) {
+			$valid['success'] = false;
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+			return $valid;
+		}
+
+		return $updateDetailSaldo;
+	} else {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Detail Saldo Duplikat. Di Tabel Saldo ";
+		return $valid;
+	}
+}
+
+function handleNewSaldo($saldoClass, $detailSaldoClass, $id, $tgl, $tahunprod, $jml, $idSaldoOld, $totalSaldoOld, $jumlahDetaiLSaldo, $idDetailSaldoOld)
+{
+	global $valid;
+
+	try {
+		$insertSaldo = $saldoClass->save($id, $tgl, $jml);
+		$updateSaldoOld = $saldoClass->update($idSaldoOld, $totalSaldoOld);
+		$detailSaldo = handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml, $jumlahDetaiLSaldo, $idDetailSaldoOld);
+	} catch (Exception $e) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo. Error: " . $e->getMessage();
+		return $valid;
+	}
+
+	if ($insertSaldo['success'] && $detailSaldo['success'] && $updateSaldoOld['affected_rows']) {
+		return $insertSaldo;
+	}
+
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo ";
+	return $valid;
+}
+
+function handleUpdateSaldo($saldoClass, $detailSaldoClass, $idSaldo, $id, $tahunprod, $jml, $saldoAkhir, $idSaldoOld, $totalSaldoOld, $jumlahDetaiLSaldo, $idDetailSaldoOld)
+{
+	global $valid;
+
+	try {
+		$updateSaldo = $saldoClass->update($idSaldo, $saldoAkhir);
+		$updateSaldoOld = $saldoClass->update($idSaldoOld, $totalSaldoOld);
+
+		$detailSaldo = handleDetailSaldo($detailSaldoClass, $id, $tahunprod, $jml, $jumlahDetaiLSaldo, $idDetailSaldoOld);
+	} catch (Exception $e) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diupdate. Di Tabel Saldo. Error: " . $e->getMessage();
+		return $valid;
+	}
+
+	if ($updateSaldo['affected_rows'] == 1 && $updateSaldoOld['affected_rows'] == 1 && $detailSaldo['success']) {
+		$valid['success'] = true;
+		$valid['messages'] = "<strong>Success! </strong> Data Berhasil Diupdate.";
+		return $valid;
+	}
+
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Diupdate. Di Tabel Saldo & Detail Saldo";
+	return $valid;
+}
+
+function handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $month, $year, $tahunprod, $jml, $tgl, $idOld, $jumlahDetaiLSaldo, $idDetailSaldoOld)
+{
+	global $valid;
+
+	try {
+		$checkSaldoNew = $saldoClass->getSaldoByid($id, $month, $year);
+		$checkSaldoOld = $saldoClass->getSaldoByid($idOld, $month, $year);
+	} catch (Exception $e) {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Gagal Diambil. Di Tabel Saldo. Error: " . $e->getMessage();
+		return $valid;
+	}
+
+	$resultSaldoNew = $checkSaldoNew->fetch_array();
+	$resultSaldoOld = $checkSaldoOld->fetch_array();
+
+	if ($checkSaldoOld->num_rows == 0) {
+		$valid['success']  = false;
+		$valid['messages'] = "Data Saldo Lama Tidak Ditemukan. Di Tabel Saldo";
+		return $valid;
+	}
+
+	if ($resultSaldoOld['saldo_akhir'] < $jml || $jumlahDetaiLSaldo < $jml) {
+		$valid['success']  = false;
+		$valid['messages'] = "Saldo Barang Tidak Cukup";
+		return $valid;
+	}
+
+	$idSaldoOld = $resultSaldoOld['id_saldo'];
+	$totalSaldoOld = $resultSaldoOld['saldo_akhir'] - $jml;
+
+	if ($checkSaldoNew->num_rows == 1) {
+		$totalSaldoNew = $resultSaldoNew['saldo_akhir'] + $jml;
+		return handleUpdateSaldo($saldoClass, $detailSaldoClass, $resultSaldoNew['id_saldo'], $id, $tahunprod, $jml, $totalSaldoNew, $idSaldoOld, $totalSaldoOld, $jumlahDetaiLSaldo, $idDetailSaldoOld);
+	} elseif ($checkSaldoNew->num_rows == 0) {
+		return handleNewSaldo($saldoClass, $detailSaldoClass, $id, $tgl, $tahunprod, $jml, $idSaldoOld, $totalSaldoOld, $jumlahDetaiLSaldo, $idDetailSaldoOld);
+	} else {
+		$valid['success'] = false;
+		$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Di Tabel Saldo ";
+		return $valid;
+	}
+}
+
+function getInputs($koneksi)
+{
+	$inputs = [
+		"noMutasiAwal"	=> trim($koneksi->real_escape_string($_POST["NoMTSRak"])),
+		"noMutasiAkhir"	=> trim($koneksi->real_escape_string($_POST["NoMTSRakAkhr"])),
+		"tgl" 			=> trim($koneksi->real_escape_string($_POST["tglMTSRak"])),
+		"id_brgMutasi" 	=> trim($koneksi->real_escape_string($_POST["id_brgMutasi"])),
+		"id_rakMTSRak" 	=> trim($koneksi->real_escape_string($_POST["id_rakMTSRak"])),
+		"idDetailSaldo" => trim($koneksi->real_escape_string($_POST["id_SaldoMutasi"])),
+		"jml" 			=> trim($koneksi->real_escape_string($_POST["jmlMTSRak"])),
+		"ket" 	=> trim(
+			$koneksi->real_escape_string(
+				isset($_POST["ketMTSRak"]) && !empty($_POST["ketMTSRak"]) ? $_POST["ketMTSRak"] : ""
+			)
+		)
+	];
+
+	return $inputs;
+}

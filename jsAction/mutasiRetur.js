@@ -1,19 +1,20 @@
-var tabelRetur;
-var tabelMutasi;
+let tabelRetur;
+let tabelMutasi;
+let comboboxSaldo;
 $(document).ready(function() {
-    var config = {
+    const config = {
       '.chosen-select'           : {},
       '.chosen-select-deselect'  : {allow_single_deselect:true},
       '.chosen-select-no-single' : {disable_search_threshold:10},
       '.chosen-select-no-results': {no_results_text:'Oops, nothing found!'},
       '.chosen-select-width'     : {width:"95%"}
     }
-    for (var selector in config) {
+    for (const selector in config) {
       $(selector).chosen(config[selector]);
     }
     $(".chosen-select").chosen({width: "95%"});
 	//mengambil data div class div-request
-	var divRequest = $(".div-request").text();
+	const divRequest = $(".div-request").text();
 	// active manu barang
 	$('#activeTransaksi').addClass('active');
 	
@@ -373,139 +374,74 @@ $(document).ready(function() {
 		tabelMutasi = $('#tabelMutasi').DataTable({
 			'ajax' : 'action/barangMasuk/fetchMutasi.php',
 			'order':[]
-		});// manage TabelMasuk
-		   // 
+		});
+
+		comboboxSaldo = $("#id_brgMutasi").change(function () {
+			$("#id_brgMutasi option:selected").each(function () {
+				const id_brgMutasi = $(this).val();
+
+				$.post("action/barangKeluar/fetchSelectedRakSaldo.php", { id_brg: id_brgMutasi }, function(data){
+					$("#id_SaldoMutasi").html(data);
+				});            
+			});		
+		});
+		   
 		/*========================================> Mutasi Antar Rak <=============================*/
 
 			$("#addMTSRakBtnModal").unbind('click').bind('click', function()
 			{
 
-			$("#submitMTSRak").unbind('submit').bind('submit', function()
-			{
+				comboboxSaldo;
 
-				var asalRakMTSRak = $("#asalRakMTSRak").val();
-				//var ketMTSRak   = $("#ketMTSRak").val();
-				var NoMTSRak      = $("#NoMTSRak").val();
-				var id_brgMTSRak  = $("#id_brgMTSRak").val();
-				var id_rakMTSRak  = $("#id_rakMTSRak").val();
-				var jmlMTSRak     = $("#jmlMTSRak").val();
-
-				if (asalRakMTSRak == "") {
-					$("#asalRakMTSRak").before('<span class="help-inline ">Asal Rak Mutasi Masih Kosong. (Rak)</span>');
-					$('#asalRakMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#asalRakMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('Asal Rak Mutasi Masih Kosong. (Rak)')");
-				}
-
-				if (NoMTSRak == "") {
-					$("#NoMTSRak").before('<span class="help-inline ">No Mutasi Masih Kosong. (Rak)</span>');
-					$('#NoMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#NoMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('No Mutasi Masih Kosong. (Rak)')");
-				}
-
-		/*		if (ketMTSRak == "") {
-					$("#ketMTSRak").before('<span class="help-inline ">Keterangan Mutasi Masih Kosong. (Rak)</span>');
-					$('#ketMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#ketMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('Keterangan Mutasi Masih Kosong. (Rak)')");
-				}*/
-
-				if (id_brgMTSRak == "") {
-					$("#id_brgMTSRak").before('<span class="help-inline ">Ukuran Mutasi Masih Kosong. (Rak)</span>');
-					$('#id_brgMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#id_brgMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('Ukuran Mutasi Masih Kosong. (Rak)')");
-				}
-
-				if (id_rakMTSRak == "") {
-					$("#id_rakMTSRak").before('<span class="help-inline ">Rak Mutasi Masih Kosong. (Rak)</span>');
-					$('#id_rakMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#id_rakMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('Rak Mutasi Masih Kosong')");
-				}
-
-				if (jmlMTSRak == "") {
-					$("#jmlMTSRak").before('<span class="help-inline ">Jumlah Mutasi Masih Kosong. (Rak)</span>');
-					$('#jmlMTSRak').closest('.control-group').addClass('error');
-				}else{
-					$("#jmlMTSRak").find('.help-inline').remove();
-					$("span").remove(":contains('Jumlah Mutasi Masih Kosong. (Rak)')");
-				}
-
-				if (asalRakMTSRak && NoMTSRak && id_brgMTSRak && id_rakMTSRak && jmlMTSRak)
+				$("#submitMTSRak").unbind('submit').bind('submit', function()
 				{
 
-					var form = $(this);
-					$("#simpanMTSRakBtr").button('loading');
+					const NoMTSRak = $("#NoMTSRak").val().trim();
+					const NoMTSRakAkhr = $("#NoMTSRakAkhr").val().trim();
+					const id_SaldoMutasi = $("#id_SaldoMutasi").val().trim();
+					const id_brgMutasi = $("#id_brgMutasi").val().trim();
+					const id_rakMTSRak = $("#id_rakMTSRak").val().trim();
+					const jmlMTSRak = $("#jmlMTSRak").val().trim();
+					const tglMTSRak = $("#tglMTSRak").val().trim();
 
-					$.ajax({
-						url  : form.attr('action'),
-						type : form.attr('method'),
-						data : form.serialize(),
-						dataType: 'json',
-						success:function(response){
+					validateInput(NoMTSRak, "#NoMTSRak", "No Mutasi Masih Kosong Awal");
+					validateInput(NoMTSRakAkhr, "#NoMTSRak", "No Mutasi Masih Kosong Akhir");
+					validateInput(id_SaldoMutasi, "#id_SaldoMutasi", "Lokasi Pengirim Masih Kosong");
+					validateInput(id_brgMutasi, "#id_brgMutasi", "Lokasi Penerima Masih Kosong");
+					validateInput(id_rakMTSRak, "#id_rakMTSRak", "Lokasi Penerima Masih Kosong");
+					validateInput(jmlMTSRak, "#jmlMTSRak", "Jumlah Mutasi Masih Kosong");
+					validateInput(tglMTSRak, "#tglMTSRak", "Tanggal Mutasi Masih Kosong");
 
-							$("#simpanMTSRakBtr").button('reset');
+					if (NoMTSRak && NoMTSRakAkhr && id_SaldoMutasi && id_brgMutasi && id_rakMTSRak && jmlMTSRak && tglMTSRak)
+					{
 
-							if (response.success == true)
-							{
-
-								tabelMutasi.ajax.reload(null, false);
-								
-								//$("#keterangan").val("");
-								$("#jmlMTSRak").val("");
-
-								//reset combobox
-								//$("#barang").trigger("chosen:updated");
-								$("#id_brgMTSRak").val("");
-								$("#id_brgMTSRak").trigger("chosen:updated");
-
-								$("#id_rakMTSRak").val("");
-								$("#id_rakMTSRak").trigger("chosen:updated");
-
-								//hapus pesan error di filed
-								$('.help-inline').remove();
-								//hapus warna error di filed
-								$(".control-group").removeClass('error').removeClass('success');
-
-								//tampil pesan true
-								$('#pesanMTSRak').html('<div class="alert alert-success">'+
-									'<button class="close" data-dismiss="alert">×</button>'+
-									response.messages+'</div>');
-								
-								//fungsi tampil pesan delay
-								$(".alert-success").delay(500).show(10, function() {
-									$(this).delay(4000).hide(10, function() {
-										$(this).remove();
-									});
-								});
-
-							}
-							else if (response.success == false)
-							{
-
-								//hapus pesan error di filed
-								$('.help-inline').remove();
-								//hapus warna error di filed
-								$(".control-group").removeClass('error').removeClass('success');
-								//tampil pesan false
-								$('#pesanMTSRak').html('<div class="alert alert-error">'+
-								'<button class="close" data-dismiss="alert">×</button>'+
-								response.messages+'</div>');	
-
-							}
+						const form = $(this);
+						//$("#savaMutasi").button('loading');
+						const collectButton = {
+							"buttonSubmit": "#submitDetailSaldo",
+							"modal": "",
+							"typeForm": "add",
+							"buttonReset": "#savaMutasi",
+							"combobox": {
+								"id_rakMTSRak": "#id_rakMTSRak",
+							},
+							"filed": {
+								"jmlMTSRak": "#jmlMTSRak",
+							},
 						}
-					});
-				}
+						$.ajax({
+							url  : form.attr('action'),
+							type : form.attr('method'),
+							data : form.serialize(),
+							dataType: 'json',
+							success: function(data) {
+								handleResponse(data, collectButton);
+							}
+						});
+					}
 
-				return false;
-			});//submitMTSRak
+					return false;
+				});//submitMTSRak
 
 			});	//addMTSRakBtnModal
 
@@ -815,7 +751,7 @@ function hapusMutasi(id_det_msk = null){
 					$("#hapusMasukBtn").button('loading');
 
 					$.ajax({
-					url: 'action/barangMasuk/hapusMutasiRak.php',
+					url: 'action/barangMasuk/hapusMasuk.php',
 					type: 'post',
 					data: {id_det_msk: id_det_msk},
 					dataType: 'json',
@@ -896,7 +832,7 @@ function hapusMutasi(id_det_msk = null){
 
 		$(".modal-footer").addClass('hidden');
 
-		$("#pesanHapus").html('<strong>Data Tidak Bisa di Hapus/Ubah. Karena Sudah Perpindahan Saldo</strong>');
+		$("#pesanHapus").html('<strong>Data Tidak Bisa di Hapus/Ubah. Silahkan Mutasi Balik</strong>');
 
 	}
 
@@ -1079,6 +1015,85 @@ function editMasuk(id_det_msk = null)
 		});
 	}
 
+}
+
+function handleResponse(response, collectButton) {
+	$(".help-inline").remove();
+	$(".control-group").removeClass('error').removeClass('success');
+	$("#savaMutasi").button('reset');
+
+	if (response.success === true) {
+		
+		tabelMutasi.ajax.reload(null, false);
+
+		if (collectButton.typeForm === 'add') {
+			$(collectButton.filed.jmlMTSRak).val("");
+		}
+		if (collectButton.typeForm !== 'add') {
+			$(collectButton.modal).modal('hide');
+			displayMessagePopup(response.messages, 'success');
+		}
+
+		displayMessage('#pesanMTSRak', 'alert alert-success', response.messages);
+		displayMessagePopup(response.messages, 'success');
+	} else if (response.success === false) {			
+		if (collectButton.typeForm === 'add' || collectButton.typeForm === 'edit') {
+			displayMessage('#pesanMTSRak', 'alert alert-error', response.messages);
+			displayMessagePopup(response.messages, 'error');
+		}
+		if (collectButton.typeForm !== 'add') {
+			$(collectButton.modal).modal('hide');
+			displayMessagePopup(response.messages, 'error');
+		}
+	}
+}
+
+function displayMessage(selector, className, message) {
+	$(selector).html(`<div class="${className}">
+		<button class="close" data-dismiss="alert">×</button>
+		${message}
+	</div>`);
+
+	$(".alert-success").delay(500).show(10, function() {
+		$(this).delay(4000).hide(10, function() {
+			$(this).remove();
+		});
+	});
+}
+
+function displayMessagePopup(messages, type) {
+    const isSuccessful = type === 'success';
+    const data = {
+        title: isSuccessful ? 'Success!' : 'Error!',
+        image: isSuccessful ? 'img/success-mini.png' : 'img/error-mini.png',
+        class_name: isSuccessful ? 'my-sticky-class' : 'gritter-light'
+    };
+
+    const unique_id = $.gritter.add({
+		title: data.title,
+		text: messages,
+		image: data.image,
+		class_name: data.class_name,
+		time: ''
+	});
+
+    setTimeout(function() {
+        $.gritter.remove(unique_id, {
+            fade: true,
+            speed: 'slow'
+        });
+    }, 6000);
+}
+
+function validateInput(value, selector, errorMessage) {
+	if (value === "") {
+		displayMessage('#pesanMTSRak', 'alert alert-error', errorMessage);
+		$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
+		$(selector).closest('.control-group').addClass('error');
+	} else {
+		$(selector).closest('.control-group').addClass('success');
+		$(".help-inline").remove();
+	}
 }
 
 function validAngka(a)

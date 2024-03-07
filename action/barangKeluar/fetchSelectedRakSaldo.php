@@ -14,7 +14,7 @@ try {
     $yearSaldoLastDate = SUBSTR($checkSaldoLastDate, 0, -6);
     $result = $saldoClass->getSaldoByidJoinDetailByDate($idBrg, $monthSaldoLastDate, $yearSaldoLastDate);
 
-    $list = "<option value='0'>Pilih Lokasi..</option>";
+    $list = "<option value=''>Pilih Lokasi..</option>";
     $data = [];
     while ($row = $result->fetch_assoc()) {
         $year = substr($row['tahunprod'], 2, 4);

@@ -40,4 +40,12 @@ class Barang
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getItemJoinDetail($id)
+    {
+        $stmt = $this->conn->prepare("SELECT id_brg, brg, id_rak, rak FROM barang JOIN detail_brg USING(id_brg) JOIN rak USING(id_rak) WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }

@@ -28,7 +28,12 @@ if ($p == 'retur') {
 
 
 ?>
-
+<style>
+  #id_SaldoMutasi {
+    font-weight: bold;
+    font-size: medium;
+  }
+</style>
 <!-- BEGIN PAGE -->
 <div id="main-content">
 
@@ -591,17 +596,17 @@ if ($p == 'retur') {
               <form class="cmxform form-horizontal" id="submitMTSRak" action="action/barangMasuk/simpanMutasiRak.php" method="POST">
                 <div class="modal-body modal-full tinggi">
                   <div class="control-group">
-                    <label class="control-label"><strong>Asal Lokasi Rak</strong>
+                    <label class="control-label"><strong>Nama barang</strong>
                       <p class="titik2">:</p>
                     </label>
                     <div class="controls">
-                      <select id="asalRakMTSRak" name="asalRakMTSRak" class="chosen-select" data-placeholder="Pilih Asal Lokasi Rak...">
+                      <select id="id_brgMutasi" name="id_brgMutasi" class="chosen-select" data-placeholder="Pilih Type Ban...">
                         <option value=""></option>
                         <?php
-                        $toko = "SELECT id_rak, rak FROM rak ORDER BY rak ASC";
-                        $toko1 = $koneksi->query($toko);
-                        while ($toko2 = $toko1->fetch_array()) {
-                          echo "<option value='$toko2[0]'>$toko2[1]</option>";
+                        $brg = "SELECT id_brg, brg, kdbrg FROM barang ORDER BY brg ASC";
+                        $brg1 = $koneksi->query($brg);
+                        while ($brg2 = $brg1->fetch_array()) {
+                          echo "<option value='$brg2[0]'>$brg2[1]</option>";
                         }
                         ?>
                       </select>
@@ -612,9 +617,6 @@ if ($p == 'retur') {
                     <label class="control-label"><strong>No Mutasi</strong>
                       <p class="titik2">:</p>
                     </label>
-                    <!-- <div class="controls">
-                                      <input class="input-small" name="awal" type="text"  value="17.000" readonly="true" />
-                                    </div> -->
                     <div class="controls">
                       <input type="text" class="input-small m-wrap" id="NoMTSRak" name="NoMTSRak" value="<?php echo "MG" . date('ym'); ?>-0" readonly="true">
                     </div>
@@ -649,11 +651,11 @@ if ($p == 'retur') {
                   <div class="batas"></div>
 
                   <div class="control-group">
-                    <table class="table" id="tabelBarangKeluar">
+                    <table class="table" id="">
                       <thead>
                         <tr>
-                          <th style="width:50%">Nama Barang</th>
-                          <th style="width:20%">Lokasi Rak</th>
+                          <th style="width:50%">Lokasi Pengirim</th>
+                          <th style="width:20%">Lokasi Penerima</th>
                           <th style="width:20%">Jumlah</th>
                         </tr>
                       </thead>
@@ -661,21 +663,14 @@ if ($p == 'retur') {
                         <tr>
                           <td>
                             <div>
-                              <select id="id_brgMTSRak" name="id_brgMTSRak" class="chosen-select" data-placeholder="Pilih Type Ban...">
-                                <option value=""></option>
-                                <?php
-                                $brg = "SELECT id_brg, brg FROM barang ORDER BY brg ASC";
-                                $brg1 = $koneksi->query($brg);
-                                while ($brg2 = $brg1->fetch_array()) {
-                                  echo "<option value='$brg2[0]'>$brg2[1]</option>";
-                                }
-                                ?>
+                              <select class="span12" id="id_SaldoMutasi" name="id_SaldoMutasi" data-placeholder="Pilih Lokasi...">
+                                <option value="">Pilih Lokasi...</option>
                               </select>
                             </div>
                           </td>
                           <td>
                             <div>
-                              <select id="id_rakMTSRak" name="id_rakMTSRak" class="chosen-select" data-placeholder="Pilih Lokasi Rak...">
+                              <select id="id_rakMTSRak" name="id_rakMTSRak" class="chosen-select" data-placeholder="Pilih Lokasi...">
                                 <option value=""></option>
                                 <?php
                                 $rak = "SELECT id_rak, rak FROM rak ORDER BY rak ASC";
@@ -689,7 +684,7 @@ if ($p == 'retur') {
                           </td>
                           <td>
                             <div>
-                              <input class="span12 " id="jmlMTSRak" name="jmlMTSRak" type="text" placeholder="Jumlah Barang Keluar" onkeyup="validAngka(this)" />
+                              <input class="span12" id="jmlMTSRak" name="jmlMTSRak" type="text" placeholder="Jumlah Barang Keluar" onkeyup="validAngka(this)" />
                             </div>
                           </td>
                         </tr>
@@ -702,7 +697,7 @@ if ($p == 'retur') {
                   </div>
                 </div>
                 <div class="modal-footer">
-                  <button class="btn btn-primary" id="simpanMTSRakBtr" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
+                  <button class="btn btn-primary" id="savaMutasi" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
                   <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
                 </div>
               </form>
