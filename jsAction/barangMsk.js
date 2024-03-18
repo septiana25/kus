@@ -212,7 +212,7 @@ function hapusMasuk(id_det_msk = null){
 						if(response.success == true) 
 						{
 							//button reset
-							//$("#hapusMasukBtn").button('reset');
+							$("#hapusMasukBtn").button('reset');
 							// close the modal 
 							$("#hapusModalMasuk").modal('hide');
 

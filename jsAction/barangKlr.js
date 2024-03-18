@@ -526,7 +526,7 @@ function hapusKeluar(id_det_klr = null)
 					success:function(response) {
 						if(response.success == true) {
 							//button reset
-							//$("#hapusKeluarBtn").button('reset');
+							$("#hapusKeluarBtn").button('reset');
 							// close the modal 
 							$("#hapusModalKeluar").modal('hide');
 
