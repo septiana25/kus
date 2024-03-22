@@ -15,7 +15,7 @@ if ($_POST) { //jika data data post
 	$id_barang  = $koneksi->real_escape_string($_POST["id_brg"]);
 	$id_rak     = $koneksi->real_escape_string($_POST["id_rak"]);
 	$jml        = $koneksi->real_escape_string($_POST["jml"]);
-	//$nama       = $koneksi->real_escape_string($_POST["pengirim"]);
+	$pengirim   = $koneksi->real_escape_string($_POST["pengirim"]);
 	$noFaktur   = $koneksi->real_escape_string($_POST["noFaktur"]);
 	$id_toko    = $koneksi->real_escape_string($_POST["id_toko"]);
 	$keterangan = $koneksi->real_escape_string($_POST["keterangan"]);
@@ -143,8 +143,8 @@ if ($_POST) { //jika data data post
 				if ($cekNoFaktur->num_rows == 0) //cek jika no faktur kosong
 				{
 
-					$insert_keluar = "INSERT INTO keluar ( no_faktur, id_toko, tgl, pembuat)
-												  VALUES ( '$faktur', '$id_toko' , '$tgl', '$namaLogin')";
+					$insert_keluar = "INSERT INTO keluar ( no_faktur, id_toko, pengirim, tgl, pembuat)
+												  VALUES ( '$faktur', '$id_toko' , '$pengirim' , '$tgl', '$namaLogin')";
 
 					if ($koneksi->query($insert_keluar) === TRUE) //cek jika data table keluar berhasil di simpan
 					{

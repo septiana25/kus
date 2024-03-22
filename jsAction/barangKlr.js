@@ -47,16 +47,34 @@ $(document).ready(function() {
 		});		
 	});
 
+	$('#pengirim').typeahead({
+		source: function(pengirim, result) {
+			$.ajax({
+				url: "action/barangKeluar/fetchAutoCompletePengirim.php",
+				method: "POST",
+				data: {pengirim: pengirim},
+				dataType: "json",
+				success: function(data) {
+					result($.map(data, function(pengirim) {
+						return pengirim;
+					}));
+				}
+			});
+		},
+		pengirim: 10,
+		minLength: 2,
+	});
+
 	$('#submitBarangKlr').unbind('submit').bind('submit', function()
 	{
 
 		//var nama     = $("#nama").val();
-		var noFaktur   = $("#noFaktur").val();
-		var toko       = $("#id_toko").val();
-		//var keterangan = $("#keterangan").val();
-		var id_brg     = $("#id_brg").val();
-		var rak        = $("#id_rak").val();
-		var jumlah     = $("#jumlah").val();
+		const noFaktur   = $("#noFaktur").val();
+		const toko       = $("#id_toko").val();
+		const pengirim = $("#pengirim").val();
+		const id_brg     = $("#id_brg").val();
+		const rak        = $("#id_rak").val();
+		const jumlah     = $("#jumlah").val();
 
 
 		//cek barang rak jumlah jika kosong
@@ -90,15 +108,15 @@ $(document).ready(function() {
 			$("span").remove(":contains('Nama Toko Keluar Masih Kosong')");
 		}
 
-		// if (keterangan == "") {
-		// 	$("#keterangan").after('<span class="help-inline">Keterangan Keluar Masih Kosong</span>');
-		// 	$('#keterangan').closest('.control-group').removeClass('success');
-		// 	$('#keterangan').closest('.control-group').addClass('error');
-		// }else{
-		// 	$('#keterangan').closest('.control-group').removeClass('error');
-		// 	$("#keterangan").closest('.control-group').addClass('success');
-		// 	$("span").remove(":contains('Keterangan Keluar Masih Kosong')");
-		// }
+		 if (pengirim == "") {
+		 	$("#pengirim").after('<span class="help-inline">Pengirim Keluar Masih Kosong</span>');
+		 	$('#pengirim').closest('.control-group').removeClass('success');
+		 	$('#pengirim').closest('.control-group').addClass('error');
+		 }else{
+		 	$('#pengirim').closest('.control-group').removeClass('error');
+		 	$("#pengirim").closest('.control-group').addClass('success');
+		 	$("span").remove(":contains('pengirim Keluar Masih Kosong')");
+		 }
 
 		if (id_brg == "") {
 			$("#id_brg").after('<span class="help-inline">Nama Barang Keluar Masih Kosong</span>');
@@ -134,7 +152,7 @@ $(document).ready(function() {
 		}
 		//end cek barang rak jumlah jika kosong
 		
-		if (noFaktur && toko && id_brg && rak && jumlah) {
+		if (noFaktur && toko && pengirim && id_brg && rak && jumlah) {
 			//
 			var form = $(this);
 			//
@@ -623,6 +641,12 @@ function validAngka(a)
   a.value = a.value.substring(0,a.value.length-1000);
   }
 }
+
+function hurufBesar(a){
+	setTimeout(function(){
+		a.value = a.value.toUpperCase();
+	}, 1);
+  }
 
 //pesan error ajax
 $(document).ajaxError(function(){

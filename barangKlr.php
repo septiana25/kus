@@ -88,7 +88,7 @@ echo "<div class='div-request div-hide'>keluar</div>";
                   <th width="8%">Lokasi Rak</th>
                   <th>Nama Barang</th>
                   <th width="8%" class="hidden-phone">Tanggal</th>
-                  <th width="5%" class="hidden-phone">Jam</th>
+                  <th width="10%" class="hidden-phone">Pengirim</th>
                   <th>Total</th>
                   <th width="11%">Ket</th>
                   <?php
@@ -164,11 +164,19 @@ echo "<div class='div-request div-hide'>keluar</div>";
             </div>
           </div>
           <div class="control-group no-nota">
+            <label class="control-label"><strong>Pengirim</strong>
+              <p class="titik2">:</p>
+            </label>
+            <div class="controls">
+              <input class="span12" id="pengirim" name="pengirim" type="text" placeholder="Input Pengirim" autocomplete="false" onkeyup="hurufBesar(this)" />
+            </div>
+          </div>
+          <div class="control-group">
             <label class="control-label"><strong>Keterangan</strong>
               <p class="titik2">:</p>
             </label>
             <div class="controls">
-              <input class="input-large" id="keterangan" name="keterangan" type="text" placeholder="Input Keterangan" />
+              <input class="span12" id="keterangan" name="keterangan" type="text" placeholder="Input Keterangan" />
             </div>
           </div>
           <div class="batas"></div>

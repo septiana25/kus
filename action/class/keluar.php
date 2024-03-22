@@ -54,4 +54,13 @@ class Keluar
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getSender($sender)
+    {
+        $stmt = $this->conn->prepare("SELECT pengirim FROM keluar WHERE pengirim LIKE ? GROUP BY pengirim LIMIT 10");
+        $searchTerm = "%" . $sender . "%";
+        $stmt->bind_param("s", $searchTerm);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
