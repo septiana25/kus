@@ -88,9 +88,9 @@ echo "<div class='div-request div-hide'>keluar</div>";
                   <th width="8%">Lokasi Rak</th>
                   <th>Nama Barang</th>
                   <th width="8%" class="hidden-phone">Tanggal</th>
-                  <th width="10%" class="hidden-phone">Pengirim</th>
+                  <th width="5%" class="hidden-phone">Jam</th>
                   <th>Total</th>
-                  <th width="11%">Ket</th>
+                  <th width="11%">Pengirim</th>
                   <?php
                   if ($_SESSION['level'] == "administrator") {
                     echo '<th>Action</th>';

@@ -21,7 +21,7 @@ if ($cariTglSaldo->num_rows == 1) {
 	$tahun  = $rowtgl['tahun'];
 }
 
-$sql = "SELECT no_faktur, toko, rak, brg, tgl, pengirim, jml_klr, id_det_klr, ket, MONTH(tgl) AS bulan, YEAR(tgl) AS tahun
+$sql = "SELECT no_faktur, toko, rak, brg, tgl, jam, jml_klr, id_det_klr, pengirim, MONTH(tgl) AS bulan, YEAR(tgl) AS tahun
 			FROM keluar
 			RIGHT JOIN detail_keluar USING(id_klr)
 			LEFT JOIN detail_brg USING(id)
