@@ -204,6 +204,7 @@ if (!empty($_GET)) {
             $excelku->getActiveSheet()->mergeCells("H" . $baris . ":H" . $margecell);
             $excelku->getActiveSheet()->mergeCells("I" . $baris . ":I" . $margecell);
             $margecell = "";
+            $no++;
           }
 
           $SI->setCellValue("H" . $baris, $val['total']);
