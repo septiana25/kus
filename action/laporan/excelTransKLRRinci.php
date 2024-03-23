@@ -74,8 +74,8 @@ if (!empty($_GET)) {
   $SI->setCellValue('F4', 'TANGGAL'); //Kolom B.Masuk
   $SI->setCellValue('G4', 'QTY'); //Kolom B.Masuk
   $SI->setCellValue('H4', 'TOTAL'); //Kolom 
-  $SI->setCellValue('I4', 'KETERANGAN'); //Kolom 
-  $SI->setCellValue('J4', 'PENGIRIM'); //Kolom 
+  $SI->setCellValue('I4', 'PENGIRIM'); //Kolom 
+  $SI->setCellValue('J4', 'KETERANGAN'); //Kolom 
 
 
 
@@ -188,8 +188,6 @@ if (!empty($_GET)) {
           // $excelku->getActiveSheet()->mergeCells("C". $baris .":C".$margecell);
           // $excelku->getActiveSheet()->mergeCells("D". $baris .":D".$margecell);
           // $excelku->getActiveSheet()->mergeCells("E". $baris .":E".$margecell);
-
-          $no++;
         }
 
         $SI->setCellValue("G" . $baris, $val['jml_klr']); //mengisi data untuk nomor urut
@@ -204,14 +202,15 @@ if (!empty($_GET)) {
             $excelku->getActiveSheet()->mergeCells("C" . $baris . ":C" . $margecell);
             $excelku->getActiveSheet()->mergeCells("F" . $baris . ":F" . $margecell);
             $excelku->getActiveSheet()->mergeCells("H" . $baris . ":H" . $margecell);
+            $excelku->getActiveSheet()->mergeCells("I" . $baris . ":I" . $margecell);
             $margecell = "";
           }
 
           $SI->setCellValue("H" . $baris, $val['total']);
+          $SI->setCellValue("I" . $baris, $val['pengirim']);
         }
 
-        $SI->setCellValue("I" . $baris, $val['ket']);
-        $SI->setCellValue("J" . $baris, $val['pengirim']);
+        $SI->setCellValue("J" . $baris, $val['ket']);
 
         $baris++;
       }
