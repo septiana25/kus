@@ -146,25 +146,6 @@
                   </li>
                   ';
 
-            /*
-<li id="activeLaporanEToll"><a class="" href="laporanEToll.php">Laporan E-Toll</a><i class="icon-circle-arrow-right kanan"></i></li>
-<li id="activeLaporanFaktur"><a class="" href="faktur.php">Laporan Perfaktur</a><i class="icon-circle-arrow-right kanan"></i></li>
-
-                  $laporanClaim = '
-                  <li class="sub-menu" id="activeLaporan">
-                      <a href="javascript:;" class="">
-                          <i class="fa fa-file-text"></i>
-                          <span>Laporan Claim</span>
-                          <span class="arrow"></span>
-                      </a>
-                      <ul class="sub">
-                          <li id="activeLaporanKeluar"><a class="" href="#">Laporan Keluar</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activeLaporanFaktur"><a class="" href="#">Laporan Perfaktur</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activeKartu"><a class="" href="#">Kartu Stock</a><i class="icon-circle-arrow-right kanan"></i></li>
-                      </ul>
-                  </li>
-                  ';*/
-
             $laporanClaim = '
                   <li class="sub-menu" id="activeLaporanClaim">
                       <a class="" href="laporanClaim.php">
@@ -173,6 +154,18 @@
                       </a>
                   </li>
                   ';
+            $upload = '
+                 <li class="sub-menu" id="activeUpload">
+                      <a href="javascript:;" class="">
+                          <i class="fa fa-upload"></i>
+                          <span>Upload</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="activeUploadKoreksiSaldo"><a class="" href="laporan.php?p=LapKlr">Koreksi Saldo</a><i class="icon-circle-arrow-right kanan"></i></li>
+                      </ul>
+                  </li>
+            ';
 
             $setting = '
                   <li class="sub-menu" id="activeSetting">
@@ -191,32 +184,19 @@
 
             if ($_SESSION['level'] == 'administrator') {
                 echo $transaksi;
-                //echo $claim;
-                //echo $efaktur;
-                //echo $etoll;
                 echo $masterBarang;
-                //echo $order;
-                //echo $pengirim;
                 echo $toko;
                 echo $laporan;
-                //echo $laporanClaim;
+                echo $upload;
                 echo $setting;
             } elseif ($_SESSION['level'] == 'user') {
                 echo $transaksi;
-                //echo $efaktur;
-                //echo $etoll;
                 echo $masterBarang;
-                //echo $pengirim;
                 echo $toko;
                 echo $laporan;
             } elseif ($_SESSION['level'] == 'tamu') {
                 echo $transaksi;
-                //echo $efaktur;
-                //echo $etoll;
                 echo $masterBarang;
-                //echo $pengirim;
-                //echo $toko;
-                //echo $laporan;
             } elseif ($_SESSION['level'] == 'claim') {
                 echo $claim;
                 echo $laporanClaim;
