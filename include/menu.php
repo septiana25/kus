@@ -162,7 +162,7 @@
                           <span class="arrow"></span>
                       </a>
                       <ul class="sub">
-                          <li id="activeUploadKoreksiSaldo"><a class="" href="laporan.php?p=LapKlr">Koreksi Saldo</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activeUploadKoreksiSaldo"><a class="" href="uploadkoreksisaldo.php">Koreksi Saldo</a><i class="icon-circle-arrow-right kanan"></i></li>
                       </ul>
                   </li>
             ';
