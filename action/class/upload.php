@@ -19,7 +19,7 @@ class Upload
 
     public  function getIdSaldoNull()
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak FROM tmp_koreksisaldo WHERE id_saldo IS NULL LIMIT 50");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak FROM tmp_koreksisaldo WHERE id_saldo IS NULL LIMIT 100");
         $stmt->execute();
         return $stmt->get_result();
     }

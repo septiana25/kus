@@ -9,7 +9,12 @@ if ($koneksi->real_escape_string($_SESSION['level']) == "administrator") {
         if ($filename[1] == 'csv') {
             $handle = fopen($_FILES['file-csv']['tmp_name'], "r");
             $dataKoreksiSaldo = array();
+            $row = 1;
             while ($data = fgetcsv($handle, 0, ';')) { // use semicolon as the delimiter
+                if ($row == 1) { // Skip the first row
+                    $row++;
+                    continue;
+                }
                 $kdbrg = $koneksi->real_escape_string($data[0]);
                 $rak = $koneksi->real_escape_string($data[1]);
                 $barang = $koneksi->real_escape_string($data[2]);
@@ -17,6 +22,7 @@ if ($koneksi->real_escape_string($_SESSION['level']) == "administrator") {
 
                 $dataKoreksiSaldo[] = '
                     ("' . $kdbrg . '", "' . $rak . '", "' . $barang . '", "' . $qty . '")';
+                $row++;
             }
             if (isset($dataKoreksiSaldo)) {
                 $koneksi->begin_transaction();
