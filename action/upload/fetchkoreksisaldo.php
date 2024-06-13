@@ -39,8 +39,8 @@ function handleFetchKoreksiSaldo($uploadClass)
             : '<span class="label label-success">OK</span>';
         $output['data'][] = array(
             $row['kdbrg'],
-            $row['rak'],
             $row['brg'],
+            $row['rak'],
             $row['qty'],
             $status,
             $button

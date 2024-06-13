@@ -59,8 +59,8 @@ require_once 'include/menu.php';
                                 <div class="tab-pane active" id="tab_1_1">
                                     <p>Data Koreksi Saldo</p>
                                     <div class="form-actions">
-                                        <button class="btn btn-primary" type="button" id="uploadFile"><i class="fa fa-check"></i> Check Data</button>
-                                        <button class="btn btn-warning" type="button" id="uploadFile"><i class="fa fa-cogs"></i> Prosess Koreksi</button>
+                                        <button class="btn btn-primary" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
+                                        <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Koreksi</button>
                                     </div>
                                     <table class="table table-striped table-bordered" id="tabelKoreksiSaldo">
                                         <thead>
@@ -85,7 +85,7 @@ require_once 'include/menu.php';
                                 <div class="tab-pane" id="tab_1_2">
                                     <p>Form Upload Koreksi Saldo</p>
 
-                                    <form class="form-horizontal" method="POST" id="uploadKoreksiSaldo" enctype="multipart/form-data" action="action/upload/koreksisaldo.php">
+                                    <form class="form-horizontal" method="POST" id="submitUploadKoreksiSaldo" enctype="multipart/form-data">
                                         <div class="control-group">
                                             <label class="control-label">File CSV </label>
                                             <div class="controls">

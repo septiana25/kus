@@ -33,6 +33,18 @@ class Barang
         return $stmt->get_result();
     }
 
+    public function getByItemByRak($month, $year, $kdbrg, $rak)
+    {
+        $stmt = $this->conn->prepare("SELECT id, id_saldo FROM detail_brg
+                            LEFT JOIN barang USING(id_brg)
+                            LEFT JOIN rak USING(id_rak)
+                            LEFT JOIN saldo USING(id)
+                            WHERE MONTH(saldo.tgl) = ? AND YEAR(saldo.tgl)= ? AND kdbrg = ? AND rak = ?");
+        $stmt->bind_param("iiss", $month, $year, $kdbrg, $rak);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getItemById($id, $idRak)
     {
         $stmt = $this->conn->prepare("SELECT id FROM detail_brg WHERE id_brg = ? AND id_rak= ?");
