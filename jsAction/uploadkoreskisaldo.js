@@ -17,7 +17,11 @@ $(document).ready(function() {
 	});
 
 	$('#processData').click(function() {
-		alert('Checking Data');
+		$.ajax({
+			url: 'action/upload/processkoreksisaldo.php',
+			dataType: 'json',
+			success: handleResponse
+		});
 	});
 
 	$('#submitUploadKoreksiSaldo').unbind('submit').bind('submit', function() {
@@ -54,8 +58,8 @@ $(document).ready(function() {
 	}
 	function handleResponse(response) {
 	
+		tabelKoresiSaldo.ajax.reload();
 		if (response.success === true) {
-			tabelKoresiSaldo.ajax.reload();
 			displayMessagePopup(response.messages, 'success');
 		} else if (response.success === false) {
 			displayMessagePopup(response.messages, 'error');

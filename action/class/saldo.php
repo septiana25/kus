@@ -29,9 +29,20 @@ class Saldo
         $stmt->execute();
 
         if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed: "];
+            return ['success' => false, 'message' => "Execute failed: saldo"];
         }
 
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function updateSaldoByKoreksi($id_saldo, $qty)
+    {
+        $stmt = $this->conn->prepare("UPDATE saldo SET saldo_akhir = ? WHERE id_saldo = ?");
+        $stmt->bind_param("ii", $qty, $id_saldo);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: saldo", 'error' => $stmt->error];
+        }
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
@@ -79,6 +90,14 @@ class Saldo
     {
         $stmt = $this->conn->prepare("SELECT id_saldo, saldo_awal, saldo_akhir FROM saldo WHERE id = ? AND MONTH(tgl) = ? AND YEAR(tgl) = ?");
         $stmt->bind_param("iii", $id, $month, $year);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getSaldoByIdSaldo($id_saldo)
+    {
+        $stmt = $this->conn->prepare("SELECT id_saldo, saldo_akhir FROM saldo WHERE id_saldo = ?");
+        $stmt->bind_param("i", $id_saldo);
         $stmt->execute();
         return $stmt->get_result();
     }

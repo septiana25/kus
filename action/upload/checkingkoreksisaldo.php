@@ -23,7 +23,8 @@ try {
         $valid['messages'] = "<strong>Success! </strong>Data Selesai Dicek";
     }
 } catch (\Throwable $th) {
-    //throw $th;
+    $valid['success'] = false;
+    $valid['messages'] = "<strong>Error! </strong> Data Ada Yang Gagal " . $th->getMessage();
 } finally {
     $koneksi->close();
     echo json_encode($valid);
@@ -31,7 +32,7 @@ try {
 
 function handleDataKoreksi($uploadClass, $saldoClass, $barangClass)
 {
-    $dataKoreksi = $uploadClass->getIdSaldoNull();
+    $dataKoreksi = $uploadClass->getDataByIdSaldoNull();
     $results = [
         'success' => false,
     ];

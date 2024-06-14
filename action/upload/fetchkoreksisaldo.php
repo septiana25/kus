@@ -20,8 +20,8 @@ function generateButton($id)
     return '<div class="btn-group">
 		<button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
 		<ul class="dropdown-menu">
-			<li><a href="#editModalBarang" onclick="editBarang(' . $id . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-			<li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+			<li><a href="#editModalKoreksiSaldo" onclick="editBarang(' . $id . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+			<li><a href="#hapusModalKoreksiSaldo" onclick="hapusBarang(' . $id . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
 		</ul>
  	</div>';
 }
