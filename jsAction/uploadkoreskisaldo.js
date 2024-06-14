@@ -47,6 +47,30 @@ $(document).ready(function() {
 		return false;
 
 	});
+
+	$('#submitEditKoreksiSaldo').unbind('submit').bind('submit', function() {
+		const id = $('#id').val().trim();
+		const kdbrg = $('#kdbrg').val().trim();
+		const rak = $('#rak').val().trim();
+
+		validateInput(kdbrg, '#kdbrg', 'Kode Barang harus diisi');
+		validateInput(rak, '#rak', 'Rak harus diisi');
+
+		if (id && kdbrg && rak) {
+			const form = $(this);
+
+			$.ajax({
+				url: form.attr('action'),
+				type: form.attr('method'),
+				data: form.serialize(),
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
+		return false;
+
+	});
+
 	function validateInput(value, selector, errorMessage) {
 		if (value === "") {
 			$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
@@ -90,9 +114,24 @@ $(document).ready(function() {
 		}, 6000);
 	}
 
+
 //pesan error ajax
 $(document).ajaxError(function(){
 	alert("Terjadi Kesalahan, Lakukan Refresh Halaman. Lihat error_log");
 });
 	
 });
+
+function editKoreksiSaldo(id) {
+	$.ajax({
+		url: 'action/upload/fetchkoreksisaldobyid.php',
+		type: 'POST',
+		data: { id: id },
+		dataType: 'json',
+		success: function(data) {
+			$('#id').val(data.id);
+			$('#kdbrg').val(data.kdbrg);
+			$('#rak').val(data.rak);
+		}
+	});
+}

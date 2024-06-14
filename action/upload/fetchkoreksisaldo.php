@@ -15,15 +15,20 @@ try {
     $koneksi->close();
 }
 
-function generateButton($id)
+function generateButton($id, $id_saldo)
 {
-    return '<div class="btn-group">
-		<button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
-		<ul class="dropdown-menu">
-			<li><a href="#editModalKoreksiSaldo" onclick="editBarang(' . $id . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-			<li><a href="#hapusModalKoreksiSaldo" onclick="hapusBarang(' . $id . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
-		</ul>
- 	</div>';
+    $href = is_null($id_saldo) ? "#editModalKoreksiSaldo" : "#disableaccess";
+    $onclickAction = is_null($id_saldo) ? "editKoreksiSaldo($id)" : "";
+
+    $button = '<div class="btn-group">
+        <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
+        <ul class="dropdown-menu">
+            <li><a href="' . $href . '" onclick="' . $onclickAction . '" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+            <li><a href="' . $href . '" onclick="' . $onclickAction . '" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+        </ul>
+    </div>';
+
+    return $button;
 }
 
 function handleFetchKoreksiSaldo($uploadClass)
@@ -32,7 +37,7 @@ function handleFetchKoreksiSaldo($uploadClass)
     $output = array('data' => array());
 
     while ($row = $result->fetch_array()) {
-        $button = generateButton($row['id']);
+        $button = generateButton($row['id'], $row['id_saldo']);
         $status = '<span class="label label-important">Perlu Dicek</span>';
         $status = is_null($row['id_saldo'])
             ? '<span class="label label-important">Perlu Dicek</span>'

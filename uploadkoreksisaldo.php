@@ -115,6 +115,74 @@ require_once 'include/menu.php';
 
             <!-- END ADVANCED TABLE widget-->
         </div>
+
+        <!-- BEGIN MODAL EDIT KOREKSI SALDO-->
+        <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Edit Koreksi Saldo</h3>
+            </div>
+            <form class="form-horizontal" id="submitEditKoreksiSaldo" action="action/upload/updatekoreksisaldo.php" method="POST">
+                <div class="modal-body modal-full">
+                    <div class="control-group">
+                        <div id="infosaldo"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="kdbrg">Kode Barang</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="id" name="id" readonly>
+                            <input class="span12" type="text" id="kdbrg" name="kdbrg" autocomplete="off" placeholder="Kode Barang">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="rak">Rak</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="rak" name="rak" autocomplete="off" placeholder="Rak">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL EDIT KOREKSI SALDO-->
+
+        <!-- BEGIN MODAL HAPUS KOREKSI SALDO-->
+        <div id="hapusModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Hapus Koreksi Saldo</h3>
+            </div>
+            <form class="form-horizontal" id="editDetailSaldo" method="POST">
+                <div class="modal-body modal-full">
+                    <p id="pesanHapus" style="color: #dc5d3a"></p>
+                    <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Hapus</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL HAPUS KOREKSI SALDO-->
+        <!-- BEGIN MODAL DISABLE KOREKSI SALDO-->
+        <div id="disableaccess" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">WARNING</h3>
+            </div>
+            <div class="modal-body modal-full">
+                <p id="pesanHapus" style="color: #dc5d3a">DATA SUDAH DICEK. TIDAK BISA HAPUS/DELETE</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+
+            </div>
+        </div>
+        <!-- END MODAL HAPUS KOREKSI SALDO-->
         <!-- END PAGE CONTAINER-->
     </div>
     <!-- END PAGE -->
