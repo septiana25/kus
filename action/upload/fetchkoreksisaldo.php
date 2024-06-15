@@ -17,14 +17,16 @@ try {
 
 function generateButton($id, $id_saldo)
 {
-    $href = is_null($id_saldo) ? "#editModalKoreksiSaldo" : "#disableaccess";
-    $onclickAction = is_null($id_saldo) ? "editKoreksiSaldo($id)" : "";
+    $hrefEdit = is_null($id_saldo) ? "#editModalKoreksiSaldo" : "#disableaccess";
+    $hrefHapus = is_null($id_saldo) ? "#deleteModalKoreksiSaldo" : "#disableaccess";
+    $onclickEdit = is_null($id_saldo) ? "editKoreksiSaldo($id)" : "";
+    $onclickHapus = is_null($id_saldo) ? "deleteKoreksiSaldo($id)" : "";
 
     $button = '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="' . $href . '" onclick="' . $onclickAction . '" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-            <li><a href="' . $href . '" onclick="' . $onclickAction . '" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+            <li><a href="' . $hrefEdit . '" onclick="' . $onclickEdit . '" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+            <li><a href="#deleteModalKoreksiSaldo" onclick="deleteKoreksiSaldo(' . $id . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
         </ul>
     </div>';
 

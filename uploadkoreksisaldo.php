@@ -151,12 +151,12 @@ require_once 'include/menu.php';
         <!-- END MODAL EDIT KOREKSI SALDO-->
 
         <!-- BEGIN MODAL HAPUS KOREKSI SALDO-->
-        <div id="hapusModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="deleteModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Koreksi Saldo</h3>
             </div>
-            <form class="form-horizontal" id="editDetailSaldo" method="POST">
+            <form class="form-horizontal" id="submitDeleteKoreksiSaldo" action="action/upload/deletekoreksisaldo.php" method="POST">
                 <div class="modal-body modal-full">
                     <p id="pesanHapus" style="color: #dc5d3a"></p>
                     <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
@@ -175,7 +175,7 @@ require_once 'include/menu.php';
                 <h3 id="myModalLabel">WARNING</h3>
             </div>
             <div class="modal-body modal-full">
-                <p id="pesanHapus" style="color: #dc5d3a">DATA SUDAH DICEK. TIDAK BISA HAPUS/DELETE</p>
+                <p id="pesanHapus" style="color: #dc5d3a">DATA SUDAH DICEK. TIDAK BISA UBAH</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>

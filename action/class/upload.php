@@ -72,4 +72,16 @@ class Upload
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
+
+    public function delete($id, $atDelete)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_koreksisaldo SET at_delete = ? WHERE id = ?");
+        $stmt->bind_param("si", $atDelete, $id);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
 }

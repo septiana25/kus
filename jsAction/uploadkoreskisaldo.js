@@ -71,6 +71,24 @@ $(document).ready(function() {
 
 	});
 
+	$('#submitDeleteKoreksiSaldo').unbind('submit').bind('submit', function() {
+		const id = $('#hapusid').val().trim();
+
+		if (id) {
+			const form = $(this);
+
+			$.ajax({
+				url: form.attr('action'),
+				type: form.attr('method'),
+				data: form.serialize(),
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
+		return false;
+	});
+
+
 	function validateInput(value, selector, errorMessage) {
 		if (value === "") {
 			$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
@@ -132,6 +150,19 @@ function editKoreksiSaldo(id) {
 			$('#id').val(data.id);
 			$('#kdbrg').val(data.kdbrg);
 			$('#rak').val(data.rak);
+		}
+	});
+}
+
+function deleteKoreksiSaldo(id) {
+	$.ajax({
+		url: 'action/upload/fetchkoreksisaldobyid.php',
+		type: 'POST',
+		data: { id: id },
+		dataType: 'json',
+		success: function(data) {
+			$('#hapusid').val(data.id);
+			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data ' + data.brg + ' ?');
 		}
 	});
 }
