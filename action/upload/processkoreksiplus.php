@@ -83,6 +83,9 @@ function handleDataKoreksi($uploadClass, $saldoClass, $masukClass)
                 break;
             }
         }
+    } else {
+        $results['success'] = false;
+        $results['messages'] = "<strong>Error! </strong> Data Koreksi Plus Tidak Bisa Diproses";
     }
 
     return $results;
