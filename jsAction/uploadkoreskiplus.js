@@ -1,16 +1,18 @@
 $(document).ready(function() {
-	let tabelKoresiSaldo;
+	let tabelKoresiPlus;
 	$('#activeUpload').addClass('active');
-	$('#activeUploadKoreksiSaldo').addClass('active');
+	$('#activeUploadKoreksiPlus').addClass('active');
 
-	tabelKoresiSaldo = $('#tabelKoreksiSaldo').DataTable({
-		'ajax' : 'action/upload/fetchkoreksisaldo.php',
+	tabelKoresiPlus = $('#tabelKoreksiPlus').DataTable({
+		'ajax' : 'action/upload/fetchkoreksiplus.php',
 		'order':[],
 	});
 	
 	$('#checkingData').click(function() {
 		$.ajax({
 			url: 'action/upload/checkingkoreksisaldo.php',
+			type: 'POST',
+			data: { type: '2' },
 			dataType: 'json',
 			success: handleResponse
 		});
@@ -18,13 +20,13 @@ $(document).ready(function() {
 
 	$('#processData').click(function() {
 		$.ajax({
-			url: 'action/upload/processkoreksisaldo.php',
+			url: 'action/upload/processkoreksiplus.php',
 			dataType: 'json',
 			success: handleResponse
 		});
 	});
 
-	$('#submitUploadKoreksiSaldo').unbind('submit').bind('submit', function() {
+	$('#submitUploadKoreksiPlus').unbind('submit').bind('submit', function() {
 		const file = $('#file-csv').val().trim();
 		const type = $('#type').val().trim();
 
@@ -50,7 +52,7 @@ $(document).ready(function() {
 
 	});
 
-	$('#submitEditKoreksiSaldo').unbind('submit').bind('submit', function() {
+	$('#submitEditKoreksiPlus').unbind('submit').bind('submit', function() {
 		const id = $('#id').val().trim();
 		const kdbrg = $('#kdbrg').val().trim();
 		const rak = $('#rak').val().trim();
@@ -73,7 +75,7 @@ $(document).ready(function() {
 
 	});
 
-	$('#submitDeleteKoreksiSaldo').unbind('submit').bind('submit', function() {
+	$('#submitDeleteKoreksiPlus').unbind('submit').bind('submit', function() {
 		const id = $('#hapusid').val().trim();
 
 		if (id) {
@@ -102,7 +104,7 @@ $(document).ready(function() {
 	}
 	function handleResponse(response) {
 	
-		tabelKoresiSaldo.ajax.reload();
+		tabelKoresiPlus.ajax.reload();
 		if (response.success === true) {
 			displayMessagePopup(response.messages, 'success');
 		} else if (response.success === false) {
@@ -142,7 +144,7 @@ $(document).ajaxError(function(){
 	
 });
 
-function editKoreksiSaldo(id) {
+function editKoreksiPlus(id) {
 	$.ajax({
 		url: 'action/upload/fetchkoreksisaldobyid.php',
 		type: 'POST',
@@ -156,7 +158,7 @@ function editKoreksiSaldo(id) {
 	});
 }
 
-function deleteKoreksiSaldo(id) {
+function deleteKoreksiPlus(id) {
 	$.ajax({
 		url: 'action/upload/fetchkoreksisaldobyid.php',
 		type: 'POST',

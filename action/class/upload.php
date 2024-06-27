@@ -8,9 +8,15 @@ class Upload
         $this->conn = $conn;
     }
 
-    public function fetchKoreksiSaldo()
+    /**
+     * Fetch data koreksi saldo
+     * @param string $type 1 = koreksi saldo akhir, 2 = koreksi plus, 3 = koreksi minus
+     * 
+     */
+    public function fetchKoreksiSaldo($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, id_saldo FROM tmp_koreksisaldo WHERE at_update IS NULL AND at_delete IS NULL");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, id_saldo FROM tmp_koreksisaldo WHERE `type` = ? AND at_update IS NULL AND at_delete IS NULL");
+        $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
     }
@@ -23,16 +29,26 @@ class Upload
         return $stmt->get_result();
     }
 
-    public function getDataByIdSaldoNull()
+    /**
+     * Fetch data is null
+     * @param string $type 1 = koreksi saldo akhir, 2 = koreksi plus, 3 = koreksi minus
+     */
+    public function getDataByIdSaldoNull($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak FROM tmp_koreksisaldo WHERE id_saldo IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
     }
 
-    public function getDataByIdSaldoNotNull()
+    /**
+     * Fetch data is not null
+     * @param string $type 1 = koreksi saldo akhir, 2 = koreksi plus, 3 = koreksi minus
+     */
+    public function getDataByIdSaldoNotNull($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, id_saldo, qty, brg FROM tmp_koreksisaldo WHERE id_saldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt = $this->conn->prepare("SELECT id, id_saldo, qty, brg FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
     }

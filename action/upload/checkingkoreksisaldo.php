@@ -13,7 +13,8 @@ $valid['success'] =  array('success' => false, 'messages' => array());
 
 
 try {
-    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $barangClass);
+    $type = trim($koneksi->real_escape_string($_POST['type']));
+    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $type);
 
     if (!$resultKoreksi['success']) {
         $valid['success'] = false;
@@ -30,9 +31,9 @@ try {
     echo json_encode($valid);
 }
 
-function handleDataKoreksi($uploadClass, $saldoClass, $barangClass)
+function handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $type)
 {
-    $dataKoreksi = $uploadClass->getDataByIdSaldoNull();
+    $dataKoreksi = $uploadClass->getDataByIdSaldoNull($type);
     $results = [
         'success' => false,
     ];

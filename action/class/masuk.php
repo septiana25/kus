@@ -16,11 +16,11 @@ class Masuk
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
 
-    public function saveDetail($idMsk, $id, $jam, $jmlMsk, $ket, $rak = NULL)
+    public function saveDetail($idMsk, $id, $jam, $jmlMsk, $ket = NULL, $status_msk = '0', $rak = NULL)
     {
 
-        $stmt = $this->conn->prepare("INSERT INTO detail_masuk (id_msk, id, jam, jml_msk, ket, rak) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissss", $idMsk, $id, $jam, $jmlMsk, $ket, $rak);
+        $stmt = $this->conn->prepare("INSERT INTO detail_masuk (id_msk, id, jam, jml_msk, ket, rak, status_msk) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisssss", $idMsk, $id, $jam, $jmlMsk, $ket, $rak, $status_msk);
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
@@ -84,6 +84,13 @@ class Masuk
                 JOIN masuk USING(id_msk) 
                 WHERE MONTH(tgl)=? AND YEAR(tgl)=? AND retur IN('0','1')");
         $stmt->bind_param("ii", $month, $year);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getLastData()
+    {
+        $stmt = $this->conn->prepare("SELECT id_msk, suratJln  FROM masuk ORDER BY id_msk DESC LIMIT 1");
         $stmt->execute();
         return $stmt->get_result();
     }
