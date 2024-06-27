@@ -106,6 +106,7 @@ $(document).ready(function() {
 	
 		tabelKoresiPlus.ajax.reload();
 		if (response.success === true) {
+			$('.modal').modal('hide');
 			displayMessagePopup(response.messages, 'success');
 		} else if (response.success === false) {
 			displayMessagePopup(response.messages, 'error');

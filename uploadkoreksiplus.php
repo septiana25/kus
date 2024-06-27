@@ -122,7 +122,7 @@ require_once 'include/menu.php';
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Koreksi Plus</h3>
             </div>
-            <form class="form-horizontal" id="submitEditKoreksiPlus" action="action/upload/updatekoreksiplus.php" method="POST">
+            <form class="form-horizontal" id="submitEditKoreksiPlus" action="action/upload/updatekoreksisaldo.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
                         <div id="infoplus"></div>
@@ -156,7 +156,7 @@ require_once 'include/menu.php';
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Koreksi Plus</h3>
             </div>
-            <form class="form-horizontal" id="submitDeleteKoreksiPlus" action="action/upload/deletekoreksiplus.php" method="POST">
+            <form class="form-horizontal" id="submitDeleteKoreksiPlus" action="action/upload/deletekoreksisaldo.php" method="POST">
                 <div class="modal-body modal-full">
                     <p id="pesanHapus" style="color: #dc5d3a"></p>
                     <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
