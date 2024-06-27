@@ -63,4 +63,18 @@ class Keluar
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getLastDataKoreksiMinus()
+    {
+        $status = '1';
+        $stmt = $this->conn->prepare("SELECT id_klr, no_faktur  
+                FROM keluar 
+                JOIN detail_keluar USING(id_klr) 
+                WHERE status_klr= ? 
+                ORDER BY id_klr 
+                DESC LIMIT 1");
+        $stmt->bind_param("s", $status);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
