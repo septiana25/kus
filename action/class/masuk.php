@@ -88,9 +88,16 @@ class Masuk
         return $stmt->get_result();
     }
 
-    public function getLastData()
+    public function getLastDataKoreksiPlus()
     {
-        $stmt = $this->conn->prepare("SELECT id_msk, suratJln  FROM masuk ORDER BY id_msk DESC LIMIT 1");
+        $status = '1';
+        $stmt = $this->conn->prepare("SELECT id_msk, suratJln  
+                FROM masuk 
+                JOIN detail_masuk USING(id_msk) 
+                WHERE status_msk= ? 
+                ORDER BY id_msk 
+                DESC LIMIT 1");
+        $stmt->bind_param("s", $status);
         $stmt->execute();
         return $stmt->get_result();
     }

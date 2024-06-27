@@ -126,7 +126,7 @@ function handleDataSaldo($saldoClass, $id_saldo)
 
 function handleSuratJalanIncrement($masukClass)
 {
-    $result = $masukClass->getLastData();
+    $result = $masukClass->getLastDataKoreksiPlus();
     $resultFetch = $result->fetch_assoc();
 
     $noPO = $resultFetch['suratJln'];
