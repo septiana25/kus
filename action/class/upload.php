@@ -15,7 +15,7 @@ class Upload
      */
     public function fetchKoreksiSaldo($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, id_saldo FROM tmp_koreksisaldo WHERE `type` = ? AND at_update IS NULL AND at_delete IS NULL");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, tahunprod, id_saldo, id_detailsaldo FROM tmp_koreksisaldo WHERE `type` = ? AND at_update IS NULL AND at_delete IS NULL");
         $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
@@ -23,7 +23,7 @@ class Upload
 
     public function fetchKoreksiSaldoByid($id)
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, id_saldo FROM tmp_koreksisaldo WHERE id = ?");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, brg, qty, tahunprod, id_saldo FROM tmp_koreksisaldo WHERE id = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         return $stmt->get_result();
@@ -35,7 +35,7 @@ class Upload
      */
     public function getDataByIdSaldoNull($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt = $this->conn->prepare("SELECT id, kdbrg, rak, tahunprod FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NULL AND at_delete IS NULL LIMIT 100");
         $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
@@ -47,7 +47,7 @@ class Upload
      */
     public function getDataByIdSaldoNotNull($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, id_saldo, qty, brg FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt = $this->conn->prepare("SELECT id, id_saldo, qty, brg, tahunprod, FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL LIMIT 100");
         $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();
@@ -65,10 +65,10 @@ class Upload
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
-    public function updateKoreksiIdSaldo($id, $id_saldo)
+    public function updateKoreksiIdSaldo($id, $id_saldo, $id_detailsaldo)
     {
-        $stmt = $this->conn->prepare("UPDATE tmp_koreksisaldo SET id_saldo = ? WHERE id = ?");
-        $stmt->bind_param("ii", $id_saldo, $id);
+        $stmt = $this->conn->prepare("UPDATE tmp_koreksisaldo SET id_saldo = ?, id_detailsaldo = ? WHERE id = ?");
+        $stmt->bind_param("iii", $id_saldo, $id_detailsaldo, $id);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];

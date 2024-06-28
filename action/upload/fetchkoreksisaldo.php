@@ -49,6 +49,7 @@ function handleFetchKoreksiSaldo($uploadClass)
             $row['brg'],
             $row['rak'],
             $row['qty'],
+            $row['tahunprod'],
             $status,
             $button
         );

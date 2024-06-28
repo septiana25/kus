@@ -69,6 +69,7 @@ require_once 'include/menu.php';
                                                 <th>Nama Barang</th>
                                                 <th width="10%">Lokasi Rak</th>
                                                 <th width="10%">QTY</th>
+                                                <th width="10%">Tahun</th>
                                                 <th width="12%">Status</th>
                                                 <?php
                                                 if ($_SESSION['level'] == "administrator") {

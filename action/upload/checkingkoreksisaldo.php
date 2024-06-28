@@ -4,21 +4,23 @@ require_once '../../function/session.php';
 require_once '../class/upload.php';
 require_once '../class/barang.php';
 require_once '../class/saldo.php';
+require_once '../class/detailsaldo.php';
 
 $uploadClass = new Upload($koneksi);
 $barangClass = new Barang($koneksi);
 $saldoClass = new Saldo($koneksi);
+$detailsaldoClass = new DetailSaldo($koneksi);
 
 $valid['success'] =  array('success' => false, 'messages' => array());
 
 
 try {
     $type = trim($koneksi->real_escape_string($_POST['type']));
-    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $type);
+    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $detailsaldoClass, $type);
 
     if (!$resultKoreksi['success']) {
         $valid['success'] = false;
-        $valid['messages'] = "<strong>Error! </strong> Data Ada Yang Gagal ";
+        $valid['messages'] = $resultKoreksi['messages'];
     } else {
         $valid['success'] = true;
         $valid['messages'] = "<strong>Success! </strong>Data Selesai Dicek";
@@ -31,19 +33,37 @@ try {
     echo json_encode($valid);
 }
 
-function handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $type)
+function handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $detailsaldoClass, $type)
 {
     $dataKoreksi = $uploadClass->getDataByIdSaldoNull($type);
     $results = [
         'success' => false,
+        'messages' => []
     ];
 
     if ($dataKoreksi->num_rows >= 1) {
         while ($row = $dataKoreksi->fetch_array()) {
-            $id_saldo = handleCheckItem($saldoClass, $barangClass, $row['kdbrg'], $row['rak']);
-            $update = handleUpdateKoreksiIdSaldo($uploadClass, $row['id'], $id_saldo);
-            if (is_null($id_saldo) || !$update['success']) {
+            $checkItem = handleCheckItem($saldoClass, $barangClass, $row['kdbrg'], $row['rak']);
+            if (is_null($checkItem)) {
                 $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Kode Barang atau Rak Tidak Ditemukan";
+                break;
+            }
+            $idBarang = $checkItem['id'];
+            $id_saldo = $checkItem['id_saldo'];
+
+            $checkDetailSaldo = handleCheckDetailSaldo($detailsaldoClass, $idBarang, $row['tahunprod']);
+            if (is_null($checkDetailSaldo)) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Tahun Produksi Tidak Ditemukan";
+                break;
+            }
+            $id_detailsaldo = $checkDetailSaldo['id'];
+
+            $update = handleUpdateKoreksiIdSaldo($uploadClass, $row['id'], $id_saldo, $id_detailsaldo);
+            if (!$update['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Gagal Check Data Koreksi";
                 break;
             }
             $results['success'] = true;
@@ -53,9 +73,9 @@ function handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $type)
     return $results;
 }
 
-function handleUpdateKoreksiIdSaldo($uploadClass, $id, $id_saldo)
+function handleUpdateKoreksiIdSaldo($uploadClass, $idtmp, $id_saldo, $id_detailsaldo)
 {
-    $result = $uploadClass->updateKoreksiIdSaldo($id, $id_saldo);
+    $result = $uploadClass->updateKoreksiIdSaldo($idtmp, $id_saldo, $id_detailsaldo);
     return $result;
 }
 
@@ -66,6 +86,13 @@ function handleCheckItem($saldoClass, $barangClass, $kdbrg, $rak)
     $yearSaldoLastDate = SUBSTR($checkSaldoLastDate, 0, -6);
 
     $checkItem = $barangClass->getByItemByRak($monthSaldoLastDate, $yearSaldoLastDate, $kdbrg, $rak);
-    $result = $checkItem->fetch_array();
-    return $result['id_saldo'];
+    $result = $checkItem->fetch_assoc();
+    return $result;
+}
+
+function handleCheckDetailSaldo($detailsaldoClass, $idBarang, $tahunprod)
+{
+    $checkDetailSaldo = $detailsaldoClass->getDetailSaldoByidAndYearProd($idBarang, $tahunprod);
+    $result = $checkDetailSaldo->fetch_assoc();
+    return $result;
 }

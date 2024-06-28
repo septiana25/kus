@@ -40,15 +40,15 @@ function handleFetchKoreksiMinus($uploadClass)
 
     while ($row = $result->fetch_array()) {
         $button = generateButton($row['id'], $row['id_saldo']);
-        $status = '<span class="label label-important">Perlu Dicek</span>';
-        $status = is_null($row['id_saldo'])
-            ? '<span class="label label-important">Perlu Dicek</span>'
-            : '<span class="label label-success">OK</span>';
+        $status = !is_null($row['id_saldo']) && !is_null($row['id_detailsaldo'])
+            ? '<span class="label label-success">OK</span>'
+            : '<span class="label label-important">Perlu Dicek</span>';
         $output['data'][] = array(
             $row['kdbrg'],
             $row['brg'],
             $row['rak'],
             $row['qty'],
+            $row['tahunprod'],
             $status,
             $button
         );

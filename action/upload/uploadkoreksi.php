@@ -19,15 +19,16 @@ if ($koneksi->real_escape_string($_SESSION['level']) == "administrator") {
                 $rak = trim($koneksi->real_escape_string($data[1]));
                 $barang = trim($koneksi->real_escape_string($data[2]));
                 $qty = trim($koneksi->real_escape_string($data[3]));
+                $tahunprod = trim($koneksi->real_escape_string($data[4]));
                 $type = trim($koneksi->real_escape_string($_POST['type']));
 
                 $dataKoreksiSaldo[] = '
-                    ("' . $kdbrg . '", "' . $rak . '", "' . $barang . '", "' . $qty . '", "' . $type . '")';
+                    ("' . $kdbrg . '", "' . $rak . '", "' . $barang . '", "' . $qty . '", "' . $tahunprod . '", "' . $type . '")';
                 $row++;
             }
             if (isset($dataKoreksiSaldo)) {
                 $koneksi->begin_transaction();
-                $query = "INSERT INTO tmp_koreksisaldo (kdbrg, rak, brg, qty, `type`) VALUES " . implode(',', $dataKoreksiSaldo);
+                $query = "INSERT INTO tmp_koreksisaldo (kdbrg, rak, brg, qty, tahunprod, `type`) VALUES " . implode(',', $dataKoreksiSaldo);
                 if ($koneksi->query($query) === TRUE) {
                     $valid['success'] = true;
                     $valid['messages'] = "Data berhasil diupload";
