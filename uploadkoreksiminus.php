@@ -118,7 +118,7 @@ require_once 'include/menu.php';
         </div>
 
         <!-- BEGIN MODAL EDIT KOREKSI MINUS-->
-        <div id="editModalKoreksiMinus" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Koreksi Minus</h3>
@@ -145,7 +145,7 @@ require_once 'include/menu.php';
                     <div class="control-group">
                         <label class="control-label" for="tahunprod">Tahun</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi">
+                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)">
                         </div>
                     </div>
                 </div>
@@ -158,7 +158,7 @@ require_once 'include/menu.php';
         <!-- END MODAL EDIT KOREKSI MINUS-->
 
         <!-- BEGIN MODAL HAPUS KOREKSI MINUS-->
-        <div id="deleteModalKoreksiMinus" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="deleteModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Koreksi Minus</h3>

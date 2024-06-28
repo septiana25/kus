@@ -4,7 +4,7 @@ $(document).ready(function() {
 	$('#activeUploadKoreksiMinus').addClass('active');
 
 	tabelKoresiMinus = $('#tabelKoreksiMinus').DataTable({
-		'ajax' : 'action/upload/fetchkoreksiminus.php',
+		'ajax' : 'action/upload/fetchkoreksisaldo.php?type=3',
 		'order':[],
 	});
 	
@@ -147,7 +147,7 @@ $(document).ajaxError(function(){
 	
 });
 
-function editKoreksiMinus(id) {
+function editKoreksiSaldo(id) {
 	$.ajax({
 		url: 'action/upload/fetchkoreksisaldobyid.php',
 		type: 'POST',
@@ -162,7 +162,7 @@ function editKoreksiMinus(id) {
 	});
 }
 
-function deleteKoreksiMinus(id) {
+function deleteKoreksiSaldo(id) {
 	$.ajax({
 		url: 'action/upload/fetchkoreksisaldobyid.php',
 		type: 'POST',
@@ -173,4 +173,12 @@ function deleteKoreksiMinus(id) {
 			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data ' + data.brg + ' ?');
 		}
 	});
+}
+
+function validAngka(a)
+{
+  if(!/^[0-9.]+$/.test(a.value))
+  {
+  a.value = a.value.substring(0,a.value.length-1000);
+  }
 }

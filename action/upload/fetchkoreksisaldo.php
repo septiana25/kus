@@ -6,7 +6,8 @@ require_once '../class/upload.php';
 $uploadClass = new Upload($koneksi);
 
 try {
-    $result = handleFetchKoreksiSaldo($uploadClass);
+    $type = trim($koneksi->real_escape_string($_GET['type']));
+    $result = handleFetchKoreksiSaldo($uploadClass, $type);
 
     echo json_encode($result);
 } catch (Exception $e) {
@@ -33,17 +34,16 @@ function generateButton($id, $id_saldo)
     return $button;
 }
 
-function handleFetchKoreksiSaldo($uploadClass)
+function handleFetchKoreksiSaldo($uploadClass, $type)
 {
-    $result = $uploadClass->fetchKoreksiSaldo();
+    $result = $uploadClass->fetchKoreksiSaldo($type);
     $output = array('data' => array());
 
     while ($row = $result->fetch_array()) {
         $button = generateButton($row['id'], $row['id_saldo']);
-        $status = '<span class="label label-important">Perlu Dicek</span>';
-        $status = is_null($row['id_saldo'])
-            ? '<span class="label label-important">Perlu Dicek</span>'
-            : '<span class="label label-success">OK</span>';
+        $status = !is_null($row['id_saldo']) && !is_null($row['id_detailsaldo'])
+            ? '<span class="label label-success">OK</span>'
+            : '<span class="label label-important">Perlu Dicek</span>';
         $output['data'][] = array(
             $row['kdbrg'],
             $row['brg'],

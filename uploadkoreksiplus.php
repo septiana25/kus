@@ -69,6 +69,7 @@ require_once 'include/menu.php';
                                                 <th>Nama Barang</th>
                                                 <th width="10%">Lokasi Rak</th>
                                                 <th width="10%">QTY</th>
+                                                <th width="10%">Tahun</th>
                                                 <th width="12%">Status</th>
                                                 <?php
                                                 if ($_SESSION['level'] == "administrator") {
@@ -117,7 +118,7 @@ require_once 'include/menu.php';
         </div>
 
         <!-- BEGIN MODAL EDIT KOREKSI PLUS-->
-        <div id="editModalKoreksiPlus" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Koreksi Plus</h3>
@@ -141,6 +142,12 @@ require_once 'include/menu.php';
                             <input class="span12" type="text" id="rak" name="rak" autocomplete="off" placeholder="Rak">
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="tahunprod">Tahun</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
@@ -151,7 +158,7 @@ require_once 'include/menu.php';
         <!-- END MODAL EDIT KOREKSI PLUS-->
 
         <!-- BEGIN MODAL HAPUS KOREKSI PLUS-->
-        <div id="deleteModalKoreksiPlus" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="deleteModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Koreksi Plus</h3>
