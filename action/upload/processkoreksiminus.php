@@ -82,6 +82,13 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass, $detailsaldo
                 break;
             }
 
+            $prosesTahunProdKeluar = handleTahunProdKeluar($keluarClass, $prosesDetailKeluar['id'], $row['tahunprod']);
+            if (!$prosesTahunProdKeluar['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Proses Tahun Produksi Keluar Gagal";
+                break;
+            }
+
             $prosesUpdateDetailSaldo = handleUpdateDetailSaldo($detailsaldoClass, $row['id_detailsaldo'], $jumlah, $row['qty']);
             if (!$prosesUpdateDetailSaldo['success']) {
                 $results['success'] = false;
@@ -132,6 +139,12 @@ function handleUpdateDetailSaldo($detailsaldoClass, $idDetailSaldo, $jumlah, $qt
 {
     $total = $jumlah - $qty;
     $result = $detailsaldoClass->update($idDetailSaldo, $total);
+    return $result;
+}
+
+function handleTahunProdKeluar($keluarClass, $idDetKlr, $tahunprod)
+{
+    $result = $keluarClass->saveTahunProd($idDetKlr, $tahunprod);
     return $result;
 }
 
