@@ -142,6 +142,12 @@ require_once 'include/menu.php';
                             <input class="span12" type="text" id="rak" name="rak" autocomplete="off" placeholder="Rak">
                         </div>
                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="tahunprod">Tahun</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>

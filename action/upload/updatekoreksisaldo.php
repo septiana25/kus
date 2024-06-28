@@ -26,9 +26,7 @@ try {
 
 function handleUpdateKoreksiSaldo($uploadClass, $inputs)
 {
-
     $result = $uploadClass->update($inputs);
-
     return $result;
 }
 
@@ -38,7 +36,8 @@ function getInputs($koneksi)
     $inputs = [
         "id" => trim($koneksi->real_escape_string($_POST["id"])),
         "kdbrg" => trim($koneksi->real_escape_string($_POST["kdbrg"])),
-        "rak" => trim($koneksi->real_escape_string($_POST["rak"]))
+        "rak" => trim($koneksi->real_escape_string($_POST["rak"])),
+        "tahunprod" => trim($koneksi->real_escape_string($_POST["tahunprod"]))
     ];
 
     return $inputs;

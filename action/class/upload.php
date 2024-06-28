@@ -58,8 +58,8 @@ class Upload
 
     public function update($inputs)
     {
-        $stmt = $this->conn->prepare("UPDATE tmp_koreksisaldo SET kdbrg = ?, rak = ? WHERE id = ?");
-        $stmt->bind_param("ssi", $inputs['kdbrg'], $inputs['rak'], $inputs['id']);
+        $stmt = $this->conn->prepare("UPDATE tmp_koreksisaldo SET kdbrg = ?, rak = ?, tahunprod = ? WHERE id = ?");
+        $stmt->bind_param("sssi", $inputs['kdbrg'], $inputs['rak'], $inputs['tahunprod'], $inputs['id']);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];

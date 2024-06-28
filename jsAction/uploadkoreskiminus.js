@@ -56,11 +56,13 @@ $(document).ready(function() {
 		const id = $('#id').val().trim();
 		const kdbrg = $('#kdbrg').val().trim();
 		const rak = $('#rak').val().trim();
+		const tahunprod = $('#tahunprod').val().trim();
 
 		validateInput(kdbrg, '#kdbrg', 'Kode Barang harus diisi');
 		validateInput(rak, '#rak', 'Rak harus diisi');
+		validateInput(tahunprod, '#tahunprod', 'Tahun harus diisi');
 
-		if (id && kdbrg && rak) {
+		if (id && kdbrg && rak && tahunprod) {
 			const form = $(this);
 
 			$.ajax({
@@ -155,6 +157,7 @@ function editKoreksiMinus(id) {
 			$('#id').val(data.id);
 			$('#kdbrg').val(data.kdbrg);
 			$('#rak').val(data.rak);
+			$('#tahunprod').val(data.tahunprod);
 		}
 	});
 }
