@@ -58,7 +58,7 @@ function handleDataKoreksi($uploadClass, $saldoClass, $barangClass, $detailsaldo
                 $results['messages'] = "<strong>Error! </strong> Tahun Produksi Tidak Ditemukan";
                 break;
             }
-            $id_detailsaldo = $checkDetailSaldo['id'];
+            $id_detailsaldo = $checkDetailSaldo['id_detailsaldo'];
 
             $update = handleUpdateKoreksiIdSaldo($uploadClass, $row['id'], $id_saldo, $id_detailsaldo);
             if (!$update['success']) {

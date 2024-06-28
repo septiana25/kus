@@ -47,7 +47,10 @@ class Upload
      */
     public function getDataByIdSaldoNotNull($type)
     {
-        $stmt = $this->conn->prepare("SELECT id, id_saldo, qty, brg, tahunprod, FROM tmp_koreksisaldo WHERE `type` = ? AND id_saldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL LIMIT 100");
+        $stmt = $this->conn->prepare("SELECT id, id_saldo, id_detailsaldo, qty, brg, tahunprod 
+                FROM tmp_koreksisaldo 
+                WHERE `type` = ? AND id_saldo IS NOT NULL AND id_detailsaldo IS NOT NULL AND at_update IS NULL AND at_delete IS NULL 
+                LIMIT 100");
         $stmt->bind_param("s", $type);
         $stmt->execute();
         return $stmt->get_result();

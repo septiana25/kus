@@ -6,18 +6,19 @@ require_once '../class/upload.php';
 require_once '../class/barang.php';
 require_once '../class/saldo.php';
 require_once '../class/keluar.php';
+require_once '../class/detailsaldo.php';
 
 $uploadClass = new Upload($koneksi);
 $saldoClass = new Saldo($koneksi);
 $keluarClass = new Keluar($koneksi);
-
+$detailsaldoClass = new DetailSaldo($koneksi);
 
 $valid['success'] =  array('success' => false, 'messages' => array());
 //$koneksi->begin_transaction();
 $sql_success   = "";
 
 try {
-    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $keluarClass);
+    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $keluarClass, $detailsaldoClass);
 
     if (!$resultKoreksi['success']) {
         $valid['success'] = false;
@@ -40,7 +41,7 @@ try {
     echo json_encode($valid);
 }
 
-function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
+function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass, $detailsaldoClass)
 {
     $dataKoreksi = $uploadClass->getDataByIdSaldoNotNull($type = '3');
     $results = [
@@ -62,9 +63,15 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
             $idBarang = $dataSaldo['id'];
             $saldoAwal = $dataSaldo['saldo_akhir'];
 
-            if ($row['qty'] > $saldoAwal) {
+            $dataDetailSaldo = handleDetailSaldo($detailsaldoClass, $row['id_detailsaldo']);
+            $jumlah = $dataDetailSaldo['jumlah'];
+
+            if ($row['qty'] > $jumlah || $row['qty'] > $saldoAwal) {
                 $results['success'] = false;
-                $results['messages'] = "<strong>Error! </strong> Saldo " . $row['brg'] . " Lebih Kecil Dari Qty";
+                // Use ternary operator to select the appropriate message
+                $results['messages'] = $row['qty'] > $jumlah
+                    ? "<strong>Error! </strong> Qty melebihi saldo tahun produksi, untuk " . $row['brg'] . " (" . $row['tahunprod'] . ")"
+                    : "<strong>Error! </strong> Qty melebihi saldo akhir untuk " . $row['brg'];
                 break;
             }
 
@@ -72,6 +79,13 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
             if (!$prosesDetailKeluar['success']) {
                 $results['success'] = false;
                 $results['messages'] = "<strong>Error! </strong> Proses Detail Keluar Gagal";
+                break;
+            }
+
+            $prosesUpdateDetailSaldo = handleUpdateDetailSaldo($detailsaldoClass, $row['id_detailsaldo'], $jumlah, $row['qty']);
+            if (!$prosesUpdateDetailSaldo['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Update Detail Saldo " . $row['brg'] . " Gagal";
                 break;
             }
 
@@ -114,6 +128,13 @@ function handleInsertDetailKeluar($keluarClass, $idKlr, $id, $jmlKlr)
     return $result;
 }
 
+function handleUpdateDetailSaldo($detailsaldoClass, $idDetailSaldo, $jumlah, $qty)
+{
+    $total = $jumlah - $qty;
+    $result = $detailsaldoClass->update($idDetailSaldo, $total);
+    return $result;
+}
+
 function handleUpdateSaldoByKoreksi($saldoClass, $id_saldo, $qty)
 {
     $result = $saldoClass->updateSaldoMinus($id_saldo, $qty);
@@ -133,6 +154,13 @@ function handleDataSaldo($saldoClass, $id_saldo)
     $saldoFetch = $saldo->fetch_assoc();
     $saldoFetch['saldo_akhir'];
     return $saldoFetch;
+}
+
+function handleDetailSaldo($detailsaldoClass, $idDetailSaldo)
+{
+    $checkDetailSaldo = $detailsaldoClass->getDetailSaldoByidDetailsaldo($idDetailSaldo);
+    $result = $checkDetailSaldo->fetch_assoc();
+    return $result;
 }
 
 function handleNoFakturIncrement($keluarClass)
