@@ -13,7 +13,7 @@ $keluarClass = new Keluar($koneksi);
 
 
 $valid['success'] =  array('success' => false, 'messages' => array());
-$koneksi->begin_transaction();
+//$koneksi->begin_transaction();
 $sql_success   = "";
 
 try {
@@ -49,11 +49,11 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
     ];
 
     if ($dataKoreksi->num_rows >= 1) {
-        $prosesMasuk = handleInsertKeluar($keluarClass);
-        if (!$prosesMasuk['success']) {
+        $prosesKeluar = handleInsertKeluar($keluarClass);
+        if (!$prosesKeluar['success']) {
             return [
                 'success' => false,
-                'messages' => "<strong>Error! </strong> Insert Masuk Gagal"
+                'messages' => "<strong>Error! </strong> Proses Keluar Gagal"
             ];
         }
         while ($row = $dataKoreksi->fetch_array()) {
@@ -62,11 +62,16 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
             $idBarang = $dataSaldo['id'];
             $saldoAwal = $dataSaldo['saldo_akhir'];
 
-
-            $prosesDetailMasuk = handleInsertDetailMasuk($keluarClass, $prosesMasuk['id'], $idBarang, $row['qty']);
-            if (!$prosesDetailMasuk['success']) {
+            if ($row['qty'] > $saldoAwal) {
                 $results['success'] = false;
-                $results['messages'] = "<strong>Error! </strong> Insert Detail Masuk Gagal";
+                $results['messages'] = "<strong>Error! </strong> Saldo " . $row['brg'] . " Lebih Kecil Dari Qty";
+                break;
+            }
+
+            $prosesDetailKeluar = handleInsertDetailKeluar($keluarClass, $prosesKeluar['id'], $idBarang, $row['qty']);
+            if (!$prosesDetailKeluar['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Proses Detail Keluar Gagal";
                 break;
             }
 
@@ -95,23 +100,23 @@ function handleDataKoreksi($uploadClass, $saldoClass, $keluarClass)
 function handleInsertKeluar($keluarClass)
 {
     $noFaktur = handleNoFakturIncrement($keluarClass);
-    var_dump($noFaktur);
-    die();
-    $result = $keluarClass->save(date('Y-m-d'), $noFaktur, $_SESSION['nama']);
+    $id_toko = 1;
+    $result = $keluarClass->save(date('Y-m-d'), $noFaktur, $id_toko,  $_SESSION['nama']);
     return $result;
 }
 
-function handleInsertDetailMasuk($keluarClass, $idMsk, $id, $jmlMsk)
+function handleInsertDetailKeluar($keluarClass, $idKlr, $id, $jmlKlr)
 {
     $jam = date('H:i:s');
     $ket = 'Koreksi Hasil SO';
-    $result = $keluarClass->saveDetail($idMsk, $id, $jam, $jmlMsk, $ket, '1');
+    $sisaRtr = 0;
+    $result = $keluarClass->saveDetail($idKlr, $id, $jmlKlr, $jam, $sisaRtr, $ket, '1');
     return $result;
 }
 
 function handleUpdateSaldoByKoreksi($saldoClass, $id_saldo, $qty)
 {
-    $result = $saldoClass->updateSaldoPlus($id_saldo, $qty);
+    $result = $saldoClass->updateSaldoMinus($id_saldo, $qty);
     return $result;
 }
 

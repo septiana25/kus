@@ -8,10 +8,18 @@ class Keluar
         $this->conn = $conn;
     }
 
-    public function save($tgl, $noPO, $nama)
+    public function save($tgl, $noPO, $id_toko, $pembuat, $pengirim = NULL)
     {
-        $stmt = $this->conn->prepare("INSERT INTO keluar (tgl, suratJln, pembuat) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $tgl, $noPO, $nama);
+        $stmt = $this->conn->prepare("INSERT INTO keluar (tgl, no_faktur, id_toko, pengirim, pembuat) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssiss", $tgl, $noPO, $id_toko, $pengirim, $pembuat);
+        $success = $stmt->execute();
+        return ['success' => $success, 'id' => $this->conn->insert_id];
+    }
+
+    public function saveDetail($id_klr, $id, $jml_klr, $jam, $sisaRtr, $ket, $status_klr = NULL)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO detail_keluar (id_klr, id, jml_klr, sisaRtr, jam, ket, status_klr) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iiiisss", $id_klr, $id, $jml_klr, $sisaRtr, $jam, $ket, $status_klr);
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }

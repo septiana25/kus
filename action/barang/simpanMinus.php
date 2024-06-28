@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require_once '../../function/koneksi.php';
 require_once '../../function/setjam.php';
@@ -45,45 +45,39 @@ $rowNomor = $resultCekNoFak->fetch_assoc();
 $nomor    = $rowNomor['no_faktur'];
 $hpsHuruf = substr($nomor, 7);
 // echo $hpsHuruf;
-$tambah   = $hpsHuruf+1;
+$tambah   = $hpsHuruf + 1;
 // echo $tambah;
 
-$cekNomor= strlen($tambah);
+$cekNomor = strlen($tambah);
 // echo $cekNomor;
 if (empty($nomor)) {
 	$no = '00000';
-}
-elseif ($cekNomor == 1){
+} elseif ($cekNomor == 1) {
 	$no = '00000';
-}
-elseif ($cekNomor == 2) {
+} elseif ($cekNomor == 2) {
 	$no = '0000';
-}
-elseif ($cekNomor == 3) {
+} elseif ($cekNomor == 3) {
 	$no = '000';
 }
 
-$noMin = 'KM'.$tahun2.$bulan.'-'.$no.$tambah;
+$noMin = 'KM' . $tahun2 . $bulan . '-' . $no . $tambah;
 
 //membuat fungsi transaksi
 $koneksi->begin_transaction();
 
 $sql_success = "";
 
-if ($cekJmlSld->num_rows == 0)
-{
+if ($cekJmlSld->num_rows == 0) {
 	$sisasaldo = 'Barang Tidak Ada Di Lokasi Rak';
-}
-else
-{
-	$sisasaldo = 'Jumlah Terlalu Besar. Error-AIG-0006 Sisa ' .$saldoAsal;
+} else {
+	$sisasaldo = 'Jumlah Terlalu Besar. Error-AIG-0006 Sisa ' . $saldoAsal;
 }
 
 
 if ($bulanSaldo == $bulan) {
-	
+
 	if ($saldoAsal >= $jml) {
-		
+
 		$insertKlr = "INSERT INTO keluar (no_faktur, id_toko, tgl) VALUES ('$noMin', 1,'$tgl')";
 
 		if ($koneksi->query($insertKlr) === TRUE) {
@@ -95,7 +89,7 @@ if ($bulanSaldo == $bulan) {
 
 			if ($koneksi->query($insertDetKlr) === TRUE) {
 
-				$saldoSisa =  $saldoAsal-$jml;
+				$saldoSisa =  $saldoAsal - $jml;
 
 				$updateSaldoSisa = "UPDATE saldo SET saldo_akhir = $saldoSisa WHERE id_saldo = $id_saldoAsal";
 
@@ -104,68 +98,44 @@ if ($bulanSaldo == $bulan) {
 					$valid['success']  = true;
 					$valid['messages'] = "<strong>Success! </strong> Data Berhasil Disimpan";
 
-					$sql_success .="success";
-				}
-				else
-				{
+					$sql_success .= "success";
+				} else {
 
 					$valid['success']  = false;
-					$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0024 ".$koneksi->error;
-
+					$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0024 " . $koneksi->error;
 				}
-				
-				
-
-			}
-			else
-			{
+			} else {
 				$valid['success']  = false;
-				$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Keluar Error-AIG-0025 ".$koneksi->error;
+				$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Keluar Error-AIG-0025 " . $koneksi->error;
 			}
-
-		}
-		else
-		{
+		} else {
 
 			$valid['success']  = false;
-			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Keluar Error-AIG-00026 ".$koneksi->error;	
-
+			$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Keluar Error-AIG-00026 " . $koneksi->error;
 		}
-
-	}
-	else
-	{
+	} else {
 
 		$valid['success']  = false;
-		$valid['messages'] = "<strong>Warning! </strong> ".$sisasaldo;
-
+		$valid['messages'] = "<strong>Warning! </strong> " . $sisasaldo;
 	}
-
-}
-else
-{
+} else {
 
 	$valid['success']  = false;
 	$valid['messages'] = "<strong>Warning! </strong> Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005";
-
 }
 
 /*====================< Fungsi Rollback dan Commit >========================*/
-	if ($sql_success)
-	{
+if ($sql_success) {
 
-		$koneksi->commit();//simpan semua data simpan
+	$koneksi->commit(); //simpan semua data simpan
 
-	}
-	else
-	{
+} else {
 
-		$koneksi->rollback();//batal semua data simpan
+	$koneksi->rollback(); //batal semua data simpan
 
-	}
+}
 /*====================< Fungsi Rollback dan Commit >========================*/
 
-	$koneksi->close();
+$koneksi->close();
 
-	echo json_encode($valid);
-?>
+echo json_encode($valid);

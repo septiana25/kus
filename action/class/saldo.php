@@ -59,6 +59,18 @@ class Saldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateSaldoMinus($id_saldo, $qty)
+    {
+        $stmt = $this->conn->prepare("UPDATE saldo SET saldo_akhir = saldo_akhir - ? WHERE id_saldo = ?");
+        $stmt->bind_param("ii", $qty, $id_saldo);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function getAllSaldo($month, $year)
     {
         $saldoZeo = 0;
