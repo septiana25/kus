@@ -18,7 +18,7 @@ $koneksi->begin_transaction();
 $sql_success   = "";
 
 try {
-    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $masukClass);
+    $resultKoreksi = handleDataKoreksi($uploadClass, $saldoClass, $masukClass, $detailsaldoClass);
     if (!$resultKoreksi['success']) {
         $valid['success'] = false;
         $valid['messages'] = $resultKoreksi['messages'];
@@ -40,7 +40,7 @@ try {
     echo json_encode($valid);
 }
 
-function handleDataKoreksi($uploadClass, $saldoClass, $masukClass)
+function handleDataKoreksi($uploadClass, $saldoClass, $masukClass, $detailsaldoClass)
 {
     $dataKoreksi = $uploadClass->getDataByIdSaldoNotNull($type = '2');
     $results = [
@@ -62,11 +62,27 @@ function handleDataKoreksi($uploadClass, $saldoClass, $masukClass)
             $idBarang = $dataSaldo['id'];
             $saldoAwal = $dataSaldo['saldo_akhir'];
 
+            $dataDetailSaldo = handleDetailSaldo($detailsaldoClass, $row['id_detailsaldo']);
+            $jumlah = $dataDetailSaldo['jumlah'];
 
             $prosesDetailMasuk = handleInsertDetailMasuk($masukClass, $prosesMasuk['id'], $idBarang, $row['qty']);
             if (!$prosesDetailMasuk['success']) {
                 $results['success'] = false;
                 $results['messages'] = "<strong>Error! </strong> Insert Detail Masuk Gagal";
+                break;
+            }
+
+            $prosesTahunProdMasuk = handleTahunProdMasuk($masukClass, $prosesDetailMasuk['id'], $row['tahunprod']);
+            if (!$prosesTahunProdMasuk['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Proses Tahun Produksi Masuk Gagal";
+                break;
+            }
+
+            $prosesUpdateDetailSaldo = handleUpdateDetailSaldo($detailsaldoClass, $row['id_detailsaldo'], $jumlah, $row['qty']);
+            if (!$prosesUpdateDetailSaldo['success']) {
+                $results['success'] = false;
+                $results['messages'] = "<strong>Error! </strong> Update Detail Saldo " . $row['brg'] . " Gagal";
                 break;
             }
 
@@ -107,6 +123,19 @@ function handleInsertDetailMasuk($masukClass, $idMsk, $id, $jmlMsk)
     return $result;
 }
 
+function handleUpdateDetailSaldo($detailsaldoClass, $idDetailSaldo, $jumlah, $qty)
+{
+    $total = $jumlah + $qty;
+    $result = $detailsaldoClass->update($idDetailSaldo, $total);
+    return $result;
+}
+
+function handleTahunProdMasuk($masukClass, $idDetMsk, $tahunprod)
+{
+    $result = $masukClass->saveTahunProd($idDetMsk, $tahunprod);
+    return $result;
+}
+
 function handleUpdateSaldoByKoreksi($saldoClass, $id_saldo, $qty)
 {
     $result = $saldoClass->updateSaldoPlus($id_saldo, $qty);
@@ -126,6 +155,13 @@ function handleDataSaldo($saldoClass, $id_saldo)
     $saldoFetch = $saldo->fetch_assoc();
     $saldoFetch['saldo_akhir'];
     return $saldoFetch;
+}
+
+function handleDetailSaldo($detailsaldoClass, $idDetailSaldo)
+{
+    $checkDetailSaldo = $detailsaldoClass->getDetailSaldoByidDetailsaldo($idDetailSaldo);
+    $result = $checkDetailSaldo->fetch_assoc();
+    return $result;
 }
 
 function handleSuratJalanIncrement($masukClass)
