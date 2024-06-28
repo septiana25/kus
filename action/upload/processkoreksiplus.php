@@ -6,11 +6,12 @@ require_once '../class/upload.php';
 require_once '../class/barang.php';
 require_once '../class/saldo.php';
 require_once '../class/masuk.php';
+require_once '../class/detailsaldo.php';
 
 $uploadClass = new Upload($koneksi);
 $saldoClass = new Saldo($koneksi);
 $masukClass = new Masuk($koneksi);
-
+$detailsaldoClass = new DetailSaldo($koneksi);
 
 $valid['success'] =  array('success' => false, 'messages' => array());
 $koneksi->begin_transaction();

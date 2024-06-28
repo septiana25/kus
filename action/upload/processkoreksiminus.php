@@ -14,7 +14,7 @@ $keluarClass = new Keluar($koneksi);
 $detailsaldoClass = new DetailSaldo($koneksi);
 
 $valid['success'] =  array('success' => false, 'messages' => array());
-//$koneksi->begin_transaction();
+$koneksi->begin_transaction();
 $sql_success   = "";
 
 try {
