@@ -129,7 +129,36 @@ $baris       = 6; //Ini untuk dimulai baris datanya, karena di baris 3 itu digun
 $no          = 1;
 $saldo_awal  = "";
 $saldo_akhir = "";
-while ($row = $res->fetch_array()) {
+
+foreach ($res->fetch_all(MYSQLI_ASSOC) as $key => $row) {
+  $result[$row['id']][] = $row;
+}
+
+foreach ($result as $kat => $array) {
+  foreach ($array as $index => $val) {
+
+    if ($val['jumlah'] > 0 || $val['jumlah'] == '-') {
+      $SI->setCellValue("A" . $baris, $val['nourt']); //mengisi data untuk nomor urut
+      $SI->setCellValue("B" . $baris, $val['kdbrg']); //mengisi data untuk nomor urut
+      $SI->setCellValue("C" . $baris, $val['rak']); //mengisi data untuk nomor urut
+      $SI->setCellValue("D" . $baris, $val['brg']); //mengisi data untuk nama
+      $SI->setCellValue("E" . $baris, $val['kat']); //mengisi data untuk alamat
+      if ($index == 0) {
+        $SI->setCellValue("F" . $baris, $val['saldo_awal']); //mengisi data untuk alamat
+      }
+      $SI->setCellValue("G" . $baris, $val['tahunprod']); //mengisi data untuk TELP
+      $SI->setCellValue("H" . $baris, $val['jumlah']); //mengisi data untuk TELP
+      if ($index == 0) {
+        $SI->setCellValue("I" . $baris, $val['saldo_akhir']); //mengisi data untuk TELP
+        $saldo_awal  += $val['saldo_awal'];
+        $saldo_akhir += $val['saldo_akhir'];
+      }
+      $baris++; //looping untuk barisnya
+    }
+  }
+}
+
+/* while ($row = $res->fetch_array()) {
   if ($row['jumlah'] > 0 || $row['jumlah'] == '-') {
     $SI->setCellValue("A" . $baris, $row['nourt']); //mengisi data untuk nomor urut
     $SI->setCellValue("B" . $baris, $row['kdbrg']); //mengisi data untuk nomor urut
@@ -146,7 +175,7 @@ while ($row = $res->fetch_array()) {
     $saldo_awal  += $row['saldo_awal'];
     $saldo_akhir += $row['saldo_akhir'];
   }
-}
+} */
 
 $SI->setCellValue("F" . $baris, $saldo_awal); //mengisi data untuk alamat
 $SI->setCellValue("I" . $baris, $saldo_akhir); //mengisi data untuk TELP

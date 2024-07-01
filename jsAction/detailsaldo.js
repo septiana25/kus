@@ -95,7 +95,49 @@ function editTahunProd(idDetail) {
 						data: form.serialize(),
 						dataType: 'json',
 						success: function(data) {
-							handleResponse(data, '#editModalDetailSaldo', '#submitEditDetailSaldo', 'edit');
+							handleResponse(data, '#editModalDetailSaldoTahun', '#editDetailSaldo', 'edit');
+						}
+					});
+				}
+				return false;
+			});
+		}
+	});
+
+}
+
+function editQtyProd(idDetail) {
+	if (!idDetail) {
+		alert("Data Tidak Ditemukan");
+	}
+	
+	$('#editModalDetailSaldo').modal('show');
+	$.ajax({
+		url: 'action/saldo/fetchDetailSaldoById.php',
+		type: 'post',
+		data: {idDetail: idDetail},
+		dataType: 'json',
+		success: function(response) {
+			$('#editIdDetailQty').val(response.id_detailsaldo);
+			$('#editTahunprodQty').val(response.tahunprod);
+			$('#editQty1').val(response.jumlah);
+
+			$('#editDetailSaldoQty').unbind('submit').bind('submit', function() {
+				const qty = $("#editQty1").val().trim();
+			
+				validateInput(qty, "#editQty1", "Tahun Produksi Masih Kosong");
+			
+				if (qty) {
+					const form = $(this);
+					$("#save").button('loading');
+			
+					$.ajax({
+						url : form.attr('action'),
+						type: form.attr('method'),
+						data: form.serialize(),
+						dataType: 'json',
+						success: function(data) {
+							handleResponse(data, '#editModalDetailSaldoQty', '#editDetailSaldoQty', 'edit');
 						}
 					});
 				}

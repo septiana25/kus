@@ -166,8 +166,8 @@ if ($row == null) {
         </div>
         <!-- END MODAL TAMBAH DETAIL SALDO-->
 
-        <!-- BEGIN MODAL TAMBAH DETAIL SALDO-->
-        <div id="editModalDetailSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <!-- BEGIN MODAL EDIT DETAIL TAHUN-->
+        <div id="editModalDetailSaldoTahun" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Tahun Produksi</h3>
@@ -198,7 +198,40 @@ if ($row == null) {
                 </div>
             </form>
         </div>
-        <!-- END MODAL TAMBAH DETAIL SALDO-->
+        <!-- END MODAL EDIT DETAIL TAHUN-->
+        <!-- BEGIN MODAL EDIT DETAIL QTY-->
+        <div id="editModalDetailSaldoQty" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Edit Tahun Produksi</h3>
+            </div>
+            <form class="form-horizontal" id="editDetailSaldoQty" action="action/saldo/updateqty.php" method="POST">
+                <div class="modal-body modal-full">
+                    <div class="control-group">
+                        <div id="infosaldo"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editTahunprodQty">Tahun Produksi</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="editIdDetailQty" name="editIdDetail" readonly>
+                            <input class="span12" type="text" id="editTahunprodQty" name="editTahunprodQty" readonly>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="editQty">QTY</label>
+                        <div class="controls">
+                            <input class="span12" type="number" id="editQty1" name="editQty1" placeholder="Quantiti" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Update changes</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL EDIT DETAIL QTY-->
     </div>
     <!-- END PAGE CONTAINER-->
 </div>
