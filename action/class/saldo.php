@@ -87,8 +87,8 @@ class Saldo
         SELECT id_brg, kdbrg, brg, nourt, kat
         FROM barang
         JOIN kat USING(id_kat)
-        )b ON b.id_brg=d.id_brg WHERE saldo_akhir != ? ORDER BY rak, b.brg ASC");
-        $stmt->bind_param("iii", $month, $year, $saldoZeo);
+        )b ON b.id_brg=d.id_brg WHERE saldo_awal != ? AND saldo_akhir != ? ORDER BY rak, b.brg ASC");
+        $stmt->bind_param("iiii", $month, $year, $saldoZeo, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
     }
@@ -167,8 +167,8 @@ class Saldo
     {
         $saldoZeo = 0;
         $stmt = $this->conn->prepare("SELECT SUM(saldo_awal) AS saldo_awal, SUM(saldo_akhir) AS saldo_akhir 
-                            FROM saldo WHERE MONTH(tgl) = ? AND YEAR(tgl) = ? AND saldo_akhir != ?");
-        $stmt->bind_param("iii", $month, $year, $saldoZeo);
+                            FROM saldo WHERE MONTH(tgl) = ? AND YEAR(tgl) = ? AND saldo_awal != 0 AND saldo_akhir != 0");
+        $stmt->bind_param("iiii", $month, $year, $saldoZeo, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
     }

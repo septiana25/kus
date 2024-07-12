@@ -143,12 +143,10 @@ foreach ($result as $kat => $array) {
       $SI->setCellValue("C" . $baris, $val['rak']); //mengisi data untuk nomor urut
       $SI->setCellValue("D" . $baris, $val['brg']); //mengisi data untuk nama
       $SI->setCellValue("E" . $baris, $val['kat']); //mengisi data untuk alamat
-      if ($index == 0) {
-        $SI->setCellValue("F" . $baris, $val['saldo_awal']); //mengisi data untuk alamat
-      }
       $SI->setCellValue("G" . $baris, $val['tahunprod']); //mengisi data untuk TELP
       $SI->setCellValue("H" . $baris, $val['jumlah']); //mengisi data untuk TELP
       if ($index == 0) {
+        $SI->setCellValue("F" . $baris, $val['saldo_awal']); //mengisi data untuk alamat
         $SI->setCellValue("I" . $baris, $val['saldo_akhir']); //mengisi data untuk TELP
         $saldo_awal  += $val['saldo_awal'];
         $saldo_akhir += $val['saldo_akhir'];
