@@ -152,13 +152,6 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
         <div class="row-fluid">
             <!--BEGIN METRO STATES-->
             <div class="metro-nav">
-                <div class="metro-nav-block nav-light-blue">
-                    <a data-original-title="" href="#">
-                        <i class="icon-tasks"></i>
-                        <div class="info"><?= $saldoAkhir ?></div>
-                        <div class="status">Saldo Akhir</div>
-                    </a>
-                </div>
                 <div class="metro-nav-block nav-block-yellow">
                     <a data-original-title="" href="#">
                         <i class="icon-reorder"></i>
@@ -166,25 +159,32 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
                         <div class="status">Saldo Awal</div>
                     </a>
                 </div>
-                <div class="metro-nav-block nav-olive">
-                    <a data-original-title="" href="#">
-                        <i class="icon-tags"></i>
-                        <div class="info">0</div>
-                        <div class="status">Location Rak</div>
-                    </a>
-                </div>
                 <div class="metro-nav-block nav-block-green ">
                     <a data-original-title="" href="#">
                         <i class="icon-signin"></i>
                         <div class="info"><?= $totalMasuk ?></div>
-                        <div class="status">-</div>
+                        <div class="status">Masuk</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-light-blue">
+                    <a data-original-title="" href="#">
+                        <i class="icon-tasks"></i>
+                        <div class="info"><?= $saldoAkhir ?></div>
+                        <div class="status">Saldo Akhir</div>
                     </a>
                 </div>
                 <div class="metro-nav-block nav-block-red">
                     <a data-original-title="" href="#">
                         <i class="icon-signout"></i>
                         <div class="info"><?= $totalKeluar ?></div>
-                        <div class="status">-</div>
+                        <div class="status">Keluar</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-olive">
+                    <a data-original-title="" href="#">
+                        <i class="icon-tags"></i>
+                        <div class="info">0</div>
+                        <div class="status">Location Rak</div>
                     </a>
                 </div>
             </div>
