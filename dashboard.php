@@ -166,18 +166,18 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
                         <div class="status">Masuk</div>
                     </a>
                 </div>
-                <div class="metro-nav-block nav-light-blue">
-                    <a data-original-title="" href="#">
-                        <i class="icon-tasks"></i>
-                        <div class="info"><?= $saldoAkhir ?></div>
-                        <div class="status">Saldo Akhir</div>
-                    </a>
-                </div>
                 <div class="metro-nav-block nav-block-red">
                     <a data-original-title="" href="#">
                         <i class="icon-signout"></i>
                         <div class="info"><?= $totalKeluar ?></div>
                         <div class="status">Keluar</div>
+                    </a>
+                </div>
+                <div class="metro-nav-block nav-light-blue">
+                    <a data-original-title="" href="#">
+                        <i class="icon-tasks"></i>
+                        <div class="info"><?= $saldoAkhir ?></div>
+                        <div class="status">Saldo Akhir</div>
                     </a>
                 </div>
                 <div class="metro-nav-block nav-olive">

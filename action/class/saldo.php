@@ -87,7 +87,7 @@ class Saldo
         SELECT id_brg, kdbrg, brg, nourt, kat
         FROM barang
         JOIN kat USING(id_kat)
-        )b ON b.id_brg=d.id_brg WHERE saldo_awal != ? AND saldo_akhir != ? ORDER BY rak, b.brg ASC");
+        )b ON b.id_brg=d.id_brg WHERE saldo_akhir != ? ORDER BY rak, b.brg ASC");
         $stmt->bind_param("iiii", $month, $year, $saldoZeo, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
