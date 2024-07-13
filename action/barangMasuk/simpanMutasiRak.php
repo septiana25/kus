@@ -197,7 +197,7 @@ function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunpro
 {
 	global $valid;
 
-	$insertMasukDetail = $masukClass->saveDetail($idMsk, $id, $jam, $jml, $ket, $rakAsal);
+	$insertMasukDetail = $masukClass->saveDetail($idMsk, $id, $jam, $jml, $ket, '0', $rakAsal);
 	$insertTahunProd = $masukClass->saveTahunProd($insertMasukDetail['id'], $tahunprod);
 
 	if ($insertMasukDetail['success'] && $insertTahunProd['success']) {
