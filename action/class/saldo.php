@@ -167,8 +167,8 @@ class Saldo
     {
         $saldoZeo = 0;
         $stmt = $this->conn->prepare("SELECT SUM(saldo_awal) AS saldo_awal, SUM(saldo_akhir) AS saldo_akhir 
-                            FROM saldo WHERE MONTH(tgl) = ? AND YEAR(tgl) = ? AND saldo_awal != ? AND saldo_akhir != ?");
-        $stmt->bind_param("iiii", $month, $year, $saldoZeo, $saldoZeo);
+                            FROM saldo WHERE MONTH(tgl) = ? AND YEAR(tgl) = ? AND saldo_akhir != ?");
+        $stmt->bind_param("iii", $month, $year, $saldoZeo);
         $stmt->execute();
         return $stmt->get_result();
     }
