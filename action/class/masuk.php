@@ -95,7 +95,7 @@ class Masuk
                 FROM detail_masuk 
                 JOIN masuk USING(id_msk) 
                 WHERE MONTH(tgl)=? AND YEAR(tgl)=? AND retur = ?");
-        $stmt->bind_param("iii", $month, $year, $retur);
+        $stmt->bind_param("iis", $month, $year, $retur);
         $stmt->execute();
         return $stmt->get_result();
     }
