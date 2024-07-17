@@ -90,7 +90,7 @@ class Masuk
 
     public function getTotalRetur($month, $year)
     {
-        $retur = 1;
+        $retur = '1';
         $stmt = $this->conn->prepare("SELECT SUM(jml_msk) as total_masuk
                 FROM detail_masuk 
                 JOIN masuk USING(id_msk) 
