@@ -197,4 +197,4 @@ require_once 'include/menu.php';
 
     <?php require_once 'include/footer.php'; ?>
 
-    <script src="jsAction/uploadkoreskiminus.js"></script>
+    <script src="jsAction/uploadsalesorder.js"></script>

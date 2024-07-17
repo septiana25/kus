@@ -1,7 +1,7 @@
 $(document).ready(function() {
 	let tabelKoresiMinus;
 	$('#activeUpload').addClass('active');
-	$('#activeUploadKoreksiMinus').addClass('active');
+	$('#activeUploadSalesOrder').addClass('active');
 
 	tabelKoresiMinus = $('#tabelKoreksiMinus').DataTable({
 		'ajax' : 'action/upload/fetchkoreksisaldo.php?type=3',
