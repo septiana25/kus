@@ -184,6 +184,13 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
                         <div class="status">Masuk</div>
                     </a>
                 </div>
+                <div class="metro-nav-block nav-olive">
+                    <a data-original-title="" href="#">
+                        <i class="fa fa-retweet"></i>
+                        <div class="info"><?= $totalRetur ?></div>
+                        <div class="status">Retur</div>
+                    </a>
+                </div>
                 <div class="metro-nav-block nav-block-red">
                     <a data-original-title="" href="#">
                         <i class="icon-signout"></i>
@@ -196,13 +203,6 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
                         <i class="icon-tasks"></i>
                         <div class="info"><?= $saldoAkhir ?></div>
                         <div class="status">Saldo Akhir</div>
-                    </a>
-                </div>
-                <div class="metro-nav-block nav-olive">
-                    <a data-original-title="" href="#">
-                        <i class="fa fa-retweet"></i>
-                        <div class="info"><?= $totalRetur ?></div>
-                        <div class="status">Retur</div>
                     </a>
                 </div>
             </div>
