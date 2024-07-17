@@ -175,7 +175,6 @@
                           <li id="activeUploadKoreksiPlus"><a class="" href="uploadkoreksiplus.php">Koreksi Plus</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeUploadKoreksiMinus"><a class="" href="uploadkoreksiminus.php">Koreksi Minus</a><i class="icon-circle-arrow-right kanan"></i></li>
                           <li id="activeUploadSalesOrder"><a class="" href="uploadsalesorder.php">Sales Order</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activeUploadKoreksiSaldo"><a class="" href="uploadkoreksisaldo.php">Koreksi Saldo</a><i class="icon-circle-arrow-right kanan"></i></li>
                       </ul>
                   </li>
             ';
