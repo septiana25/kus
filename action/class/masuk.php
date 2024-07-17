@@ -88,6 +88,18 @@ class Masuk
         return $stmt->get_result();
     }
 
+    public function getTotalRetur($month, $year)
+    {
+        $retur = 1;
+        $stmt = $this->conn->prepare("SELECT SUM(jml_msk) as total_masuk
+                FROM detail_masuk 
+                JOIN masuk USING(id_msk) 
+                WHERE MONTH(tgl)=? AND YEAR(tgl)=? AND retur = ?");
+        $stmt->bind_param("iii", $month, $year, $retur);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getLastDataKoreksiPlus()
     {
         $status = '1';

@@ -98,6 +98,21 @@ function handleTotalMasuk($saldoClass, $masukClass)
     }
 }
 
+function handleTotalRetur($saldoClass, $masukClass)
+{
+
+    try {
+        $monthAndYear = handleLastDateSaldo($saldoClass);
+        $month = $monthAndYear['month'];
+        $year = $monthAndYear['year'];
+        $totalRetur = $masukClass->getTotalRetur($month, $year);
+        $row = $totalRetur->fetch_assoc();
+        return $row;
+    } catch (Exception $e) {
+        return null;
+    }
+}
+
 function handleTotalKeluar($saldoClass, $keluarClass)
 {
 
@@ -119,6 +134,9 @@ $saldoAkhir = $resultTotalSaldos['saldo_akhir'];
 
 $resultTotalMasuks = handleTotalMasuk($saldoClass, $masukClass);
 $totalMasuk = $resultTotalMasuks['total_masuk'];
+
+$resultTotalRetur = handleTotalRetur($saldoClass, $masukClass);
+$totalRetur = $resultTotalRetur['total_masuk'];
 
 $resultTotalKeluars = handleTotalKeluar($saldoClass, $keluarClass);
 $totalKeluar = $resultTotalKeluars['total_keluar'];
@@ -182,9 +200,9 @@ $totalKeluar = $resultTotalKeluars['total_keluar'];
                 </div>
                 <div class="metro-nav-block nav-olive">
                     <a data-original-title="" href="#">
-                        <i class="icon-tags"></i>
-                        <div class="info">0</div>
-                        <div class="status">Location Rak</div>
+                        <i class="fa fa-retweet"></i>
+                        <div class="info"><?= $totalRetur ?></div>
+                        <div class="status">Retur</div>
                     </a>
                 </div>
             </div>
