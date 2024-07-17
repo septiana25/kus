@@ -128,6 +128,16 @@
                   </li>
                   ';
 
+            $ekspedisi = '
+            <li class="sub-menu" id="activeToko">
+                <a class="" href="ekspedisi.php">
+                    <i class="fa fa-truck"></i>
+                    <span>Ekspedisi</span>
+                </a>
+            </li>
+            ';
+
+
             $laporan = '
                   <li class="sub-menu" id="activeLaporan">
                       <a href="javascript:;" class="">
@@ -189,6 +199,7 @@
                 echo $transaksi;
                 echo $masterBarang;
                 echo $toko;
+                echo $ekspedisi;
                 echo $laporan;
                 echo $upload;
                 echo $setting;
@@ -196,6 +207,7 @@
                 echo $transaksi;
                 echo $masterBarang;
                 echo $toko;
+                echo $ekspedisi;
                 echo $laporan;
             } elseif ($_SESSION['level'] == 'tamu') {
                 echo $transaksi;
