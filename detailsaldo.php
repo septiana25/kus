@@ -205,7 +205,7 @@ if ($row == null) {
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Tahun Produksi</h3>
             </div>
-            <form class="form-horizontal" id="editDetailSaldoQty" action="action/saldo/updateqty.php" method="POST">
+            <form class="form-horizontal" id="editDetailSaldoQty" action="action/saldo/updateDetailSaldo.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
                         <div id="infosaldo"></div>
@@ -221,7 +221,7 @@ if ($row == null) {
                     <div class="control-group">
                         <label class="control-label" for="editQty">QTY</label>
                         <div class="controls">
-                            <input class="span12" type="number" id="editQty1" name="editQty1" placeholder="Quantiti" onkeyup="validAngka(this)">
+                            <input class="span12" type="number" id="editQtyDetailSaldo" name="editQtyDetailSaldo" placeholder="Quantiti" onkeyup="validAngka(this)">
                         </div>
                     </div>
                 </div>

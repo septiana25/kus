@@ -108,7 +108,7 @@ function editTahunProd(idDetail) {
 
 function editQtyProd(idDetail) {
 	if (!idDetail) {
-		alert("Data Tidak Ditemukan");
+		displayMessagePopup("Data Tidak Ditemukan", 'error');
 	}
 	
 	$('#editModalDetailSaldo').modal('show');
@@ -120,12 +120,12 @@ function editQtyProd(idDetail) {
 		success: function(response) {
 			$('#editIdDetailQty').val(response.id_detailsaldo);
 			$('#editTahunprodQty').val(response.tahunprod);
-			$('#editQty1').val(response.jumlah);
+			$('#editQtyDetailSaldo').val(response.jumlah);
 
 			$('#editDetailSaldoQty').unbind('submit').bind('submit', function() {
-				const qty = $("#editQty1").val().trim();
+				const qty = $("#editQtyDetailSaldo").val().trim();
 			
-				validateInput(qty, "#editQty1", "Tahun Produksi Masih Kosong");
+				validateInput(qty, "#editQtyDetailSaldo", "Tahun Produksi Masih Kosong");
 			
 				if (qty) {
 					const form = $(this);
