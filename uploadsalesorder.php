@@ -100,6 +100,11 @@ require_once 'include/menu.php';
                                                 </span>
                                             </div>
                                         </div>
+                                        <div class="control-group">
+                                            <div class="controls">
+                                                <a class="btn btn-info" href="sample/sample_sales_order.xlsx" target="_blank">Sample Format Upload</a>
+                                            </div>
+                                        </div>
                                         <div class="form-actions">
                                             <button class="btn btn-success" type="submit" id="uploadFile"><i class="fa fa-upload"></i> Upload</button>
                                         </div>
