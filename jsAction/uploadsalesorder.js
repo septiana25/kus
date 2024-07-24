@@ -170,7 +170,7 @@ function deleteKoreksiSaldo(id_so) {
 		dataType: 'json',
 		success: function(data) {
 			$('#hapusid').val(data.id_so);
-			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data '+ data.no_fakturgit + ' & ' + data.brg + ' ?');
+			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data '+ data.no_faktur + ' & ' + data.brg + ' ?');
 		}
 	});
 }

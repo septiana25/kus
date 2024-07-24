@@ -65,11 +65,9 @@ require_once 'include/menu.php';
                                     <table class="table table-striped table-bordered" id="tabelSalesOrder">
                                         <thead>
                                             <tr>
-                                                <th width="10%">Supir</th>
-                                                <th width="10%">Kode Toko</th>
-                                                <th width="20%">Toko</th>
+                                                <th width="10%">Ekspedisi</th>
+                                                <th width="25%">Toko</th>
                                                 <th width="10%">Faktur</th>
-                                                <th width="10%">Kode Barang</th>
                                                 <th>Nama Barang</th>
                                                 <th width="5%">QTY</th>
                                                 <th width="5%">Status</th>

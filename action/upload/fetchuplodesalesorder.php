@@ -40,26 +40,30 @@ function handleFetchSalesOrder($soClass)
 
     while ($row = $result->fetch_array()) {
         $button = generateButton($row['id_so'], $row['status']);
+
         $status = $row['status'] == '1'
             ? '<span class="label label-success">OK</span>'
             : '<span class="label label-important">Perlu Dicek</span>';
+
         $toko = is_null($row['toko'])
             ? '<span class="label label-important">Tida Ada</span>'
             : $row['toko'];
 
-        $brg = is_null($row['brg'])
+        $barang = is_null($row['brg'])
             ? '<span class="label label-important">Tida Ada</span>'
             : $row['brg'];
+
+        $ekspedisi = is_null($row['nopol'])
+            ? '<span class="label label-important">Tida Ada</span>'
+            : $row['nopol'];
+
         $output['data'][] = array(
-            $row['nopol'],
-            $row['kode_toko'],
+            $ekspedisi,
             $toko,
             $row['no_faktur'],
-            $row['kdbrg'],
-            $brg,
+            $barang,
             $row['qty'],
             $status,
-            //$status,
             $button
         );
     }
