@@ -1,10 +1,10 @@
 $(document).ready(function() {
-	let tabelKoresiMinus;
+	let tabelSalesOrder;
 	$('#activeUpload').addClass('active');
 	$('#activeUploadSalesOrder').addClass('active');
 
-	tabelKoresiMinus = $('#tabelKoreksiMinus').DataTable({
-		'ajax' : 'action/upload/fetchkoreksisaldo.php?type=3',
+	tabelSalesOrder = $('#tabelSalesOrder').DataTable({
+		'ajax' : 'action/upload/fetchuplodesalesorder.php',
 		'order':[],
 	});
 	
@@ -26,7 +26,7 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#submitUploadKoreksiMinus').unbind('submit').bind('submit', function() {
+	$('#submitUploadSalesOrder').unbind('submit').bind('submit', function() {
 		const file = $('#file-csv').val().trim();
 		const type = $('#type').val().trim();
 
@@ -38,7 +38,7 @@ $(document).ready(function() {
 			const formData = new FormData(this);
 
 			$.ajax({
-				url: 'action/upload/uploadkoreksi.php',
+				url: 'action/upload/uploadsalesorder.php',
 				type: 'POST',
 				data: formData,
 				dataType: 'json',

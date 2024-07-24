@@ -66,12 +66,13 @@ require_once 'include/menu.php';
                                         <thead>
                                             <tr>
                                                 <th width="10%">Supir</th>
-                                                <th width="10%">Toko</th>
+                                                <th width="10%">Kode Toko</th>
+                                                <th width="20%">Toko</th>
+                                                <th width="10%">Faktur</th>
                                                 <th width="10%">Kode Barang</th>
                                                 <th>Nama Barang</th>
-                                                <th width="10%">Lokasi Rak</th>
-                                                <th width="10%">QTY</th>
-                                                <th width="12%">Status</th>
+                                                <th width="5%">QTY</th>
+                                                <th width="5%">Status</th>
                                                 <?php
                                                 if ($_SESSION['level'] == "administrator") {
                                                     echo '<th width="8%" class="hidden-phone">Action</th>';
