@@ -149,7 +149,7 @@ $(document).ajaxError(function(){
 
 function editKoreksiSaldo(id) {
 	$.ajax({
-		url: 'action/upload/fetchkoreksisaldobyid.php',
+		url: 'action/upload/fetchsalesorderbyid.php',
 		type: 'POST',
 		data: { id: id },
 		dataType: 'json',
@@ -162,15 +162,15 @@ function editKoreksiSaldo(id) {
 	});
 }
 
-function deleteKoreksiSaldo(id) {
+function deleteKoreksiSaldo(id_so) {
 	$.ajax({
-		url: 'action/upload/fetchkoreksisaldobyid.php',
+		url: 'action/upload/fetchsalesorderbyid.php',
 		type: 'POST',
-		data: { id: id },
+		data: { id_so: id_so },
 		dataType: 'json',
 		success: function(data) {
-			$('#hapusid').val(data.id);
-			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data ' + data.brg + ' ?');
+			$('#hapusid').val(data.id_so);
+			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data '+ data.no_fakturgit + ' & ' + data.brg + ' ?');
 		}
 	});
 }

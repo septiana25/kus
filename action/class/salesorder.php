@@ -24,4 +24,15 @@ class Salesorder
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function fetchSelesOrderByid($id_so)
+    {
+        $stmt = $this->conn->prepare("SELECT id_so, no_faktur, kode_toko, nopol, kdbrg, barang.brg AS brg, qty 
+                                        FROM tmp_salesorder
+                                        LEFT JOIN barang USING(kdbrg)
+                                        WHERE id_so = ?");
+        $stmt->bind_param("i", $id_so);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
