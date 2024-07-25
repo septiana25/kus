@@ -128,29 +128,35 @@ require_once 'include/menu.php';
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitEditKoreksiMinus" action="action/upload/updatekoreksisaldo.php" method="POST">
+            <form class="form-horizontal" id="submitEditSalesOrder" action="action/upload/updatesalesorder.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
-                        <div id="infoMinus"></div>
+                        <div id="infoSO"></div>
                         <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="nopol">Ekspedisi</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="id_so" name="id_so" readonly>
+                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="kode_toko">Kode Toko</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="kode_toko" name="kode_toko" autocomplete="off" placeholder="Kode Toko">
+                        </div>
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="kdbrg">Kode Barang</label>
                         <div class="controls">
-                            <input class="span12" type="hidden" id="id" name="id" readonly>
                             <input class="span12" type="text" id="kdbrg" name="kdbrg" autocomplete="off" placeholder="Kode Barang">
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="rak">Rak</label>
+                        <label class="control-label" for="qty">QTY</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="rak" name="rak" autocomplete="off" placeholder="Rak">
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="tahunprod">Tahun</label>
-                        <div class="controls">
-                            <input class="span12" type="text" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun Produksi" minlength="4" maxlength="4" onkeyup="validAngka(this)">
+                            <input class="span12" type="number" id="qty" name="qty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
                         </div>
                     </div>
                 </div>
@@ -168,7 +174,7 @@ require_once 'include/menu.php';
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitDeleteKoreksiMinus" action="action/upload/deletesalesorder.php" method="POST">
+            <form class="form-horizontal" id="submitDeleteSalesOrder" action="action/upload/deletesalesorder.php" method="POST">
                 <div class="modal-body modal-full">
                     <p id="pesanHapus" style="color: #dc5d3a"></p>
                     <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>

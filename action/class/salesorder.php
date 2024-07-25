@@ -36,6 +36,18 @@ class Salesorder
         return $stmt->get_result();
     }
 
+    public function update($inputs)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ?, kdbrg = ?, kode_toko = ?, qty = ? WHERE id_so = ?");
+        $stmt->bind_param("sssii", $inputs['nopol'], $inputs['kdbrg'], $inputs['kode_toko'], $inputs['qty'], $inputs['id_so']);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function delete($id_so, $atDelete)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET at_delete = ? WHERE id_so = ?");
