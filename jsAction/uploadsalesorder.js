@@ -106,7 +106,7 @@ $(document).ready(function() {
 	}
 	function handleResponse(response) {
 	
-		tabelKoresiMinus.ajax.reload();
+		tabelSalesOrder.ajax.reload();
 		if (response.success === true) {
 			$('.modal').modal('hide');
 			displayMessagePopup(response.messages, 'success');

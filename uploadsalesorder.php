@@ -168,7 +168,7 @@ require_once 'include/menu.php';
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Hapus Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitDeleteKoreksiMinus" action="action/upload/deletekoreksisaldo.php" method="POST">
+            <form class="form-horizontal" id="submitDeleteKoreksiMinus" action="action/upload/deletesalesorder.php" method="POST">
                 <div class="modal-body modal-full">
                     <p id="pesanHapus" style="color: #dc5d3a"></p>
                     <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
