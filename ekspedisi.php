@@ -53,7 +53,7 @@ echo "<div class='div-request div-hide'>ekspedisi</div>";
                 <!-- BEGIN EXAMPLE TABLE widget-->
                 <div class="widget red">
                     <div class="widget-title">
-                        <!--<a href="#myModal1" role="button" class="btn btn-primary tambah" id="addTokoBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>-->
+                        <a href="#addModalEkspedisi" role="button" class="btn btn-primary tambah" id="addBtnModalEkspedisi" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
                         <span class="tools">
                             <a href="javascript:;" class="icon-chevron-down"></a>
                             <!-- <a href="javascript:;" class="icon-remove"></a> -->
@@ -83,97 +83,124 @@ echo "<div class='div-request div-hide'>ekspedisi</div>";
             </div>
         </div>
 
-        <!-- BEGIN MODAL TOKO-->
-        <div id="myModal1" class="modal modal-form hide fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <!-- BEGIN MODAL Tambah Ekspedisi-->
+        <div id="addModalEkspedisi" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign"></i> FORM INPUT TOKO</h3>
+                <h3 id="myModalLabel">Tambah Ekspedisi</h3>
             </div>
-            <form class="cmxform form-horizontal" id="submitToko" action="action/toko/simpanToko.php" method="POST">
-                <div class="modal-body modal-full tinggi2">
-                    <div class="control-group" style="margin-bottom: 15px;">
-                        <label for="cname" class="control-label"><strong>Nama Toko</strong>
-                            <p class="titik2">:</p>
-                        </label>
-                        <div class="controls">
-                            <input class="span12 " id="namaToko" name="namaToko" type="text" placeholder="Input Nama Toko" onkeydown="HurufBesar(this)" />
-                        </div>
-                    </div>
-                    <div class="control-group" style="margin-bottom: 15px;">
-                        <label for="cname" class="control-label"><strong>Alamat</strong>
-                            <p class="titik2">:</p>
-                        </label>
-                        <div class="controls">
-                            <textarea class="input-xxlarge" style="width: 477px" rows="3" name="alamat" id="alamat" placeholder="Input Alamat Toko"></textarea>
-                        </div>
-                    </div>
+            <form class="form-horizontal" id="submitAddEkspedisi" action="action/ekspedisi/simpanekspedisi.php" method="POST">
+                <div class="modal-body modal-full">
                     <div class="control-group">
+                        <div id="infoSO"></div>
                         <div id="pesan"></div>
                     </div>
-                </div>
-                <div class="modal-footer">
-
-                    <button class="btn btn-primary" id="simpanTokoBtn" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
-                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
-                </div>
-            </form>
-        </div>
-        <!-- END MODAL TOKO-->
-
-        <!-- BEGIN MODAL EDIT TOKO-->
-        <div id="editModalToko" class="modal modal-form hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel1" class="center"><i class="icon-pencil"></i> FORM EDIT TOKO</h3>
-            </div>
-            <form class="cmxform form-horizontal" id="submitEditToko" action="action/toko/editToko.php" method="POST">
-                <div class="modal-body modal-full tinggi2">
-                    <div class="control-group" style="margin-bottom: 15px;">
-                        <label for="cname" class="control-label"><strong>Nama Toko</strong>
-                            <p class="titik2">:</p>
-                        </label>
-                        <div class="controls">
-                            <input class="span12 " id="editNamaToko" name="editNamaToko" type="text" placeholder="Input Nama Toko" onkeydown="HurufBesar(this)" />
-                        </div>
-                    </div>
-                    <div class="control-group" style="margin-bottom: 15px;">
-                        <label for="cname" class="control-label"><strong>Alamat</strong>
-                            <p class="titik2">:</p>
-                        </label>
-                        <div class="controls">
-                            <textarea class="input-xxlarge" style="width: 477px" rows="3" name="editAlamat" id="editAlamat" placeholder="Input Alamat Toko"></textarea>
-                        </div>
-                    </div>
-
                     <div class="control-group">
-                        <div id="pesanEdit"></div>
+                        <label class="control-label" for="nopol">Plat Nomor</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor" onkeydown="HurufBesar(this)">
+                        </div>
                     </div>
-
+                    <div class="control-group">
+                        <label class="control-label" for="supir">Supir</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="supir" name="supir" autocomplete="off" placeholder="Supir" onkeydown="HurufBesar(this)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="jenis">Jenis Kendaran</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="jenis" name="jenis" autocomplete="off" placeholder="Jenis Kendaran" onkeydown="HurufBesar(this)">
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <input class="span12 " id="editIdToko" name="editIdToko" type="hidden" />
-                    <button class="btn btn-primary" id="editTokoBtn" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
-                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
                 </div>
             </form>
         </div>
-        <!-- END MODAL EDIT TOKO-->
+        <!-- END MODAL Tambah Ekspedisi-->
 
-        <!-- BEGIN MODAL HAPUS TOKO-->
-        <div id="hapusModalToko" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <!-- BEGIN MODAL EDIT Sales Order-->
+        <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 class="center" id="myModalLabel1"><i class="icon-trash"></i> HAPUS DATA TOKO</h3>
+                <h3 id="myModalLabel">Edit Sales Order</h3>
             </div>
-            <div class="modal-body">
-                <p id="pesanHapus" style="color: #dc5d3a"></p>
+            <form class="form-horizontal" id="submitEditSalesOrder" action="action/upload/updatesalesorder.php" method="POST">
+                <div class="modal-body modal-full">
+                    <div class="control-group">
+                        <div id="infoSO"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="nopol">Ekspedisi</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="id_so" name="id_so" readonly>
+                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="kode_toko">Kode Toko</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="kode_toko" name="kode_toko" autocomplete="off" placeholder="Kode Toko">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="kdbrg">Kode Barang</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="kdbrg" name="kdbrg" autocomplete="off" placeholder="Kode Barang">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="qty">QTY</label>
+                        <div class="controls">
+                            <input class="span12" type="number" id="qty" name="qty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL EDIT Sales Order-->
+
+        <!-- BEGIN MODAL HAPUS Sales Order-->
+        <div id="deleteModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Hapus Sales Order</h3>
             </div>
-            <div class="modal-footer hidden">
-                <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
-                <button class="btn btn-danger" id="hapusTokoBtn" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-trash"></i> Hapus</button>
+            <form class="form-horizontal" id="submitDeleteSalesOrder" action="action/upload/deletesalesorder.php" method="POST">
+                <div class="modal-body modal-full">
+                    <p id="pesanHapus" style="color: #dc5d3a"></p>
+                    <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Hapus</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL HAPUS Sales Order-->
+        <!-- BEGIN MODAL DISABLE Sales Order-->
+        <div id="disableaccess" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">WARNING</h3>
+            </div>
+            <div class="modal-body modal-full">
+                <p id="pesanHapus" style="color: #dc5d3a">DALAM PENGEMBANGAN</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+
             </div>
         </div>
-        <!-- END MODAL HAPUS TOKO-->
+        <!-- END MODAL HAPUS Sales Order-->
 
         <!-- END ADVANCED TABLE widget-->
     </div>
