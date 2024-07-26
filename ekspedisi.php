@@ -63,7 +63,7 @@ echo "<div class='div-request div-hide'>ekspedisi</div>";
                         <table class="table table-striped table-bordered" id="tabelEkspedisi">
                             <thead>
                                 <tr>
-                                    <th width="20%">Flat Nomor</th>
+                                    <th width="20%">Plat Nomor</th>
                                     <th width="30%">Supir</th>
                                     <th>Jenis</th>
                                     <?php
