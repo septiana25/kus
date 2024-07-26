@@ -10,7 +10,7 @@ $(document).ready(function() {
 	
 	$('#checkingData').click(function() {
 		$.ajax({
-			url: 'action/upload/checkingkoreksisaldo.php',
+			url: 'action/upload/checkingesalesorder.php',
 			type: 'POST',
 			data: { type: '3' },
 			dataType: 'json',

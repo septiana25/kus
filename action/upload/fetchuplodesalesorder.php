@@ -33,6 +33,22 @@ function generateButton($id, $status)
     return $button;
 }
 
+function generateLabel($value, $defaultText = 'Tidak Ada', $dangerClass = 'important')
+{
+    if (is_null($value) || empty($value)) {
+        return "<span class=\"label label-{$dangerClass}\">{$defaultText}</span>";
+    }
+    return $value;
+}
+
+function generateStatusLabel($status, $okText = 'OK', $checkText = 'Perlu Dicek')
+{
+    $labelClass = $status == '1' ? 'success' : 'important';
+    $text = $status == '1' ? $okText : $checkText;
+
+    return "<span class=\"label label-{$labelClass}\">{$text}</span>";
+}
+
 function handleFetchSalesOrder($soClass)
 {
     $result = $soClass->getDataSalesOrderUnprocessed();
@@ -41,29 +57,13 @@ function handleFetchSalesOrder($soClass)
     while ($row = $result->fetch_array()) {
         $button = generateButton($row['id_so'], $row['status']);
 
-        $status = $row['status'] == '1'
-            ? '<span class="label label-success">OK</span>'
-            : '<span class="label label-important">Perlu Dicek</span>';
-
-        $toko = is_null($row['toko'])
-            ? '<span class="label label-important">Tida Ada</span>'
-            : $row['toko'];
-
-        $barang = is_null($row['brg'])
-            ? '<span class="label label-important">Tida Ada</span>'
-            : $row['brg'];
-
-        $ekspedisi = is_null($row['nopol'])
-            ? '<span class="label label-important">Tida Ada</span>'
-            : $row['nopol'];
-
         $output['data'][] = array(
-            $ekspedisi,
-            $toko,
+            generateLabel($row['nopol']),
+            generateLabel($row['toko']),
             $row['no_faktur'],
-            $barang,
+            generateLabel($row['brg']),
             $row['qty'],
-            $status,
+            generateStatusLabel($row['status']),
             $button
         );
     }

@@ -49,6 +49,18 @@ class Salesorder
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateStatusSalesOrder($id_so, $status)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET `status` = ? WHERE id_so = ?");
+        $stmt->bind_param("si", $status, $id_so);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: upload"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function delete($id_so, $atDelete)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET at_delete = ? WHERE id_so = ?");

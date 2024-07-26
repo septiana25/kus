@@ -21,15 +21,16 @@ if ($koneksi->real_escape_string($_SESSION['level']) == "administrator") {
                 $kdbrg = trim($koneksi->real_escape_string($data[3]));
                 /* $brg = trim($koneksi->real_escape_string($data[4])); */
                 $qty = trim($koneksi->real_escape_string($data[5]));
+                $sisa = trim($koneksi->real_escape_string($data[5]));
                 $nopol = trim($koneksi->real_escape_string($data[6]));
 
                 $dataSalesOrder[] = '
-                    ("' . $no_faktur . '", "' . $kode_toko . '", "' . $kdbrg . '", "' . $qty . '", "' . $nopol . '")';
+                    ("' . $no_faktur . '", "' . $kode_toko . '", "' . $kdbrg . '", "' . $qty . '", "' . $qty . '", "' . $nopol . '", "' . $_SESSION['id_userKUS'] . '")';
                 $row++;
             }
             if (isset($dataSalesOrder)) {
                 $koneksi->begin_transaction();
-                $query = "INSERT INTO tmp_salesorder (no_faktur, kode_toko, kdbrg, `qty`, nopol) VALUES " . implode(',', $dataSalesOrder);
+                $query = "INSERT INTO tmp_salesorder (no_faktur, kode_toko, kdbrg, qty, sisa, nopol, id_user) VALUES " . implode(',', $dataSalesOrder);
                 if ($koneksi->query($query) === TRUE) {
                     $valid['success'] = true;
                     $valid['messages'] = "Data berhasil diupload";
