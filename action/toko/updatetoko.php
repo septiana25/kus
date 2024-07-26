@@ -35,8 +35,8 @@ function handleSaveToko($tokoClass, $inputs)
 		];
 	}
 
-	$result = $tokoClass->insert($inputs);
-	if ($result) {
+	$result = $tokoClass->update($inputs);
+	if ($result['success']) {
 		return [
 			'success' => true
 		];
@@ -51,9 +51,10 @@ function handleSaveToko($tokoClass, $inputs)
 function getInputs($koneksi)
 {
 	$inputs = [
-		"kode_toko" => trim($koneksi->real_escape_string($_POST["kode_toko"])),
-		"toko" => trim($koneksi->real_escape_string($_POST["toko"])),
-		"alamat" => trim($koneksi->real_escape_string($_POST["alamat"]))
+		"id_toko" => trim($koneksi->real_escape_string($_POST["id_toko"])),
+		"kode_toko" => trim($koneksi->real_escape_string($_POST["editkode_toko"])),
+		"toko" => trim($koneksi->real_escape_string($_POST["edittoko"])),
+		"alamat" => trim($koneksi->real_escape_string($_POST["editalamat"]))
 	];
 
 	return $inputs;
