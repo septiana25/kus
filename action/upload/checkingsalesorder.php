@@ -41,16 +41,14 @@ function handleCheckingSalesOrder($soClass)
 
         if (is_null($row['nopol']) || is_null($row['toko']) || is_null($row['brg'])) {
             $results['success'] = false;
-            $results['messages'] = "<strong>Error!</strong> Data Tidak Lengkap untuk ID: " . $row['id_so'];
+            $results['messages'] = "<strong>Error!</strong> Data Tidak Lengkap";
             continue;
         }
 
         $update = $soClass->updateStatusSalesOrder($row['id_so'], '1');
         if (!$update['success']) {
             $results['success'] = false;
-            $results['messages'] = "<strong>Error!</strong> Gagal Check Data untuk ID: " . $row['id_so'];
-        } else {
-            $results['messages'] = "Berhasil update status untuk ID: " . $row['id_so'];
+            $results['messages'] = "<strong>Error!</strong> Gagal Check Data";
         }
     }
 
