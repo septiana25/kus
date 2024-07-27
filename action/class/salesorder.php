@@ -74,6 +74,20 @@ class Salesorder
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateDateUpdateSalesOrder($id_so, $atUpdate)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET `at_update` = ? WHERE id_so = ?");
+        $stmt->bind_param("si", $atUpdate, $id_so);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+
+
     public function updateSisaSalesOrder($id_so, $sisa)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET `sisa` = ? WHERE id_so = ?");

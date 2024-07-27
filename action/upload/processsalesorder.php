@@ -1,6 +1,7 @@
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
+require_once '../../function/setjam.php';
 require_once '../class/detailsaldo.php';
 require_once '../class/salesorder.php';
 require_once '../class/barang.php';
@@ -98,9 +99,9 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
         if ($remainingQty > 0) {
             $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
         } else {
-
             // Update status SO
-            $updateSOResult = $soClass->updateStatusSalesOrder($rowSO['id_so'], '2');
+            $atUpdate = date('Y-m-d H:i:s');
+            $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
             if (!$updateSOResult['success']) {
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui status SO untuk {$kdbrg}";
