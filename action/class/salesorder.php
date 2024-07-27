@@ -55,7 +55,7 @@ class Salesorder
         $stmt->bind_param("si", $status, $id_so);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed: upload"];
+            return ['success' => false, 'message' => "Execute failed"];
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];

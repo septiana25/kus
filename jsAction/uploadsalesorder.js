@@ -4,13 +4,13 @@ $(document).ready(function() {
 	$('#activeUploadSalesOrder').addClass('active');
 
 	tabelSalesOrder = $('#tabelSalesOrder').DataTable({
-		'ajax' : 'action/upload/fetchuplodesalesorder.php',
+		'ajax' : 'action/upload/fetchuplodsalesorder.php',
 		'order':[],
 	});
 	
 	$('#checkingData').click(function() {
 		$.ajax({
-			url: 'action/upload/checkingesalesorder.php',
+			url: 'action/upload/checkingsalesorder.php',
 			type: 'POST',
 			data: { type: '3' },
 			dataType: 'json',

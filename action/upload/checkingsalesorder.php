@@ -35,17 +35,21 @@ function handleCheckingSalesOrder($soClass)
 
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_array()) {
-            if (!is_null($row['nopol']) && !is_null($row['toko']) && !is_null($row['brg'])) {
-                $update = $soClass->updateStatusSalesOrder($row['id_so'], '1');
-                if (!$update['success']) {
+            if ($row['status'] == '0') {
+                if (!is_null($row['nopol']) && !is_null($row['toko']) && !is_null($row['brg'])) {
+                    $update = $soClass->updateStatusSalesOrder($row['id_so'], '1');
+                    if (!$update['success']) {
+                        $results['success'] = false;
+                        $results['messages'] = "<strong>Error! </strong> Gagal Check Data";
+                        break;
+                    }
+                } else {
                     $results['success'] = false;
-                    $results['messages'] = "<strong>Error! </strong> Gagal Check Data Koreksi";
+                    $results['messages'] = "<strong>Error! </strong> Data Tidak Lengkap";
                     break;
                 }
             } else {
-                $results['success'] = false;
-                $results['messages'] = "<strong>Error! </strong> Gagal Check Data Koreksi";
-                break;
+                continue;
             }
             $results['success'] = true;
         }
