@@ -52,6 +52,9 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
     foreach ($tmpDataSO as $rowSO) {
         $kdbrg = $rowSO['kdbrg'];
         $qtySO = $rowSO['qty'];
+        $detailSaldo = [
+            'success' => false
+        ];
 
         // Cari kdbrg yang sesuai di $groupedSaldo
         $saldoItem = array_filter($groupedSaldo, function ($item) use ($kdbrg) {
@@ -92,13 +95,22 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
                 continue; // Lanjut ke detail berikutnya
             }
 
+            $updateSaldo = $saldoClass->updateSaldoMinus($detail['id_saldo'], $qtyToDeduct);
+            if (!$updateSaldo['success']) {
+                $conn->rollback();
+                $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
+                continue; // Lanjut ke detail berikutnya
+            }
+
             $conn->commit(); // Commit jika semua operasi berhasil
+            $detailSaldo['success'] = true;
             $results['messages'][] = "Berhasil memperbarui stok {$kdbrg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
         }
 
         if ($remainingQty > 0) {
             $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
-        } else {
+        }
+        if ($detailSaldo['success']) {
             // Update status SO
             $atUpdate = date('Y-m-d H:i:s');
             $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
@@ -143,6 +155,7 @@ function handleFilterSO($saldoClass, $dataSO)
                 'rak' => $row['rak'],
                 'id_detailsaldo' => $row['id_detailsaldo'],
                 'id' => $row['id'],
+                'id_saldo' => $row['id_saldo'],
             ];
         }
     }
@@ -176,6 +189,7 @@ function groupSaldoByKdbrg($saldoData)
         $groupedData[$kdbrg]['details'][] = [
             'id_detailsaldo' => $item['id_detailsaldo'],
             'id' => $item['id'],
+            'id_saldo' => $item['id_saldo'],
             'rak' => $item['rak'],
             'tahunprod' => $item['tahunprod'],
             'tglprod' => $item['tglprod'],

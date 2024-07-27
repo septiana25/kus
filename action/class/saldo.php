@@ -174,16 +174,14 @@ class Saldo
 
     public function getSaldoByAnyKodeBarang($kdbrg, $month, $year)
     {
-        $saldoZero = 0;
-        $placeholders = implode(',', array_fill(0, count($kdbrg), '?'));
         $kdbrg = array_map(function ($value) {
             return "'" . $this->conn->real_escape_string($value) . "'";
         }, $kdbrg);
 
         $kdbrg = implode(',', $kdbrg);
-        $query = "SELECT id_detailsaldo, saldo.id, kdbrg, brg, rak, tahunprod, jumlah
+        $query = "SELECT id_detailsaldo, id_saldo, saldo.id, kdbrg, brg, rak, tahunprod, jumlah
         FROM (
-            SELECT id, rak, kdbrg, brg, saldo_akhir
+            SELECT id_saldo, id, rak, kdbrg, brg, saldo_akhir
             FROM detail_brg
             LEFT JOIN saldo USING(id)
             LEFT JOIN barang USING(id_brg)
