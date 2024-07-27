@@ -27,32 +27,35 @@ try {
 function handleCheckingSalesOrder($soClass)
 {
     $result = $soClass->getDataSalesOrderUnprocessed();
+    $results = ['success' => true, 'messages' => []];
 
-    $results = [
-        'success' => false,
-        'messages' => []
-    ];
+    if ($result->num_rows == 0) {
+        $results['messages'] = "Tidak ada data yang perlu diproses";
+        return $results;
+    }
 
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_array()) {
-            if ($row['status'] == '0') {
-                if (!is_null($row['nopol']) && !is_null($row['toko']) && !is_null($row['brg'])) {
-                    $update = $soClass->updateStatusSalesOrder($row['id_so'], '1');
-                    if (!$update['success']) {
-                        $results['success'] = false;
-                        $results['messages'] = "<strong>Error! </strong> Gagal Check Data";
-                        break;
-                    }
-                } else {
-                    $results['success'] = false;
-                    $results['messages'] = "<strong>Error! </strong> Data Tidak Lengkap";
-                    break;
-                }
-            } else {
-                continue;
-            }
-            $results['success'] = true;
+    while ($row = $result->fetch_array()) {
+        if ($row['status'] != '0') {
+            continue;
         }
+
+        if (is_null($row['nopol']) || is_null($row['toko']) || is_null($row['brg'])) {
+            $results['success'] = false;
+            $results['messages'] = "<strong>Error!</strong> Data Tidak Lengkap untuk ID: " . $row['id_so'];
+            continue;
+        }
+
+        $update = $soClass->updateStatusSalesOrder($row['id_so'], '1');
+        if (!$update['success']) {
+            $results['success'] = false;
+            $results['messages'] = "<strong>Error!</strong> Gagal Check Data untuk ID: " . $row['id_so'];
+        } else {
+            $results['messages'] = "Berhasil update status untuk ID: " . $row['id_so'];
+        }
+    }
+
+    if ($results['success'] && empty($results['messages'])) {
+        $results['messages'] = "Semua data berhasil diproses";
     }
 
     return $results;
