@@ -26,6 +26,19 @@ class Salesorder
         return $stmt->get_result();
     }
 
+    public function getDataSalesOrderByStatus($status)
+    {
+        $stmt = $this->conn->prepare("SELECT id_so, no_faktur, kode_toko, toko.toko AS toko, ekspedisi.nopol AS nopol, kdbrg, barang.brg AS brg, qty, `status`
+                                        FROM tmp_salesorder
+                                        LEFT JOIN toko USING(kode_toko)
+                                        LEFT JOIN barang USING(kdbrg)
+                                        LEFT JOIN ekspedisi USING(nopol)
+                                        WHERE tmp_salesorder.at_update IS NULL AND tmp_salesorder.at_delete IS NULL AND tmp_salesorder.status = ?");
+        $stmt->bind_param("s", $status);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function fetchSelesOrderByid($id_so)
     {
         $stmt = $this->conn->prepare("SELECT id_so, no_faktur, kode_toko, nopol, kdbrg, barang.brg AS brg, qty 

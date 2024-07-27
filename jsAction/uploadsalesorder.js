@@ -20,7 +20,7 @@ $(document).ready(function() {
 
 	$('#processData').click(function() {
 		$.ajax({
-			url: 'action/upload/processkoreksiminus.php',
+			url: 'action/upload/processsalesorder.php',
 			dataType: 'json',
 			success: handleResponse
 		});

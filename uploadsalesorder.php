@@ -59,8 +59,9 @@ require_once 'include/menu.php';
                                 <div class="tab-pane active" id="tab_1_1">
                                     <p>Data Sales Order</p>
                                     <div class="form-actions">
+                                        <!-- disabled="disabled" -->
                                         <button class="btn btn-primary" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
-                                        <button class="btn btn-warning" disabled="disabled" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Koreksi</button>
+                                        <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Koreksi</button>
                                     </div>
                                     <table class="table table-striped table-bordered" id="tabelSalesOrder">
                                         <thead>
