@@ -88,17 +88,18 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
                 continue; // Lanjut ke detail berikutnya
             }
 
-            $updateSisaSO = $soClass->updateSisaSalesOrder($rowSO['id_so'], $remainingQty);
-            if (!$updateSisaSO['success']) {
-                $conn->rollback();
-                $results['messages'][] = "Gagal memperbarui sisa stok untuk {$kdbrg} di rak {$detail['rak']}";
-                continue; // Lanjut ke detail berikutnya
-            }
 
             $updateSaldo = $saldoClass->updateSaldoMinus($detail['id_saldo'], $qtyToDeduct);
             if (!$updateSaldo['success']) {
                 $conn->rollback();
                 $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
+                continue; // Lanjut ke detail berikutnya
+            }
+
+            $updateSisaSO = $soClass->updateSisaSalesOrder($rowSO['id_so'], $remainingQty);
+            if (!$updateSisaSO['success']) {
+                $conn->rollback();
+                $results['messages'][] = "Gagal memperbarui sisa stok untuk {$kdbrg} di rak {$detail['rak']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
@@ -109,8 +110,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
         if ($remainingQty > 0) {
             $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
-        }
-        if ($detailSaldo['success']) {
+        } else {
             // Update status SO
             $atUpdate = date('Y-m-d H:i:s');
             $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
