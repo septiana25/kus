@@ -52,8 +52,9 @@ require_once 'include/menu.php';
                         <!-- BEGIN FORM LAPORAN MASUK-->
                         <div class="tabbable custom-tab">
                             <ul class="nav nav-tabs">
-                                <li class="active"><a href="#tab_1_1" data-toggle="tab">Data</a></li>
-                                <li class=""><a href="#tab_1_2" data-toggle="tab">Form</a></li>
+                                <li class="active"><a href="#tab_1_1" data-toggle="tab">Belum Proses</a></li>
+                                <li class=""><a href="#tab_1_2" data-toggle="tab">Hasil Proses</a></li>
+                                <li class=""><a href="#tab_1_3" data-toggle="tab">Form</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="tab_1_1">
@@ -61,7 +62,7 @@ require_once 'include/menu.php';
                                     <div class="form-actions">
                                         <!-- disabled="disabled" -->
                                         <button class="btn btn-primary" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
-                                        <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Koreksi</button>
+                                        <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Sales Order</button>
                                     </div>
                                     <table class="table table-striped table-bordered" id="tabelSalesOrder">
                                         <thead>
@@ -86,6 +87,27 @@ require_once 'include/menu.php';
                                     </table>
                                 </div>
                                 <div class="tab-pane" id="tab_1_2">
+                                    <p>Hasil Proses Sales Order</p>
+                                    <table class="table table-striped table-bordered" id="tabelProsessSalesOrder">
+                                        <thead>
+                                            <tr>
+                                                <th>Ekspedisi</th>
+                                                <th width="25%">No Nota</th>
+                                                <th width="10%">Tanggal</th>
+                                                <th width="5%">Faktur</th>
+                                                <?php
+                                                if ($_SESSION['level'] == "administrator") {
+                                                    echo '<th width="8%" class="hidden-phone">Action</th>';
+                                                }
+                                                ?>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="tab_1_3">
                                     <p>Form Upload Sales Order</p>
 
                                     <form class="form-horizontal" method="POST" id="submitUploadSalesOrder" enctype="multipart/form-data">

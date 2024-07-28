@@ -1,10 +1,15 @@
 $(document).ready(function() {
 	let tabelSalesOrder;
+	let tabelProsessSalesOrder;
 	$('#activeUpload').addClass('active');
 	$('#activeUploadSalesOrder').addClass('active');
 
 	tabelSalesOrder = $('#tabelSalesOrder').DataTable({
 		'ajax' : 'action/upload/fetchuplodsalesorder.php',
+		'order':[],
+	});
+	tabelProsessSalesOrder = $('#tabelProsessSalesOrder').DataTable({
+		'ajax' : 'action/upload/fetchprosesssalesorder.php',
 		'order':[],
 	});
 	

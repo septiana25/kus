@@ -130,4 +130,15 @@ class Salesorder
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
+
+    public function getDataProsessSalesOrder()
+    {
+        $stmt = $this->conn->prepare("SELECT supir, no_nota, tmp_prossessso.at_create AS tgl, COUNT(DISTINCT tmp_salesorder.no_faktur) AS faktur
+                                        FROM tmp_prossessso
+                                        LEFT JOIN tmp_salesorder USING(id_so)
+                                        LEFT JOIN ekspedisi USING(nopol)
+                                        GROUP BY nopol, no_nota");
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
