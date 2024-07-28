@@ -71,6 +71,7 @@ require_once 'include/menu.php';
                                                 <th width="10%">Faktur</th>
                                                 <th>Nama Barang</th>
                                                 <th width="5%">QTY</th>
+                                                <th width="5%">Sisa</th>
                                                 <th width="5%">Status</th>
                                                 <?php
                                                 if ($_SESSION['level'] == "administrator") {
@@ -194,7 +195,7 @@ require_once 'include/menu.php';
                 <h3 id="myModalLabel">WARNING</h3>
             </div>
             <div class="modal-body modal-full">
-                <p id="pesanHapus" style="color: #dc5d3a">DATA SUDAH DICEK. TIDAK BISA UBAH</p>
+                <p id="pesanHapus" style="color: #dc5d3a">DATA SUDAH ADA YANG DICEK/DIPROSES. TIDAK BISA UBAH</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
