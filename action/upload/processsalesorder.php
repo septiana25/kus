@@ -35,12 +35,16 @@ try {
 function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 {
     $results = [
-        'success' => true,
+        'success' => false,
         'messages' => []
     ];
 
     $dataSO = $soClass->getDataSalesOrderByStatus('1');
     $tmpDataSO = [];
+
+    while ($rowSO = $dataSO->fetch_assoc()) {
+        $tmpDataSO[] = $rowSO;
+    }
 
     if ($dataSO->num_rows == 0) {
         $results['success'] = false;
@@ -56,6 +60,12 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
         $statusUpdate = [
             'success' => false
         ];
+
+        if ($qtySO == 0) {
+            $results['success'] = false;
+            $results['messages'][] = "Sisa stok {$kdbrg} habis";
+            continue; // Lanjut ke data berikutnya
+        }
 
         // Cari kdbrg yang sesuai di $groupedSaldo
         $saldoItem = array_filter($groupedSaldo, function ($item) use ($kdbrg) {
