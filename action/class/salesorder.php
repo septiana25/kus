@@ -87,7 +87,6 @@ class Salesorder
     }
 
 
-
     public function updateSisaSalesOrder($id_so, $sisa)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET `sisa` = ? WHERE id_so = ?");
@@ -107,6 +106,26 @@ class Salesorder
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function insertProssesSalesOrder($inputs)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO tmp_prossessso (id_so, id_detailsaldo, qty_pro) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $inputs['id_so'], $inputs['id_detailsaldo'], $inputs['qty_pro']);
+        $success = $stmt->execute();
+        return ['success' => $success, 'id' => $this->conn->insert_id];
+    }
+
+    public function updateNotaProssesSalesOrder($id_pro, $nota)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nota = ? WHERE id_pro = ?");
+        $stmt->bind_param("is", $nota, $id_pro);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];

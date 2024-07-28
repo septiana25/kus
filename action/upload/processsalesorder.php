@@ -17,13 +17,12 @@ $conn = $koneksi;
 
 try {
     $resultKoreksi = handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn);
-
     if (!$resultKoreksi['success']) {
         $valid['success'] = false;
         $valid['messages'] = $resultKoreksi['messages'];
     } else {
         $valid['success'] = true;
-        $valid['messages'] = "<strong>Success! </strong>Data Selesai Diproses";
+        $valid['messages'] = $resultKoreksi['messages'];
     }
 } catch (\Throwable $th) {
     $valid['success'] = false;
@@ -52,6 +51,9 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
     foreach ($tmpDataSO as $rowSO) {
         $kdbrg = $rowSO['kdbrg'];
         $qtySO = $rowSO['qty'];
+        $statusUpdate = [
+            'success' => false
+        ];
 
         // Cari kdbrg yang sesuai di $groupedSaldo
         $saldoItem = array_filter($groupedSaldo, function ($item) use ($kdbrg) {
@@ -80,6 +82,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             $updateResult = $detailsaldoClass->update($detail['id_detailsaldo'], $newQty);
             if (!$updateResult) {
                 $conn->rollback();
+                $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
                 continue; // Lanjut ke detail berikutnya
             }
@@ -87,6 +90,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             $updateSaldo = $saldoClass->updateSaldoMinus($detail['id_saldo'], $qtyToDeduct);
             if (!$updateSaldo['success']) {
                 $conn->rollback();
+                $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
                 continue; // Lanjut ke detail berikutnya
             }
@@ -94,11 +98,26 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             $updateSisaSO = $soClass->updateSisaSalesOrder($rowSO['id_so'], $remainingQty);
             if (!$updateSisaSO['success']) {
                 $conn->rollback();
+                $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui sisa stok untuk {$kdbrg} di rak {$detail['rak']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
+            $insertProssesSO = [
+                'id_so' => $rowSO['id_so'],
+                'id_detailsaldo' => $detail['id_detailsaldo'],
+                'qty_pro' => $qtyToDeduct
+            ];
+            $insertProssesSO = $soClass->insertProssesSalesOrder($insertProssesSO);
+            if (!$insertProssesSO['success']) {
+                $conn->rollback();
+                $results['success'] = false;
+                $results['messages'][] = "Gagal memasukan data ke proses";
+                continue; // Lanjut ke detail berikutnya
+            }
+
             $conn->commit(); // Commit jika semua operasi berhasil
+            $statusUpdate['success'] = true;
             $results['messages'][] = "Berhasil memperbarui stok {$kdbrg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
         }
 
@@ -106,7 +125,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
         }
 
-        if ($remainingQty == 0) {
+        if ($remainingQty == 0 && $statusUpdate['success']) {
             $atUpdate = date('Y-m-d H:i:s');
             $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
             if (!$updateSOResult['success']) {
