@@ -52,9 +52,6 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
     foreach ($tmpDataSO as $rowSO) {
         $kdbrg = $rowSO['kdbrg'];
         $qtySO = $rowSO['qty'];
-        $detailSaldo = [
-            'success' => false
-        ];
 
         // Cari kdbrg yang sesuai di $groupedSaldo
         $saldoItem = array_filter($groupedSaldo, function ($item) use ($kdbrg) {
@@ -69,7 +66,6 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
         $saldoItem = reset($saldoItem); // Ambil item pertama (dan satu-satunya) dari hasil filter
 
         $remainingQty = $qtySO;
-
 
         foreach ($saldoItem['details'] as $detail) {
             if ($remainingQty <= 0) break;
@@ -88,7 +84,6 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
                 continue; // Lanjut ke detail berikutnya
             }
 
-
             $updateSaldo = $saldoClass->updateSaldoMinus($detail['id_saldo'], $qtyToDeduct);
             if (!$updateSaldo['success']) {
                 $conn->rollback();
@@ -104,14 +99,14 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             }
 
             $conn->commit(); // Commit jika semua operasi berhasil
-            $detailSaldo['success'] = true;
             $results['messages'][] = "Berhasil memperbarui stok {$kdbrg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
         }
 
         if ($remainingQty > 0) {
             $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
-        } else {
-            // Update status SO
+        }
+
+        if ($remainingQty == 0) {
             $atUpdate = date('Y-m-d H:i:s');
             $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
             if (!$updateSOResult['success']) {
