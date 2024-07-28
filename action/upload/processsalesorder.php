@@ -68,19 +68,17 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
         $saldoItem = reset($saldoItem); // Ambil item pertama (dan satu-satunya) dari hasil filter
 
         $remainingQty = $qtySO;
-
         foreach ($saldoItem['details'] as $detail) {
             if ($remainingQty <= 0) break;
 
             $conn->begin_transaction();
 
-            $qtyToDeduct = min($remainingQty, $detail['jumlah']); //tentukan jumlah yang akan dikurangi dari saldo
-            $newQty = $detail['jumlah'] - $qtyToDeduct; //jumlah setelah dikurangi
+            $qtyToDeduct = min($remainingQty, $detail['jumlah']); //tentukan jumlah yang akan dikurangi dari saldo agar tidak melebihi sisa stok
             $remainingQty -= $qtyToDeduct; //jumlah yang tersisa setelah dikurangi
 
             // Simpan perubahan ke database
-            $updateResult = $detailsaldoClass->update($detail['id_detailsaldo'], $newQty);
-            if (!$updateResult) {
+            $updateDetailSaldo = $detailsaldoClass->updateMinus($detail['id_detailsaldo'], $qtyToDeduct);
+            if (!$updateDetailSaldo) {
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";

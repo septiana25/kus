@@ -33,6 +33,18 @@ class DetailSaldo
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateMinus($id_detailsaldo, $jml)
+    {
+        $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = jumlah - ? WHERE id_detailsaldo = ?");
+        $stmt->bind_param("ii", $jml, $id_detailsaldo);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function updateMonthProd($id_detailsaldo, $tahunprod)
     {
         $stmt = $this->conn->prepare("UPDATE detail_saldo SET tahunprod = ? WHERE id_detailsaldo = ?");
