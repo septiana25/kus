@@ -34,19 +34,21 @@ try {
 
 function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 {
-    $dataSO = $soClass->getDataSalesOrderByStatus('1');
-    $tmpDataSO = [];
-
-    while ($rowSO = $dataSO->fetch_assoc()) {
-        $tmpDataSO[] = $rowSO;
-    }
-
-    $groupedSaldo = handleFilterSO($saldoClass, $tmpDataSO);
-
     $results = [
         'success' => true,
         'messages' => []
     ];
+
+    $dataSO = $soClass->getDataSalesOrderByStatus('1');
+    $tmpDataSO = [];
+
+    if ($dataSO->num_rows == 0) {
+        $results['success'] = false;
+        $results['messages'][] = "Tidak ada data";
+        return $results;
+    }
+
+    $groupedSaldo = handleFilterSO($saldoClass, $tmpDataSO);
 
     foreach ($tmpDataSO as $rowSO) {
         $kdbrg = $rowSO['kdbrg'];
@@ -61,6 +63,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
         });
 
         if (empty($saldoItem)) {
+            $results['success'] = false;
             $results['messages'][] = "Tidak ada stok untuk {$kdbrg}";
             continue;
         }
