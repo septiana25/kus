@@ -162,7 +162,7 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrderByIdPro($id_pro)
     {
-        $stmt = $this->conn->prepare("SELECT id_pro, id_detailsaldo, barang.brg, tahunprod, qty_pro
+        $stmt = $this->conn->prepare("SELECT id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN detail_saldo USING(id_detailsaldo) 

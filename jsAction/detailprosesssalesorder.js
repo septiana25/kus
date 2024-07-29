@@ -27,45 +27,13 @@ $(document).ready(function() {
 		});
 	});
 
-	$('#submitUploadSalesOrder').unbind('submit').bind('submit', function() {
-		const file = $('#file-csv').val().trim();
-		const type = $('#type').val().trim();
-
-		validateInput(file, '#file-csv', 'File CSV harus diisi');
-		validateInput(type, '#file-csv', 'Relode Page');
-
-		if (file !== '' && type !== '') {
-			const form = $(this);
-			const formData = new FormData(this);
-
-			$.ajax({
-				url: 'action/upload/uploadsalesorder.php',
-				type: 'POST',
-				data: formData,
-				dataType: 'json',
-				cache: false,
-				contentType: false,
-				processData: false,
-				success: handleResponse
-			});
-		}
-		return false;
-
-	});
-
-	$('#submitEditSalesOrder').unbind('submit').bind('submit', function() {
-		const id_so = $('#id_so').val().trim();
-		const nopol = $('#nopol').val().trim();
-		const kdbrg = $('#kdbrg').val().trim();
-		const kode_toko = $('#kode_toko').val().trim();
+	$('#submitEditQtyDetailSO').unbind('submit').bind('submit', function() {
+		const id_pro = $('#qtyid_pro').val().trim();
 		const qty = $('#qty').val().trim();
 
-		validateInput(nopol, '#nopol', 'Kode Barang harus diisi');
-		validateInput(kdbrg, '#kdbrg', 'Kode Barang harus diisi');
-		validateInput(kode_toko, '#kode_toko', 'Kode Toko harus diisi');
 		validateInput(qty, '#qty', 'Quantiti harus diisi');
 
-		if (id_so && nopol && kdbrg && kode_toko && qty) {
+		if (id_pro && qty) {
 			const form = $(this);
 
 			$.ajax({
@@ -108,8 +76,7 @@ $(document).ready(function() {
 		}
 	}
 	function handleResponse(response) {
-	
-		tabelSalesOrder.ajax.reload();
+		tabelDetailSO.ajax.reload();
 		if (response.success === true) {
 			$('.modal').modal('hide');
 			displayMessagePopup(response.messages, 'success');
@@ -157,8 +124,7 @@ function editQty(id_pro) {
 		data: { id_pro: id_pro },
 		dataType: 'json',
 		success: function(data) {
-			$('#id_pro').val(data.id_pro);
-            $('#id_detailsaldo').val(data.id_detailsaldo);
+			$('#qtyid_pro').val(data.id_pro);
 			$('#qtybrg').val(data.brg);
 			$('#qtytahunprod').val(data.tahunprod);
             $('#qty').val(data.qty_pro);

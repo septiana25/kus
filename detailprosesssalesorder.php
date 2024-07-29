@@ -135,8 +135,7 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
                     <div class="control-group">
                         <label class="control-label" for="qtybrg">Barang</label>
                         <div class="controls">
-                            <input class="span12" type="hidden" id="id_pro" name="id_pro" readonly>
-                            <input class="span12" type="hidden" id="id_detailsaldo" name="id_detailsaldo" readonly>
+                            <input class="span12" type="hidden" id="qtyid_pro" name="qtyid_pro" readonly>
                             <input class="span12" type="text" id="qtybrg" name="qtybrg" readonly>
                         </div>
                     </div>

@@ -62,7 +62,7 @@ require_once 'include/menu.php';
                                     <div class="form-actions">
                                         <!-- disabled="disabled" -->
                                         <button class="btn btn-primary" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
-                                        <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Sales Order</button>
+                                        <button class="btn btn-warning" type="button" id="processData" disabled><i class="fa fa-cogs"></i> Prosess Sales Order</button>
                                     </div>
                                     <table class="table table-striped table-bordered" id="tabelSalesOrder">
                                         <thead>
