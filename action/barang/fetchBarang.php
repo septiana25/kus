@@ -24,7 +24,7 @@ function generateButton($id_brg, $id)
 	return '<div class="btn-group">
 		<button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
 		<ul class="dropdown-menu">
-			<li><a href="detailsaldo.php?id=' . $id . '"><i class="fa fa-qrcode"></i> Detail</a></li>
+			<li><a href="detailsaldo.php?id=' . $id . '"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a></li>
 			<li><a href="#editModalBarang" onclick="editBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
 			<li><a href="#hapusModalBarang" onclick="hapusBarang(' . $id_brg . ')" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
 		</ul>

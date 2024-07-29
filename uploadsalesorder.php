@@ -92,9 +92,9 @@ require_once 'include/menu.php';
                                         <thead>
                                             <tr>
                                                 <th>Ekspedisi</th>
-                                                <th width="25%">No Nota</th>
-                                                <th width="10%">Tanggal</th>
+                                                <th width="10%">Tanggal Proses</th>
                                                 <th width="5%">Faktur</th>
+                                                <th width="25%">Status</th>
                                                 <?php
                                                 if ($_SESSION['level'] == "administrator") {
                                                     echo '<th width="8%" class="hidden-phone">Action</th>';

@@ -35,7 +35,7 @@ try {
 function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 {
     $results = [
-        'success' => false,
+        'success' => true,
         'messages' => []
     ];
 

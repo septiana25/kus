@@ -137,7 +137,8 @@ class Salesorder
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN ekspedisi USING(nopol)
-                                        GROUP BY nopol, no_nota");
+                                        WHERE no_nota IS NULL
+GROUP BY nopol");
         $stmt->execute();
         return $stmt->get_result();
     }

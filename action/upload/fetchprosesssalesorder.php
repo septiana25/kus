@@ -15,21 +15,33 @@ try {
     $koneksi->close();
 }
 
-function generateButton($id)
+function simpleEncrypt($data, $key = 'ianseptiana')
 {
+    $result = '';
+    for ($i = 0; $i < strlen($data); $i++) {
+        $char = substr($data, $i, 1);
+        $keychar = substr($key, ($i % strlen($key)) - 1, 1);
+        $char = chr(ord($char) + ord($keychar));
+        $result .= $char;
+    }
+    return base64_encode($result);
+}
 
+
+function generateButton($expedition)
+{
+    $encryptExpedition = urlencode(simpleEncrypt($expedition));
     $button = '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="" onclick="" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
-            <li><a href="" onclick="" data-toggle="modal"><i class="icon-trash"></i> Hapus</a></li>
+            <li><a href="detailprosesssalesorder.php?expedition=' . $encryptExpedition . '"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a></li>
         </ul>
     </div>';
 
     return $button;
 }
 
-function generateLabel($value, $defaultText = 'Belum Cetak', $dangerClass = 'important')
+function generateLabel($value, $defaultText = 'Gantung', $dangerClass = 'important')
 {
     if (is_null($value) || empty($value)) {
         return "<span class=\"label label-{$dangerClass}\">{$defaultText}</span>";
@@ -47,9 +59,9 @@ function handleFetchProsessSalesOrder($soClass)
 
         $output['data'][] = array(
             $row['supir'],
-            generateLabel($row['no_nota']),
             $row['tgl'],
             $row['faktur'],
+            generateLabel($row['no_nota']),
             $button
         );
     }
