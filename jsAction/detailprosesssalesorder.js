@@ -150,18 +150,18 @@ $(document).ajaxError(function(){
 	
 });
 
-function editKoreksiSaldo(id_so) {
+function editQty(id_pro) {
 	$.ajax({
-		url: 'action/upload/fetchsalesorderbyid.php',
+		url: 'action/upload/fetchdetailprosesssalesorderbyid.php',
 		type: 'POST',
-		data: { id_so: id_so },
+		data: { id_pro: id_pro },
 		dataType: 'json',
 		success: function(data) {
-			$('#id_so').val(data.id_so);
-			$('#nopol').val(data.nopol);
-			$('#kode_toko').val(data.kode_toko);
-			$('#kdbrg').val(data.kdbrg);
-			$('#qty').val(data.qty);
+			$('#id_pro').val(data.id_pro);
+            $('#id_detailsaldo').val(data.id_detailsaldo);
+			$('#qtybrg').val(data.brg);
+			$('#qtytahunprod').val(data.tahunprod);
+            $('#qty').val(data.qty_pro);
 		}
 	});
 }

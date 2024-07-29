@@ -25,7 +25,8 @@ function generateButton($id_pro)
     $button = '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="detailprosesssalesorder.php?id_pro=' . $id_pro . '"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a></li>
+            <li><a href="#editModalQtySO" onclick="editQty(' . $id_pro . ')" data-toggle="modal"><i class="icon-pencil" aria-hidden="true"></i> Qty</a></li>
+            <li><a href="#editModalTahunSO" onclick="editTahun(' . $id_pro . ')" data-toggle="modal"><i class="icon-pencil" aria-hidden="true"></i> Tahun</a></li>
         </ul>
     </div>';
 

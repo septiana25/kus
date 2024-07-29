@@ -159,4 +159,18 @@ class Salesorder
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getDataDetailProsessSalesOrderByIdPro($id_pro)
+    {
+        $stmt = $this->conn->prepare("SELECT id_pro, id_detailsaldo, barang.brg, tahunprod, qty_pro
+                                        FROM tmp_prossessso
+                                        LEFT JOIN tmp_salesorder USING(id_so)
+                                        LEFT JOIN detail_saldo USING(id_detailsaldo) 
+                                        LEFT JOIN detail_brg USING(id)
+                                        LEFT JOIN barang USING(id_brg)
+                                        WHERE id_pro = ?");
+        $stmt->bind_param("i", $id_pro);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }

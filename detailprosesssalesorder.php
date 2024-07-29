@@ -121,34 +121,29 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         <!-- END MODAL Tambah Ekspedisi-->
 
         <!-- BEGIN MODAL EDIT Sales Order-->
-        <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div id="editModalQtySO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Edit Sales Order</h3>
+                <h3 id="myModalLabel">Edit QTY Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitEditSalesOrder" action="action/upload/updatesalesorder.php" method="POST">
+            <form class="form-horizontal" id="submitEditQtyDetailSO" action="action/upload/updateqtydetailso.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
                         <div id="infoSO"></div>
                         <div id="pesan"></div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="nopol">Ekspedisi</label>
+                        <label class="control-label" for="qtybrg">Barang</label>
                         <div class="controls">
-                            <input class="span12" type="hidden" id="id_so" name="id_so" readonly>
-                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor">
+                            <input class="span12" type="hidden" id="id_pro" name="id_pro" readonly>
+                            <input class="span12" type="hidden" id="id_detailsaldo" name="id_detailsaldo" readonly>
+                            <input class="span12" type="text" id="qtybrg" name="qtybrg" readonly>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="kode_toko">Kode Toko</label>
+                        <label class="control-label" for="qtytahunprod">Tahun</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="kode_toko" name="kode_toko" autocomplete="off" placeholder="Kode Toko">
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="kdbrg">Kode Barang</label>
-                        <div class="controls">
-                            <input class="span12" type="text" id="kdbrg" name="kdbrg" autocomplete="off" placeholder="Kode Barang">
+                            <input class="span12" type="number" id="qtytahunprod" name="qtytahunprod" readonly>
                         </div>
                     </div>
                     <div class="control-group">
