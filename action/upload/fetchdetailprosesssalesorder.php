@@ -6,7 +6,12 @@ require_once '../class/salesorder.php';
 $soClass = new Salesorder($koneksi);
 
 try {
-    $result = handleFetchProsessSalesOrder($soClass);
+    $nopol = trim($koneksi->real_escape_string($_GET['expedition']));
+    if (!isset($nopol) || empty($nopol)) {
+        header('location:../../uploadsalesorder.php');
+    }
+
+    $result = handleFetchProsessSalesOrder($soClass, $nopol);
 
     echo json_encode($result);
 } catch (Exception $e) {
@@ -15,39 +20,34 @@ try {
     $koneksi->close();
 }
 
-function generateButton($expedition)
+function generateButton($id_pro)
 {
     $button = '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="detailprosesssalesorder.php?expedition=' . $expedition . '"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a></li>
+            <li><a href="detailprosesssalesorder.php?id_pro=' . $id_pro . '"><i class="fa fa-eye" aria-hidden="true"></i> Detail</a></li>
         </ul>
     </div>';
 
     return $button;
 }
 
-function generateLabel($value, $defaultText = 'Gantung', $dangerClass = 'important')
+function handleFetchProsessSalesOrder($soClass, $nopol)
 {
-    if (is_null($value) || empty($value)) {
-        return "<span class=\"label label-{$dangerClass}\">{$defaultText}</span>";
-    }
-    return $value;
-}
-
-function handleFetchProsessSalesOrder($soClass)
-{
-    $result = $soClass->getDataProsessSalesOrder();
+    $result = $soClass->getDataDetailProsessSalesOrder($nopol);
     $output = array('data' => array());
 
     while ($row = $result->fetch_array()) {
-        $button = generateButton($row['nopol']);
+        $button = generateButton($row['id_pro']);
 
         $output['data'][] = array(
             $row['supir'],
-            $row['tgl'],
-            $row['faktur'],
-            generateLabel($row['no_nota']),
+            $row['no_faktur'],
+            $row['toko'],
+            $row['brg'],
+            $row['rak'],
+            $row['tahunprod'],
+            $row['qty_pro'],
             $button
         );
     }
