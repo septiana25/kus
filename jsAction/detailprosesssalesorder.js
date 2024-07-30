@@ -131,6 +131,20 @@ function editQty(id_pro) {
 		}
 	});
 }
+function editTahun(id_pro) {
+	$.ajax({
+		url: 'action/upload/fetchdetailprosesssalesorderbyid.php',
+		type: 'POST',
+		data: { id_pro: id_pro },
+		dataType: 'json',
+		success: function(data) {
+			$('#tahunid_pro').val(data.id_pro);
+			$('#tahunbrg').val(data.brg);
+			$('#tahunprod').val(data.tahunprod);
+            $('#tahunqty').val(data.qty_pro);
+		}
+	});
+}
 
 function deleteKoreksiSaldo(id_so) {
 	$.ajax({

@@ -81,45 +81,6 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
             </div>
         </div>
 
-        <!-- BEGIN MODAL Tambah Ekspedisi-->
-        <div id="addModalEkspedisi" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Tambah Ekspedisi</h3>
-            </div>
-            <form class="form-horizontal" id="submitAddEkspedisi" action="action/ekspedisi/simpanekspedisi.php" method="POST">
-                <div class="modal-body modal-full">
-                    <div class="control-group">
-                        <div id="infoSO"></div>
-                        <div id="pesan"></div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="nopol">Plat Nomor</label>
-                        <div class="controls">
-                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor" onkeydown="HurufBesar(this)">
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="supir">Supir</label>
-                        <div class="controls">
-                            <input class="span12" type="text" id="supir" name="supir" autocomplete="off" placeholder="Supir" onkeydown="HurufBesar(this)">
-                        </div>
-                    </div>
-                    <div class="control-group">
-                        <label class="control-label" for="jenis">Jenis Kendaran</label>
-                        <div class="controls">
-                            <input class="span12" type="text" id="jenis" name="jenis" autocomplete="off" placeholder="Jenis Kendaran" onkeydown="HurufBesar(this)">
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
-                </div>
-            </form>
-        </div>
-        <!-- END MODAL Tambah Ekspedisi-->
-
         <!-- BEGIN MODAL EDIT Sales Order-->
         <div id="editModalQtySO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
@@ -160,24 +121,47 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         </div>
         <!-- END MODAL EDIT Sales Order-->
 
-        <!-- BEGIN MODAL HAPUS Sales Order-->
-        <div id="deleteModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <!-- BEGIN MODAL EDIT Sales Order-->
+        <div id="editModalTahunSO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">Hapus Sales Order</h3>
+                <h3 id="myModalLabel">Edit QTY Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitDeleteSalesOrder" action="action/upload/deletesalesorder.php" method="POST">
+            <form class="form-horizontal" id="submitEditTahunDetailSO" action="action/upload/updatetahundetailso.php" method="POST">
                 <div class="modal-body modal-full">
-                    <p id="pesanHapus" style="color: #dc5d3a"></p>
-                    <input class="span12" type="hidden" id="hapusid" name="hapusid" readonly>
+                    <div class="control-group">
+                        <div id="infoSO"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="tahunbrg">Barang</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="tahunid_pro" name="tahunid_pro" readonly>
+                            <input class="span12" type="text" id="tahunbrg" name="tahunbrg" readonly>
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="tahunprod">Tahun</label>
+                        <div class="controls">
+                            <input class="span12" type="number" id="tahunprod" name="tahunprod" autocomplete="off" placeholder="Tahun" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="tahunqty">QTY</label>
+                        <div class="controls">
+                            <input class="span12" type="number" id="tahunqty" name="tahunqty" readonly>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button class="btn btn-primary" type="submit" id="update">Hapus</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
                 </div>
             </form>
         </div>
-        <!-- END MODAL HAPUS Sales Order-->
+        <!-- END MODAL EDIT Sales Order-->
+
+
         <!-- BEGIN MODAL DISABLE Sales Order-->
         <div id="disableaccess" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
