@@ -64,24 +64,41 @@ function handleUpdateDetailSaldo($detailSaldoClass, $saldoClass, $soClass, $inpu
     $checkSaldo = $saldoClass->getSaldoByidJoinDetail($id, $monthSaldoLastDate, $yearSaldoLastDate);
     $resultcheckSaldo = $checkSaldo->fetch_assoc();
 
-    $saldoAkhir = $resultcheckSaldo['saldo_akhir'];
-    $saldoSisaTahunProd = $resultcheckSaldo['subtotal'] - $resultCheckIdDetailSaldo['jumlah'];
-    $sisaSaldo = $saldoSisaTahunProd + $inputs['qty'];
+    $qty_pro = $resultCheckDetailSO['qty_pro'];
+    $selisi = $qty_pro - $inputs['qty'];
+    //$sisaSaldo = $selisiawal + $inputs['qty'];
 
-    if ($sisaSaldo > $saldoAkhir) {
+    if ($inputs['qty'] > $qty_pro) {
         $valid['success'] = false;
-        $valid['messages'] = "<strong>Error! </strong> Quantity Lebih Besar Dari Sisa.";
+        $valid['messages'] = "<strong>Error! </strong> Quantity Terlalu Besar.";
         return $valid;
     }
 
-    $updateQtyDetailSaldo = $detailSaldoClass->update($id_detailsaldo, $inputs['qty']);
+    $updateQtyDetailSaldo = $detailSaldoClass->updatePlus($id_detailsaldo, $selisi);
     if (!$updateQtyDetailSaldo['success']) {
         $valid['success'] = false;
-        $valid['messages'] = "Data Tidak Berubah";
-    } else {
-        $conn->commit();
-        $valid['success'] = true;
+        $valid['messages'] = "<strong>Error! </strong> Gagal Update Detail Saldo.";
+        return $valid;
     }
+
+    $updateSaldo = $saldoClass->updateSaldoPlus($resultcheckSaldo['id_saldo'], $selisi);
+    if (!$updateSaldo['success']) {
+        $conn->rollback();
+        $valid['success'] = false;
+        $valid['messages'] = "<strong>Error! </strong> Gagal Update Saldo.";
+        return $valid;
+    }
+
+    $updateSO = $soClass->updateQtyProssesSalesOrder($inputs['id_pro'], $inputs['qty']);
+    if (!$updateSO['success']) {
+        $conn->rollback();
+        $valid['success'] = false;
+        $valid['messages'] = "<strong>Error! </strong> Gagal Update Sales Order.";
+        return $valid;
+    }
+
+    $conn->commit();
+    $valid['success'] = true;
 
     return $valid;
 }

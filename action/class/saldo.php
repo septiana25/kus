@@ -130,9 +130,9 @@ class Saldo
     public function getSaldoByidJoinDetail($id, $month, $year)
     {
 
-        $stmt = $this->conn->prepare(" SELECT saldo.id, brg, rak, saldo_akhir, CAST(IFNULL(subtotal, 0) AS UNSIGNED) AS subtotal
+        $stmt = $this->conn->prepare(" SELECT id_saldo, saldo.id, brg, rak, saldo_akhir, CAST(IFNULL(subtotal, 0) AS UNSIGNED) AS subtotal
                 FROM (
-                SELECT id, rak, brg, saldo_akhir
+                SELECT id_saldo, id, rak, brg, saldo_akhir
                 FROM detail_brg
                 LEFT JOIN saldo USING(id)
                 LEFT JOIN barang USING(id_brg)

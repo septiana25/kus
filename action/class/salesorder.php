@@ -173,4 +173,16 @@ class Salesorder
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function updateQtyProssesSalesOrder($id_pro, $qty_pro)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_prossessso SET qty_pro = ? WHERE id_pro = ?");
+        $stmt->bind_param("ii", $qty_pro, $id_pro);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
 }
