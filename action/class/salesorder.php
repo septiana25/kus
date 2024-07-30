@@ -145,7 +145,7 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrder($nopol)
     {
-        $stmt = $this->conn->prepare("SELECT id_pro, id_detailsaldo, supir, toko.toko AS toko, no_faktur, barang.brg, rak, tahunprod, qty_pro
+        $stmt = $this->conn->prepare("SELECT id_pro, id_detailsaldo, jenis, nopol, supir, toko.toko AS toko, no_faktur, barang.brg, rak, tahunprod, qty_pro
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN ekspedisi USING(nopol)

@@ -9,13 +9,13 @@ $(document).ready(function() {
 		'order':[],
 	});
 	
-	$('#checkingData').click(function() {
+	$('#printSo').click(function() {
 		$.ajax({
-			url: 'action/upload/checkingsalesorder.php',
+			url: 'action/upload/printsalsesorder.php',
 			type: 'POST',
-			data: { type: '3' },
-			dataType: 'json',
-			success: handleResponse
+			data: { nopol: nopol },
+			dataType: 'text',
+			success: handlePrintSo
 		});
 	});
 
@@ -107,6 +107,48 @@ $(document).ready(function() {
 				speed: 'slow'
 			});
 		}, 6000);
+	}
+
+	function handlePrintSo(response) {
+		const printWindow = window.open('', '_blank', 'height=600,width=800,scrollbars=yes,resizable=yes');
+		
+		if (!printWindow) {
+			alert('Popup blocker mungkin mencegah pencetakan. Mohon izinkan popup untuk situs ini dan coba lagi.');
+			return;
+		}
+
+		const htmlContent = `
+			<!DOCTYPE html>
+			<html lang="id">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Cetak Sales Order - Aplikasi Inventori Gudang KUS</title>
+				<style>
+					body { font-family: Arial, sans-serif; }
+					@media print {
+						body { width: 21cm; height: 29.7cm; }
+					}
+				</style>
+			</head>
+			<body>
+				${response}
+			</body>
+			</html>
+		`;
+
+		printWindow.document.write(htmlContent);
+		printWindow.document.close();
+
+		printWindow.onload = function() {
+			setTimeout(function() {
+				printWindow.focus();
+				printWindow.print();
+				printWindow.onafterprint = function() {
+					printWindow.close();
+				};
+			}, 250);
+		};
 	}
 
 

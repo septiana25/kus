@@ -1,0 +1,194 @@
+<?php
+require_once '../../function/koneksi.php';
+require_once '../../function/session.php';
+require_once '../class/salesorder.php';
+
+$soClass = new Salesorder($koneksi);
+
+try {
+    $nopol = trim($koneksi->real_escape_string($_POST['nopol']));
+    if (!isset($nopol) || empty($nopol)) {
+        header('location:../../uploadsalesorder.php');
+    }
+
+    $result = handlePrintSalesOrder($soClass, $nopol);
+
+    $completeTable = generateCompleteTable($result);
+    echo $completeTable;
+} catch (Exception $e) {
+    echo $e->getMessage();
+} finally {
+    $koneksi->close();
+}
+
+function groupSaldoByKdbrg($data)
+{
+    $groupedData = [];
+
+    while ($row = $data->fetch_assoc()) {
+        $nopol = $row['nopol'];
+        if (!isset($groupedData[$nopol])) {
+            $groupedData[$nopol] = [
+                'nopol' => $nopol,
+                'supir' => $row['supir'],
+                'jenis' => $row['jenis'],
+                'details' => []
+            ];
+        }
+        $groupedData[$nopol]['details'][] = [
+            'no_faktur' => $row['no_faktur'],
+            'toko' => $row['toko'],
+            'brg' => $row['brg'],
+            'rak' => $row['rak'],
+            'tahunprod' => $row['tahunprod'],
+            'qty_pro' => $row['qty_pro']
+        ];
+    }
+
+    foreach ($groupedData as &$group) {
+        usort($group['details'], function ($a, $b) {
+            return strcmp($a['rak'], $b['rak']);
+        });
+    }
+
+    return array_values($groupedData);
+}
+
+function handlePrintSalesOrder($soClass, $nopol)
+{
+    $result = $soClass->getDataDetailProsessSalesOrder($nopol);
+    $groupedData = groupSaldoByKdbrg($result);
+
+    return $groupedData;
+}
+
+function generateCompleteTable($data)
+{
+    $style = '
+    <style type="text/css">
+    *{
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px;
+    }
+        .control-label {
+            text-align: left;
+            width: 300px;
+        }
+        label {
+            display: block;
+            margin-bottom: -10px; 
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 20px;
+        }
+        strong {
+            font-weight: normal;
+        }
+        .titik2 {
+            padding-left: 130px;
+            margin-top: -20px;
+            font-weight: bold;
+        }
+        #nota th, td {
+            padding: 1px;
+            margin: 1px;
+            font-size: 14px;
+        }
+        label.oleh {
+            position: absolute;
+            margin-top: -145px;
+        }
+        label.tgl {
+            position: absolute;
+            margin-top: -122px;
+        }
+        label.noReg {
+            position: absolute;
+            margin-top: -99px;
+        }
+        .isi {
+            padding-left: 82px;
+            margin-top: -20px;
+            font-weight: normal;
+        }
+        .mar {
+            margin-top:-15px;
+        }
+        #mar {
+            margin-top:-20px;
+        }
+        .textHeader {
+            margin-bottom: 0px;
+        }
+        .childHeader {
+            margin-top: 2px;
+            padding-top: 0px;
+            margin-bottom: 0px;
+        }
+        .text-center {
+            text-align: center;
+        }
+
+        .font-10 {
+            font-size: 10px;
+        }
+    </style>';
+
+    $html = $style;
+
+    foreach ($data as $row) {
+        $html .= '
+        <table rules="none" border="1" width="100%">
+            <tr>
+                <td>
+                    <center>
+                        <h4 class="textHeader">SALES ORDER GUDANG</h4>
+                        <h4 class="childHeader">' . htmlspecialchars($row['jenis']) . ' - ' . htmlspecialchars($row['nopol']) . ' - ' . htmlspecialchars($row['supir']) . '</h4>
+                        <h4 class="childHeader">' . date('d-m-Y') . '</h4>
+                    </center>
+                    <br />
+                </td>
+            </tr>
+            <table border="1" cellspacing="0" cellpadding="1" width="100%" id="nota">
+                <tr>
+                    <th width="10%">No Faktur</th>
+                    <th width="30%">Toko</th>
+                    <th>Barang</th>
+                    <th width="5%">Rak</th>
+                    <th width="5%">Tahun</th>
+                    <th width="5%">Qty</th>
+                </tr>
+                ';
+
+        foreach ($row['details'] as $detail) {
+            $html .= '<tr>';
+            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['no_faktur'], 8, strlen($detail['no_faktur']) - 8)) . '</td>';
+            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['toko'], 0, 35)) . '</td>';
+            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['brg'], 0, 53)) . '</td>';
+            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['rak']) . '</td>';
+            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['tahunprod']) . '</td>';
+            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['qty_pro']) . '</td>';
+            $html .= '</tr>';
+        }
+        $html .= '</table>';
+
+        $html .= '
+            <table rules="none" border="1" width="100%">
+                <tr>
+                    <th width="33%">Checker</th>
+                    <th width="33%">Admin Gudang</th>
+                    <th width="33%">Kepala Gudang</th>
+                </tr>
+                <tbody>
+                    <tr>
+                        <td style="padding-top:35px; text-align:center;">............................</td>
+                        <td style="padding-top:35px; text-align:center;">............................</td>
+                        <td style="padding-top:35px; text-align:center;">............................</td>
+                    </tr>	
+                </tbody>
+            </table>
+        </table>';
+    }
+
+    return $html;
+}

@@ -43,6 +43,11 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         <!-- END PAGE HEADER-->
         <div id="hapus-pesan"></div>
         <!-- BEGIN ADVANCED TABLE widget-->
+        <div class="form-actions">
+            <!-- disabled="disabled" -->
+            <button class="btn btn-primary" type="button" id="printSo"><i class="fa fa-print"></i> Cetak SO</button>
+            <button class="btn btn-warning" type="button" id="processKeluar"><i class="fa fa-cogs"></i> Proses Keluar</button>
+        </div>
         <div class="row-fluid">
             <div class="span12">
                 <!-- BEGIN EXAMPLE TABLE widget-->
@@ -143,7 +148,7 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
+                    <button class="btn btn-primary" type="submit" id="update" disabled>Simpan</button>
                 </div>
             </form>
         </div>
