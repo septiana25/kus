@@ -122,6 +122,34 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         <!-- END MODAL EDIT Sales Order-->
 
         <!-- BEGIN MODAL EDIT Sales Order-->
+        <div id="editModalEkspedisiSO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Edit QTY Sales Order</h3>
+            </div>
+            <form class="form-horizontal" id="submitEditTahunDetailSO" action="action/upload/updatetahundetailso.php" method="POST">
+                <div class="modal-body modal-full">
+                    <div class="control-group">
+                        <div id="infoSO"></div>
+                        <div id="pesan"></div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="ekspedisi">Ekspedisi</label>
+                        <div class="controls">
+                            <input class="span12" type="hidden" id="ekspedisiid_pro" name="ekspedisiid_pro" readonly>
+                            <input class="span12" type="text" id="ekspedisi" name="ekspedisi" placeholder="Ekspedisi" onkeydown="HurufBesar(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL EDIT Sales Order-->
+
+        <!-- BEGIN MODAL EDIT Sales Order-->
         <div id="editModalTahunSO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>

@@ -165,4 +165,10 @@ function validAngka(a)
   {
   a.value = a.value.substring(0,a.value.length-1000);
   }
+
+  function upperCaseF(a){
+	setTimeout(function(){
+		a.value = a.value.toUpperCase();
+	}, 1);
+  }
 }
