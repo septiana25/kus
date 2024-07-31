@@ -56,16 +56,11 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
     foreach ($tmpDataSO as $rowSO) {
         $kdbrg = $rowSO['kdbrg'];
+        $brg = substr($rowSO['brg'], 0, 10);
         $qtySO = $rowSO['qty'];
         $statusUpdate = [
             'success' => false
         ];
-
-        if ($qtySO == 0) {
-            $results['success'] = false;
-            $results['messages'][] = "Sisa stok {$kdbrg} habis";
-            continue; // Lanjut ke data berikutnya
-        }
 
         // Cari kdbrg yang sesuai di $groupedSaldo
         $saldoItem = array_filter($groupedSaldo, function ($item) use ($kdbrg) {
@@ -74,7 +69,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
         if (empty($saldoItem)) {
             $results['success'] = false;
-            $results['messages'][] = "Tidak ada stok untuk {$kdbrg}";
+            $results['messages'][] = "Tidak ada stok untuk {$brg}";
             continue;
         }
 
@@ -86,15 +81,19 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
             $conn->begin_transaction();
 
+            if ($detail['jumlah'] <= 0) {
+                $results['success'] = false;
+                $results['messages'][] = "Stok {$brg} di rak {$detail['rak']} habis";
+                continue;
+            }
             $qtyToDeduct = min($remainingQty, $detail['jumlah']); //tentukan jumlah yang akan dikurangi dari saldo agar tidak melebihi sisa stok
             $remainingQty -= $qtyToDeduct; //jumlah yang tersisa setelah dikurangi
-
             // Simpan perubahan ke database
             $updateDetailSaldo = $detailsaldoClass->updateMinus($detail['id_detailsaldo'], $qtyToDeduct);
             if (!$updateDetailSaldo) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
+                $results['messages'][] = "Gagal memperbarui stok untuk {$brg} di rak {$detail['rak']} {$updateDetailSaldo['message']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
@@ -102,7 +101,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             if (!$updateSaldo['success']) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'][] = "Gagal memperbarui stok untuk {$kdbrg} di rak {$detail['rak']}";
+                $results['messages'][] = "Gagal memperbarui stok untuk {$brg} di rak {$detail['rak']} {$updateSaldo['message']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
@@ -110,7 +109,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             if (!$updateSisaSO['success']) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'][] = "Gagal memperbarui sisa stok untuk {$kdbrg} di rak {$detail['rak']}";
+                $results['messages'][] = "Gagal memperbarui sisa stok untuk {$brg} di rak {$detail['rak']} {$updateSisaSO['message']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
@@ -123,17 +122,17 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             if (!$insertProssesSO['success']) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'][] = "Gagal memasukan data ke proses";
+                $results['messages'][] = "Gagal memasukan data ke proses {$insertProssesSO['message']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
             $conn->commit(); // Commit jika semua operasi berhasil
             $statusUpdate['success'] = true;
-            $results['messages'][] = "Berhasil memperbarui stok {$kdbrg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
+            $results['messages'][] = "Berhasil memperbarui stok {$brg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
         }
 
         if ($remainingQty > 0) {
-            $results['messages'][] = "Stok tidak cukup untuk {$kdbrg}, kurang {$remainingQty} unit";
+            $results['messages'][] = "Stok tidak cukup untuk {$brg}, kurang {$remainingQty} unit";
         }
 
         if ($remainingQty == 0 && $statusUpdate['success']) {
@@ -141,7 +140,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             $updateSOResult = $soClass->updateDateUpdateSalesOrder($rowSO['id_so'], $atUpdate);
             if (!$updateSOResult['success']) {
                 $results['success'] = false;
-                $results['messages'][] = "Gagal memperbarui status SO untuk {$kdbrg}";
+                $results['messages'][] = "Gagal memperbarui status SO untuk {$brg}";
             }
         }
     }

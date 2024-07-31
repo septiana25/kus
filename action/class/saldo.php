@@ -61,13 +61,14 @@ class Saldo
 
     public function updateSaldoMinus($id_saldo, $qty)
     {
-        $stmt = $this->conn->prepare("UPDATE saldo SET saldo_akhir = saldo_akhir - ? WHERE id_saldo = ?");
-        $stmt->bind_param("ii", $qty, $id_saldo);
+        $stmt = $this->conn->prepare("UPDATE saldo SET saldo_akhir = saldo_akhir - ? WHERE id_saldo = ? AND saldo_akhir >= ?");
+        $stmt->bind_param("iii", $qty, $id_saldo, $qty);
         $stmt->execute();
-        if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed: "];
-        }
 
+        if ($stmt->affected_rows == 0) {
+            $this->conn->rollback();
+            return ['success' => false, 'message' => "Saldo tidak cukup atau data tidak ditemukan"];
+        }
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 

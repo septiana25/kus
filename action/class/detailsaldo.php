@@ -35,15 +35,17 @@ class DetailSaldo
 
     public function updateMinus($id_detailsaldo, $jml)
     {
-        $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = jumlah - ? WHERE id_detailsaldo = ?");
-        $stmt->bind_param("ii", $jml, $id_detailsaldo);
+        $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = jumlah - ? WHERE id_detailsaldo = ? AND jumlah >= ?");
+        $stmt->bind_param("iii", $jml, $id_detailsaldo, $jml);
         $stmt->execute();
+
         if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed"];
+            return ['success' => false, 'message' => "Stok tidak cukup atau data tidak ditemukan"];
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
+
     public function updatePlus($id_detailsaldo, $jml)
     {
         $stmt = $this->conn->prepare("UPDATE detail_saldo SET jumlah = jumlah + ? WHERE id_detailsaldo = ?");
