@@ -50,7 +50,7 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
     foreach ($dataProsesSO as $saldoItem) {
 
         $conn->begin_transaction();
-        $idKlr = handleInsertKeluar($keluarClass, $saldoItem['no_faktur'], $saldoItem['id_toko']);
+        $idKlr = handleInsertKeluar($keluarClass, $saldoItem['no_faktur'], $saldoItem['id_toko'], $_SESSION['nama'], $saldoItem['supir']);
         if (!$idKlr) {
             $conn->rollback();
             $results['success'] = false;
@@ -82,9 +82,9 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
     return $results;
 }
 
-function handleInsertKeluar($keluarClass, $noFaktur, $id_toko)
+function handleInsertKeluar($keluarClass, $noFaktur, $id_toko, $nama, $supir)
 {
-    $result = $keluarClass->save(date('Y-m-d'), $noFaktur, $id_toko,  $_SESSION['nama']);
+    $result = $keluarClass->save(date('Y-m-d'), $noFaktur, $id_toko,  $nama, $supir);
     return $result;
 }
 
