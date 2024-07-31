@@ -114,6 +114,7 @@ $(document).ready(function() {
 	function handleResponse(response) {
 	
 		tabelSalesOrder.ajax.reload();
+		tabelProsessSalesOrder.ajax.reload();
 		if (response.success === true) {
 			$('.modal').modal('hide');
 			displayMessagePopup(response.messages, 'success');
