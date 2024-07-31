@@ -18,8 +18,7 @@ if ($_POST) {
 	// $tgl   = date("Y-m-d");
 	// $b     = 8;
 
-	$query = $koneksi->query("SELECT id, saldo_akhir FROM saldo WHERE MONTH(tgl)=$bulan AND YEAR(tgl)=$tahun");
-
+	$query = $koneksi->query("SELECT id, saldo_akhir FROM saldo WHERE MONTH(tgl)=$bulan AND YEAR(tgl)=$tahun AND saldo_akhir !=0");
 	$sql_error = '';
 
 	//membuat fungsi transaksi
