@@ -15,7 +15,7 @@ class Salesorder
      */
     public function getDataSalesOrderUnprocessed()
     {
-        $stmt = $this->conn->prepare("SELECT id_so, no_faktur, kode_toko, toko.toko AS toko, ekspedisi.nopol AS nopol, kdbrg, barang.brg AS brg, qty, sisa, `status`
+        $stmt = $this->conn->prepare("SELECT id_so, no_faktur, kode_toko, toko.toko AS toko, ekspedisi.nopol AS nopol, supir, kdbrg, barang.brg AS brg, qty, sisa, `status`
                                         FROM tmp_salesorder
                                         LEFT JOIN toko USING(kode_toko)
                                         LEFT JOIN barang USING(kdbrg)

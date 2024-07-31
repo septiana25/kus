@@ -59,7 +59,7 @@ function handleFetchSalesOrder($soClass)
         $button = generateButton($row['id_so'], $row['status'], $disabled);
 
         $output['data'][] = array(
-            generateLabel($row['nopol']),
+            generateLabel($row['supir']),
             generateLabel($row['toko']),
             $row['no_faktur'],
             generateLabel($row['brg']),
