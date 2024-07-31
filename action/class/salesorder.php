@@ -145,7 +145,7 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrder($nopol)
     {
-        $stmt = $this->conn->prepare("SELECT id_pro, id_detailsaldo, jenis, nopol, supir, toko.toko AS toko, no_faktur, barang.kdbrg, barang.brg, rak, tahunprod, SUM(qty_pro) AS qty_pro
+        $stmt = $this->conn->prepare("SELECT id_pro, detail_brg.id, id_detailsaldo, jenis, nopol, supir, id_toko, toko.toko AS toko, no_faktur, barang.kdbrg, barang.brg, rak, tahunprod, SUM(qty_pro) AS qty_pro, tmp_salesorder.note
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN ekspedisi USING(nopol)
@@ -181,7 +181,19 @@ class Salesorder
         $stmt->bind_param("ii", $qty_pro, $id_pro);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed"];
+            return ['success' => false, 'message' => "Gagal Mengubah Qty"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function updateNoNotaProssesSalesOrder($id_pro, $no_nota)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_prossessso SET no_nota = ? WHERE id_pro = ?");
+        $stmt->bind_param("si", $no_nota, $id_pro);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Gagal Mengubah No Nota"];
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];

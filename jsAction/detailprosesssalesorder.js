@@ -18,13 +18,17 @@ $(document).ready(function() {
 			success: handlePrintSo
 		});
 	});
-
-	$('#processData').click(function() {
-		$.ajax({
-			url: 'action/upload/processsalesorder.php',
-			dataType: 'json',
-			success: handleResponse
-		});
+	
+	$('#processKeluar').click(function() {
+		if (confirm('Apakah anda yakin ingin mengproses data ini?')) {
+			$.ajax({
+				url: 'action/upload/processkeluarso.php',
+				type: 'POST',
+				data: { nopol: nopol },
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
 	});
 
 	$('#submitEditQtyDetailSO').unbind('submit').bind('submit', function() {
