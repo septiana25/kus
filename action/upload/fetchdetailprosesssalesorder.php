@@ -35,7 +35,7 @@ function generateButton($id_pro)
 
 function handleFetchProsessSalesOrder($soClass, $nopol)
 {
-    $result = $soClass->getDataDetailProsessSalesOrder($nopol);
+    $result = $soClass->getDataDetailProsessSOForKeluar($nopol);
     $output = array('data' => array());
 
     while ($row = $result->fetch_array()) {

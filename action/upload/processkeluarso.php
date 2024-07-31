@@ -22,7 +22,7 @@ try {
         $valid['messages'] = $resultProsesKeluar['messages'];
     } else {
         $valid['success'] = true;
-        $valid['messages'] = "<strong>Success! </strong>Data Selesai Diproses";
+        $valid['messages'] = $resultProsesKeluar['messages'];
     }
 } catch (\Throwable $th) {
     $valid['success'] = false;
@@ -34,7 +34,7 @@ try {
 
 function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
 {
-    $dataProsesSO = $soClass->getDataDetailProsessSalesOrder($nopol);
+    $dataProsesSO = $soClass->getDataDetailProsessSOForKeluar($nopol);
     $results = [
         'success' => true,
         'messages' => []
@@ -43,7 +43,7 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
 
     if (count($dataProsesSO) == 0) {
         $results['success'] = false;
-        $results['messages'] = "<strong>Error! </strong> Data Tidak Ditemukan";
+        $results['messages'][] = "<strong>Error! </strong> Data Tidak Ditemukan";
         return $results;
     }
 
@@ -54,7 +54,7 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
         if (!$idKlr) {
             $conn->rollback();
             $results['success'] = false;
-            $results['messages'] = "<strong>Error! </strong> Data Ada Yang Gagal";
+            $results['messages'][] = "<strong>Error! </strong> Data Ada Yang Gagal {$saldoItem['no_faktur']}";
             continue;
         }
 
@@ -63,7 +63,7 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
             if (!$resultInsertKeluar['success']) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'] = "<strong>Error! </strong> Data Detail Keluar Gagal";
+                $results['messages'][] = "<strong>Error! </strong> Data Detail Keluar Gagal {$detail['id_pro']}";
                 continue;
             }
 
@@ -72,12 +72,12 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
             if (!$resultUpdateNoNota['success']) {
                 $conn->rollback();
                 $results['success'] = false;
-                $results['messages'] = "<strong>Error! </strong> Data No Nota Gagal";
+                $results['messages'][] = "<strong>Error! </strong> Data No Nota Gagal {$detail['id_pro']}";
                 continue;
             }
+            $conn->commit();
+            $results['messages'][] = "<strong>Success! </strong> Data Selesai Diproses";
         }
-
-        $conn->commit();
     }
     return $results;
 }

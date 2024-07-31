@@ -161,6 +161,23 @@ class Salesorder
         return $stmt->get_result();
     }
 
+    public function getDataDetailProsessSOForKeluar($nopol)
+    {
+        $stmt = $this->conn->prepare("SELECT id_pro, detail_brg.id, id_detailsaldo, jenis, nopol, supir, id_toko, toko.toko AS toko, no_faktur, barang.kdbrg, barang.brg, rak, tahunprod, qty_pro, tmp_salesorder.note
+                                        FROM tmp_prossessso
+                                        LEFT JOIN tmp_salesorder USING(id_so)
+                                        LEFT JOIN ekspedisi USING(nopol)
+                                        LEFT JOIN toko USING(kode_toko)
+                                        LEFT JOIN detail_saldo USING(id_detailsaldo) 
+                                        LEFT JOIN detail_brg USING(id)
+                                        LEFT JOIN barang USING(id_brg)
+                                        LEFT JOIN rak USING(id_rak)
+                                        WHERE no_nota IS NULL AND nopol = ?");
+        $stmt->bind_param("s", $nopol);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getDataDetailProsessSalesOrderByIdPro($id_pro)
     {
         $stmt = $this->conn->prepare("SELECT id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro
