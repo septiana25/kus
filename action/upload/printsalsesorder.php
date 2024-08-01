@@ -36,7 +36,6 @@ function groupSaldoByKdbrg($data)
             ];
         }
         $groupedData[$nopol]['details'][] = [
-            'no_faktur' => $row['no_faktur'],
             'toko' => $row['toko'],
             'brg' => $row['brg'],
             'rak' => $row['rak'],
@@ -151,7 +150,6 @@ function generateCompleteTable($data)
             </tr>
             <table border="1" cellspacing="0" cellpadding="1" width="100%" id="nota">
                 <tr>
-                    <th width="10%">No Faktur</th>
                     <th width="30%">Toko</th>
                     <th>Barang</th>
                     <th width="5%">Rak</th>
@@ -162,7 +160,6 @@ function generateCompleteTable($data)
 
         foreach ($row['details'] as $detail) {
             $html .= '<tr>';
-            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['no_faktur'], 8, strlen($detail['no_faktur']) - 8)) . '</td>';
             $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['toko'], 0, 35)) . '</td>';
             $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['brg'], 0, 53)) . '</td>';
             $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['rak']) . '</td>';

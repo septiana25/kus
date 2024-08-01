@@ -153,7 +153,7 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrder($nopol)
     {
-        $stmt = $this->conn->prepare("SELECT id_pro, detail_brg.id, id_detailsaldo, jenis, nopol, supir, id_toko, toko.toko AS toko, no_faktur, barang.kdbrg, barang.brg, rak, tahunprod, SUM(qty_pro) AS qty_pro, tmp_salesorder.note
+        $stmt = $this->conn->prepare("SELECT id_pro, detail_brg.id, id_detailsaldo, jenis, nopol, supir, id_toko, toko.toko AS toko, barang.kdbrg, barang.brg, rak, tahunprod, SUM(qty_pro) AS qty_pro
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN ekspedisi USING(nopol)
@@ -163,7 +163,7 @@ class Salesorder
                                         LEFT JOIN barang USING(id_brg)
                                         LEFT JOIN rak USING(id_rak)
                                         WHERE no_nota IS NULL AND nopol = ?
-                                        GROUP BY kdbrg, rak, no_faktur");
+                                        GROUP BY kdbrg, rak");
         $stmt->bind_param("s", $nopol);
         $stmt->execute();
         return $stmt->get_result();
