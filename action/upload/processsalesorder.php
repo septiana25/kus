@@ -128,7 +128,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
             $conn->commit(); // Commit jika semua operasi berhasil
             $statusUpdate['success'] = true;
-            $results['messages'][] = "Berhasil memperbarui stok {$brg} di rak {$detail['rak']}: {$qtyToDeduct} unit";
+            $results['messages'] = "Berhasil Di Proses";
         }
 
         if ($remainingQty > 0) {
