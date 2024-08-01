@@ -84,7 +84,7 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
                 continue;
             }
             $conn->commit();
-            $results['messages'] = "<strong>Success! </strong> Data Selesai Diproses Keluar";
+            $results['messages'][] = "<strong>Success! </strong> Data Selesai Diproses Keluar";
         }
     }
     return $results;
