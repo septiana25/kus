@@ -89,7 +89,7 @@ function generateCompleteTable($data)
     <style type="text/css">
     *{
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 12px;
+        font-size: 14px;
     }
         .control-label {
             text-align: left;
@@ -146,12 +146,30 @@ function generateCompleteTable($data)
             padding-top: 0px;
             margin-bottom: 0px;
         }
-        .text-center {
+        .table-striped {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-striped th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+            text-align: left;
+            padding: 8px;
+        }
+        .table-striped th {
             text-align: center;
         }
-
-        .font-10 {
-            font-size: 10px;
+        .table-striped td {
+            padding: 2px;
+        }
+        .table-striped tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        .table-striped tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+        .text-center {
+            text-align: center;
         }
     </style>';
 
@@ -170,23 +188,25 @@ function generateCompleteTable($data)
                     <br />
                 </td>
             </tr>
-            <table border="1" cellspacing="0" cellpadding="1" width="100%" id="nota">
+            <table class="table-striped" border="1" cellspacing="0" cellpadding="1" width="100%" id="nota">
                 <tr>
                     <th width="30%">Toko</th>
                     <th>Barang</th>
-                    <th width="5%">Rak</th>
-                    <th width="5%">Tahun</th>
-                    <th width="5%">Qty</th>
+                    <th width="8%">Rak</th>
+                    <th width="10%">Tahun</th>
+                    <th width="7%">Qty</th>
                 </tr>
                 ';
 
+        $rowCount = 0;
         foreach ($row['details'] as $detail) {
+            $rowCount++;
             $html .= '<tr>';
-            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['toko'], 0, 35)) . '</td>';
-            $html .= '<td class="font-10">' . htmlspecialchars(substr($detail['brg'], 0, 53)) . '</td>';
-            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['rak']) . '</td>';
-            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['tahunprod']) . '</td>';
-            $html .= '<td class="text-center font-10">' . htmlspecialchars($detail['qty_pro']) . '</td>';
+            $html .= '<td>' . htmlspecialchars(substr($detail['toko'], 0, 25)) . '</td>';
+            $html .= '<td>' . htmlspecialchars(substr($detail['brg'], 0, 46)) . '</td>';
+            $html .= '<td class="text-center ">' . htmlspecialchars($detail['rak']) . '</td>';
+            $html .= '<td class="text-center ">' . htmlspecialchars($detail['tahunprod']) . '</td>';
+            $html .= '<td class="text-center ">' . htmlspecialchars($detail['qty_pro']) . '</td>';
             $html .= '</tr>';
         }
         $html .= '</table>';
