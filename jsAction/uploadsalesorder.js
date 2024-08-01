@@ -4,6 +4,8 @@ $(document).ready(function() {
 	$('#activeUpload').addClass('active');
 	$('#activeUploadSalesOrder').addClass('active');
 
+	$(".chosen-select").chosen();
+
 	tabelSalesOrder = $('#tabelSalesOrder').DataTable({
 		'ajax' : 'action/upload/fetchuplodsalesorder.php',
 		'order':[],
@@ -31,6 +33,13 @@ $(document).ready(function() {
 		});
 	});
 
+	$('#submitDataSO').unbind('submit').bind('submit', function() {
+		const file = $('#file-csv').val().trim();
+		const type = $('#type').val().trim();
+
+		validateInput(file, '#file-csv', 'File CSV harus diisi');
+		validateInput(type, '#file-csv', 'Relode Page');
+	});
 	$('#submitUploadSalesOrder').unbind('submit').bind('submit', function() {
 		const file = $('#file-csv').val().trim();
 		const type = $('#type').val().trim();

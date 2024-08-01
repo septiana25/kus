@@ -61,7 +61,8 @@ require_once 'include/menu.php';
                                     <p>Data Sales Order</p>
                                     <div class="form-actions">
                                         <!-- disabled="disabled" -->
-                                        <button class="btn btn-primary" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
+                                        <a href="#addModalSalesOrder1" disabled="disabled" role="button" class="btn btn-primary tambah" id="addBtnModalSO" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
+                                        <button class="btn btn-success" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
                                         <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Sales Order</button>
                                     </div>
                                     <table class="table table-striped table-bordered" id="tabelSalesOrder">
@@ -145,6 +146,93 @@ require_once 'include/menu.php';
 
             <!-- END ADVANCED TABLE widget-->
         </div>
+
+        <!-- BEGIN MODAL Add Sales Order-->
+        <div id="addModalSalesOrder" class="modal modal-form hide fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign"></i> FORM INPUT BARANG MASUK</h3>
+            </div>
+            <form class="cmxform form-horizontal" id="submitDataSO" action="action/upload/saveDataSO.php" method="POST">
+                <div class="modal-body modal-full tinggi2">
+                    <div class="control-group" style="margin-bottom: 15px;">
+                        <label class="control-label"><strong>Ekspedisi</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select id="nopol" name="nopol" class="chosen-select" data-placeholder="Pilih Ekspedisi...">
+                                <option value=""></option>
+                                <?php
+                                $ResultEkspedisi = $koneksi->query("SELECT nopol, supir FROM ekspedisi ORDER BY supir ASC");
+                                while ($ekspedisi = $ResultEkspedisi->fetch_assoc()) {
+                                    echo "<option value='$ekspedisi[nopol]'>$ekspedisi[supir]</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td width="1%">
+                                <div class="control-group" style="margin-bottom: 0px;">
+                                    <label class="control-label"><strong>No Faktur</strong>
+                                        <p class="titik2">:</p>
+                                    </label>
+                                    <?php
+                                    $carSeriPJK = $koneksi->query("SELECT seriPajak FROM tblSeriPajak");
+                                    $rowPJK = $carSeriPJK->fetch_array();
+                                    ?>
+                                    <div class="controls">
+                                        <input type="text" class="input-small" name="awal" value="<?php echo $rowPJK[0]; ?>" readonly="true">
+                                    </div>
+                                </div>
+                            </td width="50%">
+                            <td>
+                                <div class="control-group" style="margin-bottom: 0px;">
+                                    <input class="span12" id="noFaktur" name="noFaktur" type="text" placeholder="Delapan Digit Terakhir" onkeyup="validAngka(this)" minlength="8" maxlength="8" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="control-group" style="margin-bottom: 15px;">
+                        <label class="control-label"><strong>Nama Barang</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select id="barang" name="id_brg" class="chosen-select" data-placeholder="Pilih Type Ban...">
+                                <option value=""></option>
+                                <?php
+                                //query barang
+                                $brg = "SELECT brg, kdbrg FROM barang ORDER BY brg ASC";
+                                $brg1 = $koneksi->query($brg);
+                                while ($brg2 = $brg1->fetch_assoc()) {
+                                    echo "<option value='$brg2[kdbrg]'>$brg2[kdbrg] $brg2[brg]</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group" style="margin-bottom: 15px;">
+                        <label for="cname" class="control-label"><strong>Qty</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <input class="span12 " id="qty" name="qty" type="text" placeholder="Quantity" onkeyup="validAngka(this)" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div id="pesan"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-primary" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL Add Sales Order-->
 
         <!-- BEGIN MODAL EDIT Sales Order-->
         <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -232,3 +320,4 @@ require_once 'include/menu.php';
     <?php require_once 'include/footer.php'; ?>
 
     <script src="jsAction/uploadsalesorder.js"></script>
+    <script src="assets/chosen/chosen1.jquery.min.js"></script>

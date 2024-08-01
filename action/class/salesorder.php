@@ -50,6 +50,14 @@ class Salesorder
         return $stmt->get_result();
     }
 
+    public function saveSalesOrder($inputs)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO tmp_salesorder (no_faktur, kode_toko, nopol, kdbrg, qty, sisa) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssii", $inputs['no_faktur'], $inputs['kode_toko'], $inputs['nopol'], $inputs['kdbrg'], $inputs['qty'], $inputs['qty']);
+        $stmt->execute();
+        return ['success' => true, 'id' => $this->conn->insert_id];
+    }
+
     public function update($inputs)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ?, kdbrg = ?, kode_toko = ?, qty = ? WHERE id_so = ?");
