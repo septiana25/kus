@@ -21,6 +21,27 @@ try {
     $koneksi->close();
 }
 
+function compareRak($a, $b)
+{
+    preg_match('/([A-Z])(\d+)\.(\d+)/', $a, $matchesA);
+    preg_match('/([A-Z])(\d+)\.(\d+)/', $b, $matchesB);
+
+    // Bandingkan huruf
+    if ($matchesA[1] != $matchesB[1]) {
+        return strcmp($matchesA[1], $matchesB[1]);
+    }
+
+    // Bandingkan angka pertama
+    if (intval($matchesA[2]) != intval($matchesB[2])) {
+        return intval($matchesA[2]) - intval($matchesB[2]);
+    }
+
+    // Bandingkan angka setelah titik
+    return intval($matchesA[3]) - intval($matchesB[3]);
+}
+
+
+
 function groupSaldoByKdbrg($data)
 {
     $groupedData = [];
@@ -44,9 +65,10 @@ function groupSaldoByKdbrg($data)
         ];
     }
 
+    // Urutkan details berdasarkan rak untuk setiap nopol
     foreach ($groupedData as &$group) {
         usort($group['details'], function ($a, $b) {
-            return strcmp($a['rak'], $b['rak']);
+            return compareRak($a['rak'], $b['rak']);
         });
     }
 
