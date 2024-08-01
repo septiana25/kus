@@ -59,11 +59,19 @@ function handleProsessKeluarSO($keluarClass, $soClass, $nopol, $conn)
         }
 
         foreach ($saldoItem['details'] as $detail) {
-            $resultInsertKeluar = handleInsertDetailKeluar($keluarClass, $idKlr['id'], $detail['id'], $detail['qty'], $detail['note']);
-            if (!$resultInsertKeluar['success']) {
+            $resultInsertDetailKeluar = handleInsertDetailKeluar($keluarClass, $idKlr['id'], $detail['id'], $detail['qty'], $detail['note']);
+            if (!$resultInsertDetailKeluar['success']) {
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "<strong>Error! </strong> Data Detail Keluar Gagal {$detail['id_pro']}";
+                continue;
+            }
+
+            $resultInsertKeluarTahunProd = handleInsertDetailKeluarTahunProd($keluarClass, $resultInsertDetailKeluar['id'], $detail['tahunprod']);
+            if (!$resultInsertKeluarTahunProd['success']) {
+                $conn->rollback();
+                $results['success'] = false;
+                $results['messages'][] = "<strong>Error! </strong> Data Tahun Produksi Gagal {$detail['id_pro']}";
                 continue;
             }
 
@@ -92,6 +100,12 @@ function handleInsertDetailKeluar($keluarClass, $idKlr, $id, $jmlKlr, $note)
 {
     $jam = date('H:i:s');
     $result = $keluarClass->saveDetail($idKlr, $id, $jmlKlr, $jam, $jmlKlr, $note, '0');
+    return $result;
+}
+
+function handleInsertDetailKeluarTahunProd($keluarClass, $idDetail, $tahunprod)
+{
+    $result = $keluarClass->saveTahunProd($idDetail, $tahunprod);
     return $result;
 }
 
