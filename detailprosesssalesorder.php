@@ -126,13 +126,13 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         </div>
         <!-- END MODAL EDIT Sales Order-->
 
-        <!-- BEGIN MODAL EDIT Sales Order-->
+        <!-- BEGIN MODAL EDIT Ekspedisi Sales Order-->
         <div id="editModalEkspedisiSO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Edit QTY Sales Order</h3>
             </div>
-            <form class="form-horizontal" id="submitEditTahunDetailSO" action="action/upload/updatetahundetailso.php" method="POST">
+            <form class="form-horizontal" id="submitEditEkspedisiDetailSO" action="action/upload/updateekspedisidetailso.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
                         <div id="infoSO"></div>
@@ -140,19 +140,27 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
                     </div>
                     <div class="control-group">
                         <label class="control-label" for="ekspedisi">Ekspedisi</label>
+                        <input class="span12" type="hidden" id="ekspedisiid_pro" name="ekspedisiid_pro" readonly>
                         <div class="controls">
-                            <input class="span12" type="hidden" id="ekspedisiid_pro" name="ekspedisiid_pro" readonly>
-                            <input class="span12" type="text" id="ekspedisi" name="ekspedisi" placeholder="Ekspedisi" onkeydown="HurufBesar(this)">
+                            <select id="nopol" name="nopol" class="chosen-select" data-placeholder="Pilih Ekspedisi...">
+                                <option value="">Pilih Ekspedisi</option>
+                                <?php
+                                $ResultEkspedisi = $koneksi->query("SELECT nopol, supir FROM ekspedisi ORDER BY supir ASC");
+                                while ($ekspedisi = $ResultEkspedisi->fetch_assoc()) {
+                                    echo "<option value='$ekspedisi[nopol]'>$ekspedisi[supir]</option>";
+                                }
+                                ?>
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button class="btn btn-primary" type="submit" id="update" disabled>Simpan</button>
+                    <button class="btn btn-primary" type="submit" id="update">Simpan</button>
                 </div>
             </form>
         </div>
-        <!-- END MODAL EDIT Sales Order-->
+        <!-- END MODAL EDIT Ekspedisi Sales Order-->
 
         <!-- BEGIN MODAL EDIT Sales Order-->
         <div id="editModalTahunSO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

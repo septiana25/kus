@@ -52,6 +52,27 @@ $(document).ready(function() {
 
 	});
 
+	$('#submitEditEkspedisiDetailSO').unbind('submit').bind('submit', function() {
+		const id_pro = $('#ekspedisiid_pro').val().trim();
+		const nopol = $('#nopol').val().trim();
+
+		validateInput(nopol, '#nopol', 'Nopol harus diisi');
+
+		if (id_pro && qty) {
+			const form = $(this);
+
+			$.ajax({
+				url: form.attr('action'),
+				type: form.attr('method'),
+				data: form.serialize(),
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
+		return false;
+
+	});
+
 	$('#submitDeleteSalesOrder').unbind('submit').bind('submit', function() {
 		const id = $('#hapusid').val().trim();
 
@@ -177,6 +198,19 @@ function editQty(id_pro) {
 		}
 	});
 }
+function editEkspedisi(id_pro) {
+	$.ajax({
+		url: 'action/upload/fetchdetailprosesssalesorderbyid.php',
+		type: 'POST',
+		data: { id_pro: id_pro },
+		dataType: 'json',
+		success: function(data) {
+			$('#ekspedisiid_pro').val(data.id_so);
+			$('#nopol').val(data.nopol);
+		}
+	});
+}
+
 function editTahun(id_pro) {
 	$.ajax({
 		url: 'action/upload/fetchdetailprosesssalesorderbyid.php',

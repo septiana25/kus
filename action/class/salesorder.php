@@ -107,6 +107,18 @@ class Salesorder
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
     }
 
+    public function updateNopolSalesOrder($inputs)
+    {
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ? WHERE id_so = ?");
+        $stmt->bind_param("si", $inputs['nopol'], $inputs['id_so']);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function delete($id_so, $atDelete)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET at_delete = ? WHERE id_so = ?");
@@ -188,9 +200,10 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrderByIdPro($id_pro)
     {
-        $stmt = $this->conn->prepare("SELECT id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro
+        $stmt = $this->conn->prepare("SELECT id_so, id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro, nopol, supir
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
+                                        LEFT JOIN ekspedisi USING(nopol)
                                         LEFT JOIN detail_saldo USING(id_detailsaldo) 
                                         LEFT JOIN detail_brg USING(id)
                                         LEFT JOIN barang USING(id_brg)
