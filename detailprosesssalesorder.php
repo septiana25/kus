@@ -46,6 +46,7 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
         <div class="form-actions">
             <!-- disabled="disabled" -->
             <button class="btn btn-primary" type="button" id="printSo"><i class="fa fa-print"></i> Cetak SO</button>
+            <button class="btn btn-success" type="button" id="printSoExcel"><i class="fa fa-print"></i> Cetak SO (Excel)</button>
             <button class="btn btn-warning" type="button" id="processKeluar"><i class="fa fa-cogs"></i> Proses Keluar</button>
         </div>
         <div class="row-fluid">

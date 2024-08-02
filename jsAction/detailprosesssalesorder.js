@@ -18,6 +18,22 @@ $(document).ready(function() {
 			success: handlePrintSo
 		});
 	});
+
+	$('#printSoExcel').click(function(e) {
+		e.preventDefault();
+		if (!nopol) {
+			alert('Nomor polisi tidak valid');
+			return;
+		}
+
+		const url = new URL('kus/action/upload/printsalesorderexcel.php', window.location.origin);
+		url.searchParams.append('nopol', nopol);
+
+		const newWindow = window.open(url.toString(), '_blank');
+		if (!newWindow) {
+			alert('Popup blocker mungkin mencegah membuka jendela baru. Mohon izinkan popup untuk situs ini dan coba lagi.');
+		}
+	});
 	
 	$('#processKeluar').click(function() {
 		if (confirm('Apakah anda yakin ingin mengproses data ini?')) {
@@ -26,7 +42,7 @@ $(document).ready(function() {
 				type: 'POST',
 				data: { nopol: nopol },
 				dataType: 'json',
-				success: handleResponse
+				success: response
 			});
 		}
 	});
@@ -176,7 +192,25 @@ $(document).ready(function() {
 		};
 	}
 
-
+	function handlePrintSoExcel(response) {
+		// Periksa apakah respons adalah blob
+		if (!(response instanceof Blob)) {
+			console.error('Respons bukan blob');
+			alert('Terjadi kesalahan saat mengunduh file');
+			return;
+		}
+	
+		// Buat URL objek dari blob
+		const url = window.URL.createObjectURL(response);
+	
+		// Buka tab baru dengan URL blob
+		window.open(url, '_blank');
+	
+		// Bersihkan URL objek setelah beberapa detik
+		setTimeout(() => {
+			window.URL.revokeObjectURL(url);
+		}, 1000);
+	}
 //pesan error ajax
 $(document).ajaxError(function(){
 	alert("Terjadi Kesalahan, Lakukan Refresh Halaman. Lihat error_log");
