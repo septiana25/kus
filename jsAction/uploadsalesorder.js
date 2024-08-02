@@ -34,11 +34,31 @@ $(document).ready(function() {
 	});
 
 	$('#submitDataSO').unbind('submit').bind('submit', function() {
-		const file = $('#file-csv').val().trim();
-		const type = $('#type').val().trim();
+		const awalFaktur = $('#awalFaktur').val().trim();
+		const noFaktur = $('#noFaktur').val().trim();
+		const nopol = $('#nopol').val().trim();
+		const kdbrg = $('#kdbrg').val().trim();
+		const kode_toko = $('#kode_toko').val().trim();
+		const qty = $('#qty').val().trim();
 
-		validateInput(file, '#file-csv', 'File CSV harus diisi');
-		validateInput(type, '#file-csv', 'Relode Page');
+		validateInput(awalFaktur, '#awalFaktur', 'Awal Faktur harus diisi');
+		validateInput(noFaktur, '#noFaktur', 'No Faktur harus diisi');
+		validateInput(nopol, '#nopol', 'Ekspedisi harus diisi');
+		validateInput(kdbrg, '#kdbrg', 'Barang harus diisi');
+		validateInput(kode_toko, '#kode_toko', 'Toko harus diisi');
+		validateInput(qty, '#qty', 'Quantiti harus diisi');
+
+		if (awalFaktur && noFaktur && nopol && kdbrg && kode_toko && qty) {
+			const form = $(this);
+			$.ajax({
+				url: form.attr('action'),
+				type: form.attr('method'),
+				data: form.serialize(),
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
+		return false;
 	});
 	$('#submitUploadSalesOrder').unbind('submit').bind('submit', function() {
 		const file = $('#file-csv').val().trim();

@@ -61,7 +61,7 @@ require_once 'include/menu.php';
                                     <p>Data Sales Order</p>
                                     <div class="form-actions">
                                         <!-- disabled="disabled" -->
-                                        <a href="#addModalSalesOrder1" disabled="disabled" role="button" class="btn btn-primary tambah" id="addBtnModalSO" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
+                                        <a href="#addModalSalesOrder" role="button" class="btn btn-primary tambah" id="addBtnModalSO" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
                                         <button class="btn btn-success" type="button" id="checkingData"><i class="fa fa-check"></i> Check Data</button>
                                         <button class="btn btn-warning" type="button" id="processData"><i class="fa fa-cogs"></i> Prosess Sales Order</button>
                                     </div>
@@ -151,7 +151,7 @@ require_once 'include/menu.php';
         <div id="addModalSalesOrder" class="modal modal-form hide fade " tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign"></i> FORM INPUT BARANG MASUK</h3>
+                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign"></i> INPUT SALES ORDER</h3>
             </div>
             <form class="cmxform form-horizontal" id="submitDataSO" action="action/upload/saveDataSO.php" method="POST">
                 <div class="modal-body modal-full tinggi2">
@@ -183,7 +183,7 @@ require_once 'include/menu.php';
                                     $rowPJK = $carSeriPJK->fetch_array();
                                     ?>
                                     <div class="controls">
-                                        <input type="text" class="input-small" name="awal" value="<?php echo $rowPJK[0]; ?>" readonly="true">
+                                        <input type="text" class="input-small" id="awalFaktur" name="awalFaktur" value="<?php echo $rowPJK[0]; ?>" readonly="true">
                                     </div>
                                 </div>
                             </td width="50%">
@@ -196,11 +196,30 @@ require_once 'include/menu.php';
                     </table>
 
                     <div class="control-group" style="margin-bottom: 15px;">
+                        <label class="control-label"><strong>Toko</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select id="kode_toko" name="kode_toko" class="chosen-select" data-placeholder="Pilih Toko...">
+                                <option value=""></option>
+                                <?php
+                                //query barang
+                                $toko = "SELECT kode_toko, toko FROM toko WHERE kode_toko IS NOT NULL ORDER BY toko ASC";
+                                $toko1 = $koneksi->query($toko);
+                                while ($toko2 = $toko1->fetch_assoc()) {
+                                    echo "<option value='$toko2[kode_toko]'>$toko2[toko]</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="control-group" style="margin-bottom: 15px;">
                         <label class="control-label"><strong>Nama Barang</strong>
                             <p class="titik2">:</p>
                         </label>
                         <div class="controls">
-                            <select id="barang" name="id_brg" class="chosen-select" data-placeholder="Pilih Type Ban...">
+                            <select id="kdbrg" name="kdbrg" class="chosen-select" data-placeholder="Pilih Type Ban...">
                                 <option value=""></option>
                                 <?php
                                 //query barang
