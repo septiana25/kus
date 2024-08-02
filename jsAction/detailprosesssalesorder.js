@@ -56,7 +56,7 @@ $(document).ready(function() {
 		const id_pro = $('#ekspedisiid_pro').val().trim();
 		const nopol = $('#nopol').val().trim();
 
-		validateInput(nopol, '#nopol', 'Nopol harus diisi');
+		validateInput(qty, '#qty', 'Quantiti harus diisi');
 
 		if (id_pro && qty) {
 			const form = $(this);
@@ -206,6 +206,7 @@ function editEkspedisi(id_pro) {
 		dataType: 'json',
 		success: function(data) {
 			$('#ekspedisiid_pro').val(data.id_so);
+			$('#noFaktur').val(data.no_faktur);
 			$('#nopol').val(data.nopol);
 		}
 	});

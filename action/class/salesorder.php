@@ -109,8 +109,8 @@ class Salesorder
 
     public function updateNopolSalesOrder($inputs)
     {
-        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ? WHERE id_so = ?");
-        $stmt->bind_param("si", $inputs['nopol'], $inputs['id_so']);
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ?, no_faktur = ? WHERE id_so = ?");
+        $stmt->bind_param("ssi", $inputs['nopol'], $inputs['no_faktur'], $inputs['id_so']);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed"];
@@ -200,7 +200,7 @@ class Salesorder
 
     public function getDataDetailProsessSalesOrderByIdPro($id_pro)
     {
-        $stmt = $this->conn->prepare("SELECT id_so, id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro, nopol, supir
+        $stmt = $this->conn->prepare("SELECT id_so, id_pro, id, id_detailsaldo, barang.brg, tahunprod, qty_pro, nopol, supir, no_faktur
                                         FROM tmp_prossessso
                                         LEFT JOIN tmp_salesorder USING(id_so)
                                         LEFT JOIN ekspedisi USING(nopol)

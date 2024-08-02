@@ -34,6 +34,7 @@ function getInputs($koneksi)
 {
     $inputs = [
         "id_so" => trim($koneksi->real_escape_string($_POST["ekspedisiid_pro"])),
+        "no_faktur" => trim($koneksi->real_escape_string($_POST["noFaktur"])),
         "nopol" => trim($koneksi->real_escape_string($_POST["nopol"]))
     ];
 

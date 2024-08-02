@@ -139,6 +139,12 @@ echo "<div class='div-nopol div-hide'>" . $nopol . "</div>";
                         <div id="pesan"></div>
                     </div>
                     <div class="control-group">
+                        <label class="control-label" for="noFaktur">No Faktur</label>
+                        <div class="controls">
+                            <input class="span12" type="text" id="noFaktur" name="noFaktur" autocomplete="off" placeholder="No Faktur" onkeyup="validAngka(this)">
+                        </div>
+                    </div>
+                    <div class="control-group">
                         <label class="control-label" for="ekspedisi">Ekspedisi</label>
                         <input class="span12" type="hidden" id="ekspedisiid_pro" name="ekspedisiid_pro" readonly>
                         <div class="controls">
