@@ -16,11 +16,26 @@ class Barang
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
 
-    public function fetchByItem($item)
+    public function fetchByItem($item, $limit = 20)
     {
-        $stmt = $this->conn->prepare("SELECT id_brg, brg FROM barang WHERE brg LIKE ? LIMIT 10");
-        $searchTerm = "%" . $item . "%";
-        $stmt->bind_param("s", $searchTerm);
+        $stmt = $this->conn->prepare("
+            SELECT id_brg, brg 
+            FROM barang 
+            WHERE kdbrg != 'LAMA' 
+              AND brg LIKE ?
+            ORDER BY 
+              CASE 
+                WHEN brg LIKE ? THEN 1
+                WHEN brg LIKE ? THEN 2
+                ELSE 3
+              END,
+              brg ASC
+            LIMIT ?
+        ");
+
+        $searchStart = $item . '%';
+        $searchAnywhere = '%' . $item . '%';
+        $stmt->bind_param("sssi", $searchAnywhere, $searchStart, $searchAnywhere, $limit);
         $stmt->execute();
         return $stmt->get_result();
     }
