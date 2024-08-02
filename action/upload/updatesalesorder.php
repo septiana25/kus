@@ -34,10 +34,10 @@ function getInputs($koneksi)
 {
     $inputs = [
         "id_so" => trim($koneksi->real_escape_string($_POST["id_so"])),
-        "nopol" => trim($koneksi->real_escape_string($_POST["nopol"])),
-        "kode_toko" => trim($koneksi->real_escape_string($_POST["kode_toko"])),
-        "kdbrg" => trim($koneksi->real_escape_string($_POST["kdbrg"])),
-        "qty" => trim($koneksi->real_escape_string($_POST["qty"]))
+        "nopol" => trim($koneksi->real_escape_string($_POST["editNopol"])),
+        "kode_toko" => trim($koneksi->real_escape_string($_POST["editKodeToko"])),
+        "kdbrg" => trim($koneksi->real_escape_string($_POST["editKdbrg"])),
+        "qty" => trim($koneksi->real_escape_string($_POST["editQty"]))
     ];
 
     return $inputs;

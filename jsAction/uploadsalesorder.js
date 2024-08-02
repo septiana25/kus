@@ -88,15 +88,15 @@ $(document).ready(function() {
 
 	$('#submitEditSalesOrder').unbind('submit').bind('submit', function() {
 		const id_so = $('#id_so').val().trim();
-		const nopol = $('#nopol').val().trim();
-		const kdbrg = $('#kdbrg').val().trim();
-		const kode_toko = $('#kode_toko').val().trim();
-		const qty = $('#qty').val().trim();
+		const nopol = $('#editNopol').val().trim();
+		const kdbrg = $('#editKdbrg').val().trim();
+		const kode_toko = $('#editKodeToko').val().trim();
+		const qty = $('#editQty').val().trim();
 
-		validateInput(nopol, '#nopol', 'Kode Barang harus diisi');
-		validateInput(kdbrg, '#kdbrg', 'Kode Barang harus diisi');
-		validateInput(kode_toko, '#kode_toko', 'Kode Toko harus diisi');
-		validateInput(qty, '#qty', 'Quantiti harus diisi');
+		validateInput(nopol, '#editNopol', 'Ekspedisi harus diisi');
+		validateInput(kdbrg, '#editKdbrg', 'Barang harus diisi');
+		validateInput(kode_toko, '#editKodeToko', 'Toko harus diisi');
+		validateInput(qty, '#editQty', 'Quantiti harus diisi');
 
 		if (id_so && nopol && kdbrg && kode_toko && qty) {
 			const form = $(this);
@@ -192,10 +192,10 @@ function editKoreksiSaldo(id_so) {
 		dataType: 'json',
 		success: function(data) {
 			$('#id_so').val(data.id_so);
-			$('#nopol').val(data.nopol);
-			$('#kode_toko').val(data.kode_toko);
-			$('#kdbrg').val(data.kdbrg);
-			$('#qty').val(data.qty);
+			$('#editNopol').val(data.nopol);
+			$('#editKodeToko').val(data.kode_toko);
+			$('#editKdbrg').val(data.kdbrg);
+			$('#editQty').val(data.qty);
 		}
 	});
 }

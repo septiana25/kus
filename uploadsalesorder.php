@@ -266,28 +266,28 @@ require_once 'include/menu.php';
                         <div id="pesan"></div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="nopol">Ekspedisi</label>
+                        <label class="control-label" for="editNopol">Ekspedisi</label>
                         <div class="controls">
                             <input class="span12" type="hidden" id="id_so" name="id_so" readonly>
-                            <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor">
+                            <input class="span12" type="text" id="editNopol" name="editNopol" autocomplete="off" placeholder="Plat Nomor">
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="kode_toko">Kode Toko</label>
+                        <label class="control-label" for="editKodeToko">Kode Toko</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="kode_toko" name="kode_toko" autocomplete="off" placeholder="Kode Toko">
+                            <input class="span12" type="text" id="editKodeToko" name="editKodeToko" autocomplete="off" placeholder="Kode Toko">
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="kdbrg">Kode Barang</label>
+                        <label class="control-label" for="editKdbrg">Kode Barang</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="kdbrg" name="kdbrg" autocomplete="off" placeholder="Kode Barang">
+                            <input class="span12" type="text" id="editKdbrg" name="editKdbrg" autocomplete="off" placeholder="Kode Barang">
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="qty">QTY</label>
+                        <label class="control-label" for="editQty">editQTY</label>
                         <div class="controls">
-                            <input class="span12" type="number" id="qty" name="qty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
+                            <input class="span12" type="number" id="editQty" name="editQty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
                         </div>
                     </div>
                 </div>
