@@ -42,7 +42,7 @@ $(document).ready(function() {
 				type: 'POST',
 				data: { nopol: nopol },
 				dataType: 'json',
-				success: response
+				success: handleResponse
 			});
 		}
 	});
