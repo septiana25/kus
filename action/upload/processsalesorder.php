@@ -91,6 +91,7 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             // Simpan perubahan ke database
             $updateDetailSaldo = $detailsaldoClass->updateMinus($detail['id_detailsaldo'], $qtyToDeduct);
             if (!$updateDetailSaldo) {
+                $remainingQty += $qtyToDeduct;
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui stok untuk {$brg} di rak {$detail['rak']} {$updateDetailSaldo['message']}";
@@ -99,14 +100,16 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
 
             $updateSaldo = $saldoClass->updateSaldoMinus($detail['id_saldo'], $qtyToDeduct);
             if (!$updateSaldo['success']) {
+                $remainingQty += $qtyToDeduct;
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui stok untuk {$brg} di rak {$detail['rak']} {$updateSaldo['message']}";
                 continue; // Lanjut ke detail berikutnya
             }
 
-            $updateSisaSO = $soClass->updateSisaSalesOrder($rowSO['id_so'], $remainingQty);
+            $updateSisaSO = $soClass->updateSisaSalesOrder($rowSO['id_so'], $qtyToDeduct);
             if (!$updateSisaSO['success']) {
+                $remainingQty += $qtyToDeduct;
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memperbarui sisa stok untuk {$brg} di rak {$detail['rak']} {$updateSisaSO['message']}";
@@ -120,15 +123,16 @@ function handleProcessSO($soClass, $saldoClass, $detailsaldoClass, $conn)
             ];
             $insertProssesSO = $soClass->insertProssesSalesOrder($insertProssesSO);
             if (!$insertProssesSO['success']) {
+                $remainingQty += $qtyToDeduct;
                 $conn->rollback();
                 $results['success'] = false;
                 $results['messages'][] = "Gagal memasukan data ke proses {$insertProssesSO['message']}";
                 continue; // Lanjut ke detail berikutnya
+            } else {
+                $conn->commit(); // Commit jika semua operasi berhasil
+                $statusUpdate['success'] = true;
+                $results['messages'][] = "Berhasil Di Proses";
             }
-
-            $conn->commit(); // Commit jika semua operasi berhasil
-            $statusUpdate['success'] = true;
-            $results['messages'][] = "Berhasil Di Proses";
         }
 
         if ($remainingQty > 0) {

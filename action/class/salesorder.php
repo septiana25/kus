@@ -97,11 +97,11 @@ class Salesorder
 
     public function updateSisaSalesOrder($id_so, $sisa)
     {
-        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET `sisa` = ? WHERE id_so = ?");
-        $stmt->bind_param("ii", $sisa, $id_so);
+        $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET sisa = sisa - ? WHERE id_so = ? AND sisa >= ?");
+        $stmt->bind_param("iii", $sisa, $id_so, $sisa);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
-            return ['success' => false, 'message' => "Execute failed"];
+            return ['success' => false, 'message' => "Gagal Mengubah Sisa SO"];
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
