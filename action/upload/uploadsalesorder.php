@@ -2,55 +2,91 @@
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
 
-$valid['success'] =  array('success' => false, 'messages' => array());
-if ($koneksi->real_escape_string($_SESSION['level']) == "administrator") {
-    if ($_FILES['file-csv']['error'] == UPLOAD_ERR_OK) {
-        $filename = explode(".", $_FILES['file-csv']['name']);
-        if ($filename[1] == 'csv') {
-            $handle = fopen($_FILES['file-csv']['tmp_name'], "r");
-            $dataSalesOrder = array();
-            $row = 1;
-            while ($data = fgetcsv($handle, 0, ';')) { // use semicolon as the delimiter
-                if ($row == 1) { // Skip the first row
-                    $row++;
-                    continue;
-                }
-                $no_faktur = trim($koneksi->real_escape_string($data[0]));
-                $kode_toko = trim($koneksi->real_escape_string($data[1]));
-                /* $toko = trim($koneksi->real_escape_string($data[2])); */
-                $kdbrg = trim($koneksi->real_escape_string($data[3]));
-                /* $brg = trim($koneksi->real_escape_string($data[4])); */
-                $qty = trim($koneksi->real_escape_string($data[5]));
-                $sisa = trim($koneksi->real_escape_string($data[5]));
-                $nopol = trim($koneksi->real_escape_string($data[6]));
+$valid = array('success' => false, 'messages' => '');
 
-                $dataSalesOrder[] = '
-                    ("' . $no_faktur . '", "' . $kode_toko . '", "' . $kdbrg . '", "' . $qty . '", "' . $qty . '", "' . $nopol . '", "' . $_SESSION['id_userKUS'] . '")';
-                $row++;
-            }
-            if (isset($dataSalesOrder)) {
-                $koneksi->begin_transaction();
-                $query = "INSERT INTO tmp_salesorder (no_faktur, kode_toko, kdbrg, qty, sisa, nopol, id_user) VALUES " . implode(',', $dataSalesOrder);
-                if ($koneksi->query($query) === TRUE) {
-                    $valid['success'] = true;
-                    $valid['messages'] = "Data berhasil diupload";
-
-                    $koneksi->commit();
-                } else {
-                    $valid['success'] = false;
-                    $valid['messages'] = "Error: " . $query . "<br>" . $koneksi->error;
-
-                    $koneksi->rollback();
-                }
-            }
-        } else {
-            $valid['success'] = false;
-            $valid['messages'] = "Error: File harus berformat CSV";
-        }
-    } else {
-        $valid['success'] = false;
-        $valid['messages'] = "Error: " . $_FILES['file-csv']['error'];
-    }
+if ($_SESSION['level'] !== "administrator") {
+    $valid['messages'] = "Akses ditolak. Anda bukan administrator.";
+    echo json_encode($valid);
+    exit;
 }
-$koneksi->close();
+
+if ($_FILES['file-csv']['error'] !== UPLOAD_ERR_OK) {
+    $valid['messages'] = "Error: " . $_FILES['file-csv']['error'];
+    echo json_encode($valid);
+    exit;
+}
+
+$filename = pathinfo($_FILES['file-csv']['name'], PATHINFO_EXTENSION);
+if (strtolower($filename) !== 'csv') {
+    $valid['messages'] = "Error: File harus berformat CSV";
+    echo json_encode($valid);
+    exit;
+}
+
+$handle = fopen($_FILES['file-csv']['tmp_name'], "r");
+$dataSalesOrder = array();
+$row = 0;
+
+while (($data = fgetcsv($handle, 0, ';')) !== FALSE) {
+    $row++;
+    if ($row === 1) continue; // Skip header row
+
+    // Validate data
+    if (count($data) < 7) {
+        $valid['messages'] = "Error: Data tidak lengkap pada baris $row";
+        echo json_encode($valid);
+        fclose($handle);
+        exit;
+    }
+
+    $no_faktur = trim($koneksi->real_escape_string($data[0]));
+    $kode_toko = trim($koneksi->real_escape_string($data[1]));
+    $kdbrg = trim($koneksi->real_escape_string($data[3]));
+    $qty = trim($koneksi->real_escape_string($data[5]));
+    $nopol = trim($koneksi->real_escape_string($data[6]));
+
+    // Check for empty data
+    if (empty($no_faktur) || empty($kode_toko) || empty($kdbrg) || empty($qty) || empty($nopol)) {
+        $valid['messages'] = "Error: Data kosong ditemukan pada baris $row";
+        echo json_encode($valid);
+        fclose($handle);
+        exit;
+    }
+
+    // Validate numeric fields
+    if (!is_numeric($qty)) {
+        $valid['messages'] = "Error: Quantity harus berupa angka pada baris $row";
+        echo json_encode($valid);
+        fclose($handle);
+        exit;
+    }
+
+    $dataSalesOrder[] = "('" . $no_faktur . "', '" . $kode_toko . "', '" . $kdbrg . "', '" . $qty . "', '" . $qty . "', '" . $nopol . "', '" . $_SESSION['id_userKUS'] . "')";
+}
+
+fclose($handle);
+
+if (empty($dataSalesOrder)) {
+    $valid['messages'] = "Error: Tidak ada data valid untuk diupload";
+    echo json_encode($valid);
+    exit;
+}
+
+$koneksi->begin_transaction();
+
+try {
+    $query = "INSERT INTO tmp_salesorder (no_faktur, kode_toko, kdbrg, qty, sisa, nopol, id_user) VALUES " . implode(',', $dataSalesOrder);
+    if ($koneksi->query($query)) {
+        $koneksi->commit();
+        $valid['success'] = true;
+        $valid['messages'] = "Data berhasil diupload";
+    } else {
+        throw new Exception($koneksi->error);
+    }
+} catch (Exception $e) {
+    $koneksi->rollback();
+    $valid['messages'] = "Error: " . $e->getMessage();
+}
+
 echo json_encode($valid);
+$koneksi->close();
