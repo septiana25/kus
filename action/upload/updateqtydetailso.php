@@ -38,7 +38,7 @@ try {
     }
 } catch (\Throwable $th) {
     $valid['success'] = false;
-    $valid['messages'] = $e->getMessage();
+    $valid['messages'] = $th->getMessage();
 } finally {
     $koneksi->close();
     echo json_encode($valid);
