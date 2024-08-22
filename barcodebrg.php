@@ -84,38 +84,44 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
             <!-- END ADVANCED TABLE widget-->
         </div>
 
-        <!-- BEGIN MODAL TAMBAH BARCODE BARANG-->
-        <div id="addModalBarcodebrg" class="modal modal-form hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <!-- BEGIN MODAL EDIT BARCODE BARANG-->
+        <div id="editModalBarcodebrg" class="modal modal-form hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign-alt"></i> FORM INPUT BARCODE BARANG</h3>
+                <h3 id="myModalLabel1" class="center"><i class="icon-pencil"></i> FORM EDIT BARCODE BARANG</h3>
             </div>
-            <form class="cmxform form-horizontal" id="submitBarang" action="#" method="POST">
+            <form class="cmxform form-horizontal" id="submitBarcodeBarang" action="action/barcodebrg/updateBarcode.php" method="POST">
                 <div class="modal-body modal-full">
-                    <div class="control-group ">
-                        <label class="control-label"><strong>Nama Barang</strong>
-                            <p class="titik2">:</p>
-                        </label>
-                        <div class="controls">
-                            <select id="barang" name="id_brg" class="choiceChosen" data-placeholder="Pilih Type Ban...">
-                                <option value=""></option>
-                                <?php
-                                //query barang
-                                $brg = "SELECT id_brg, brg, kdbrg FROM barang ORDER BY brg ASC";
-                                $brg1 = $koneksi->query($brg);
-                                while ($brg2 = $brg1->fetch_array()) {
-                                    echo "<option value='$brg2[0]'>$brg2[2] $brg2[1]</option>";
-                                }
-                                ?>
-                            </select>
-                        </div>
-                    </div>
                     <div class="control-group ">
                         <label for="barcodebrg" class="control-label"><strong>Barcode Barang</strong>
                             <p class="titik2">:</p>
                         </label>
                         <div class="controls">
                             <input class="span12 " id="barcodebrg" name="barcodebrg" type="text" placeholder="Barcode Barang" />
+                        </div>
+                    </div>
+                    <div class="control-group ">
+                        <label for="brg" class="control-label"><strong>Nama Barang</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <input class="span12 " id="brg" name="brg" type="text" readonly />
+                            <input type="hidden" id="id_brg" name="id_brg" />
+                        </div>
+                    </div>
+                    <div class="control-group ">
+                        <label class="control-label"><strong>Pilih Satuan</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select tabindex="0" id="satuan" name="satuan" class="span12" data-placeholder="Choose a Category" tabindex="1">
+                                <option value="">Pilih Satuan...</option>
+                                <option value="koli">Koli</option>
+                                <option value="kardus">Kardus</option>
+                                <option value="karung">Karung</option>
+                                <option value="set">SET</option>
+                                <option value="pcs">PCS</option>
+                            </select>
                         </div>
                     </div>
                     <div class="control-group ">
@@ -136,9 +142,26 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                 </div>
             </form>
         </div>
+        <!-- END MODAL EDIT BARCODE BARANG-->
 
-
-        <!-- END MODAL TAMBAH BARCODE BARANG-->
+        <!-- BEGIN MODAL HAPUS BARCODE BARANG-->
+        <div id="hapusModalBarcodebrg" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 class="center" id="myModalLabel1"><i class="icon-trash"></i> HAPUS DATA BARCODE BARANG</h3>
+            </div>
+            <form class="form-horizontal" id="submitDeleteBarcodebrg" action="action/barcodebrg/deleteBarcode.php" method="POST">
+                <div class="modal-body modal-full">
+                    <p id="pesanHapus" style="color: #dc5d3a"></p>
+                    <input type="hidden" id="hapusid" name="hapusid" />
+                </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
+                    <button class="btn btn-danger" id="hapusBarangBtn" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-trash"></i> Hapus</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL HAPUS BARCODE BARANG-->
     </div>
     <!-- END PAGE CONTAINER-->
 </div>
