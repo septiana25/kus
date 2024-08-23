@@ -228,7 +228,7 @@ if ($p == 'LapMsk') {
                       <div class="control-group">
                         <label class="control-label">Pilih Bulan</label>
                         <div class="controls">
-                          <?php echo generateMonthSelect('bulan', 'bulan', 'span6', '', 'Pilih Bulan...'); ?>
+                          <?php echo generateMonthSelect('bulan1', 'bulan1', 'span6', '', 'Pilih Bulan...'); ?>
                         </div>
                       </div>
                       <div class="control-group">

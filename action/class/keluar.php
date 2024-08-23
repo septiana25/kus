@@ -52,6 +52,14 @@ class Keluar
         return $stmt->get_result();
     }
 
+    public function getDetailKeluar($id_det_klr)
+    {
+        $stmt = $this->conn->prepare("SELECT id_det_klr, id_klr, id, jml_klr, sisaRtr, ket FROM detail_keluar WHERE id_det_klr = ?");
+        $stmt->bind_param("i", $id_det_klr);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getTotalKeluar($month, $year)
     {
         $stmt = $this->conn->prepare("SELECT SUM(jml_klr) as total_keluar
