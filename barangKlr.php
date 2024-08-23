@@ -433,8 +433,9 @@ echo "<div class='div-request div-hide'>keluar</div>";
               <select id="cariTahun" name="cariTahun" class="span6 " data-placeholder="Choose a Category" tabindex="1">
                 <option value="">Pilih Tahun...</option>
                 <?php
-                for ($i = 2017; $i <= 2025; $i++) {
-                  echo "<option value=" . $i . ">" . $i . "</option>";
+                $currentYear = date('Y');
+                for ($i = $currentYear; $i >= 2018; $i--) {
+                  echo "<option value=\"$i\">$i</option>";
                 }
                 ?>
               </select>

@@ -96,23 +96,7 @@ if ($p == 'retur') {
               <div class="actions">
                 <a href="#modalCariFaktur" id="cariDataLama" role="button" class="btn btn-info" data-toggle="modal"><i class="fa fa-search"></i> Cari Faktur Bulan</a>
               </div>
-
               <div class="actions">
-                <!--  <select name="bulanfaktur" id="bulanfaktur">
-                            <option>Pilih Bulan....</option>
-                            <option value="01">Januari</option>
-                            <option value="02">Febuari</option>
-                            <option value="03">Maret</option>
-                            <option value="04">April</option>
-                            <option value="05">Mei</option>
-                            <option value="06">Juni</option>
-                            <option value="07">Juli</option>
-                            <option value="08">Agustus</option>
-                            <option value="09">September</option>
-                            <option value="10">Oktober</option>
-                            <option value="11">November</option>
-                            <option value="12">Desember</option>
-                        </select> -->
                 <p style="font-weight: bold; font-size: 15px; color: white; padding-top: 2%;">
                   No Faktur Bulan <?php echo $BulanIndo[(int)$bln - 1] . " " . $thn ?>
 
@@ -175,19 +159,10 @@ if ($p == 'retur') {
                     <label class="control-label"><strong>No Retun</strong>
                       <p class="titik2">:</p>
                     </label>
-                    <!-- <div class="controls">
-                                    <input class="input-small" name="awal" type="text"  value="17.000" readonly="true" />
-                                  </div> -->
                     <div class="controls">
                       <input class="input-large" id="fakturRetur" name="fakturRetur" type="text" placeholder="Tiga Digit Terakhir" onkeyup="validAngka(this)" minlength="3" maxlength="3" />
                     </div>
                   </div>
-                  <!-- <div class="control-group no-nota2">
-                                  <div class="controls">
-                                    <input class="input-small" id="fakturRetur" name="fakturRetur" type="text"  placeholder="Lima Digit Terakhir" onkeyup="validAngka(this)" minlength="5" maxlength="5" />
-                                  </div>
-                              </div> -->
-
                   <div class="control-group">
                     <label class="control-label"><strong>Tanggal</strong>
                       <p class="titik2">:</p>
@@ -199,7 +174,6 @@ if ($p == 'retur') {
                       </div>
                     </div>
                   </div>
-
                   <div class="control-group no-nota">
                     <label class="control-label"><strong>Keterangan</strong>
                       <p class="titik2">:</p>
@@ -287,19 +261,10 @@ if ($p == 'retur') {
                     <label class="control-label"><strong>No Retun</strong>
                       <p class="titik2">:</p>
                     </label>
-                    <!-- <div class="controls">
-                                    <input class="input-small" name="awal" type="text"  value="17.000" readonly="true" />
-                                  </div> -->
                     <div class="controls">
                       <input class="input-large" id="alterRetur" name="alterRetur" type="text" placeholder="Tiga Digit Terakhir" onkeyup="validAngka(this)" minlength="3" maxlength="3" />
                     </div>
                   </div>
-                  <!-- <div class="control-group no-nota2">
-                                  <div class="controls">
-                                    <input class="input-small" id="fakturRetur" name="fakturRetur" type="text"  placeholder="Lima Digit Terakhir" onkeyup="validAngka(this)" minlength="5" maxlength="5" />
-                                  </div>
-                              </div> -->
-
                   <div class="control-group">
                     <label class="control-label"><strong>Tanggal</strong>
                       <p class="titik2">:</p>
@@ -527,8 +492,9 @@ if ($p == 'retur') {
                       <select id="thn" name="thn" class="span6 " data-placeholder="Choose a Category" tabindex="1">
                         <option value="">Pilih Tahun...</option>
                         <?php
-                        for ($i = 2017; $i <= 2025; $i++) {
-                          echo "<option value=" . $i . ">" . $i . "</option>";
+                        $currentYear = date('Y');
+                        for ($i = $currentYear; $i >= 2018; $i--) {
+                          echo "<option value=\"$i\">$i</option>";
                         }
                         ?>
                       </select>
