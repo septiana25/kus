@@ -43,12 +43,32 @@ $(document).ready(function() {
 		$("#addReturnBtnModal").unbind('click').bind('click', function() {
 
 			$("#NofakAwal").change(function () {
-				$("#NofakAwal option:selected").each(function () {
-					nofak = $(this).val();
-					$.post("action/return/fetchSelectedUkuran.php", { nofak: nofak }, function(data){
-						$("#id_det_klr").html(data);
-					});            
-				});		
+				const nofak = $(this).val();
+				if (nofak) {
+					$.ajax({
+						url: "action/return/fetchSelectedUkuran.php",
+						type: "POST",
+						dataType: "json",
+						data: { nofak: nofak },
+						success: function(response) {
+							if (response.data && response.data.length > 0) {
+								var options = '<option value="">Pilih Ukuran...</option>';
+								$.each(response.data, function(index, item) {
+									options += '<option value="' + item.id + '">' + item.nama + '</option>';
+								});
+								$("#id_det_klr").html(options).prop('disabled', false);
+							} else {
+								$("#id_det_klr").html('<option value="">Tidak ada data</option>').prop('disabled', true);
+							}
+						},
+						error: function(xhr, status, error) {
+							console.error("Error: " + error);
+							$("#id_det_klr").html('<option value="">Error mengambil data</option>').prop('disabled', true);
+						}
+					});
+				} else {
+					$("#id_det_klr").html('<option value="">Pilih No Faktur terlebih dahulu</option>').prop('disabled', true);
+				}
 			});
 
 		$("#submitRetur").unbind('submit').bind('submit', function() {

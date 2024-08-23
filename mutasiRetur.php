@@ -144,11 +144,11 @@ if ($p == 'retur') {
                       <select id="NofakAwal" name="NofakAwal" class="chosen-select" data-placeholder="Pilih No Faktur...">
                         <option value=""></option>
                         <?php
-                        $QeryNofak = "SELECT no_faktur, SUBSTR(no_faktur, -8) FROM keluar WHERE no_faktur !=0 AND MONTH(tgl) = $bln  AND YEAR(tgl) = $thn ORDER BY no_faktur ASC";
+                        $QeryNofak = "SELECT id_klr, no_faktur, SUBSTR(no_faktur, -8) FROM keluar WHERE no_faktur !=0 AND MONTH(tgl) = $bln  AND YEAR(tgl) = $thn ORDER BY no_faktur ASC";
                         $ResNofak = $koneksi->query($QeryNofak);
                         while ($rowNofak = $ResNofak->fetch_array()) {
-                          $trimFaktur = (int) $rowNofak[1];
-                          echo "<option value='$rowNofak[0]'>$rowNofak[0] $trimFaktur</option>";
+                          $trimFaktur = (int) $rowNofak[2];
+                          echo "<option value='$rowNofak[0]'>$rowNofak[1] $trimFaktur</option>";
                         }
                         ?>
                       </select>
