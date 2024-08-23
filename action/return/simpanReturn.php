@@ -7,7 +7,7 @@ $valid['success'] = array('success' => false, 'messages' => array());
 
 if ($_POST) {
 
-	$NofakAwal   = $koneksi->real_escape_string($_POST['NofakAwal']);
+	$id_klr   = $koneksi->real_escape_string($_POST['NofakAwal']);
 	//$awalRtr   = $koneksi->real_escape_string($_POST['awalRtr']);
 	$fakturRetur = $koneksi->real_escape_string($_POST['fakturRetur']);
 	$tglRtr      = $koneksi->real_escape_string($_POST['tglRtr']);
@@ -37,6 +37,10 @@ if ($_POST) {
 	if ($bulanSaldo == $bulan) {
 
 		//$cekNoRetrur    = $koneksi->query("SELECT id_msk FROM masuk WHERE suratJln='$noRetrur'");
+
+		$keluar = $koneksi->query("SELECT no_faktur FROM keluar WHERE id_klr = $id_klr");
+		$rowKeluar = $keluar->fetch_array();
+		$NofakAwal = $rowKeluar['no_faktur'];
 
 		//cek jumlah retur di tabel keluar
 		$cekJml 		= $koneksi->query(
