@@ -191,7 +191,8 @@ if ($p == 'retur') {
                         <tr>
                           <th style="width:50%">Nama Barang</th>
                           <th style="width:20%">Lokasi Rak</th>
-                          <th style="width:20%">Jumlah</th>
+                          <th style="width:15%">Jumlah</th>
+                          <th style="width:15%">Tahun</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -220,6 +221,11 @@ if ($p == 'retur') {
                           <td>
                             <div>
                               <input class="span12 " id="jmlRtr" name="jmlRtr" type="text" placeholder="Jumlah Barang Keluar" onkeyup="validAngka(this)" />
+                            </div>
+                          </td>
+                          <td>
+                            <div>
+                              <input class="span12 " id="tahunprod" name="tahunprod" type="text" placeholder="Tahun Produksi" onkeyup="validAngka(this)" />
                             </div>
                           </td>
                         </tr>

@@ -8,19 +8,19 @@ class Masuk
         $this->conn = $conn;
     }
 
-    public function save($tgl, $noPO, $nama, $retur = 0)
+    public function save($tgl, $noPO, $nama, $retur = 0, $noFaktur = NULL)
     {
-        $stmt = $this->conn->prepare("INSERT INTO masuk (tgl, suratJln, pembuat, retur) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $tgl, $noPO, $nama, $retur);
+        $stmt = $this->conn->prepare("INSERT INTO masuk (tgl, suratJln, pembuat, retur, no_faktur) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $tgl, $noPO, $nama, $retur, $noFaktur);
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }
 
-    public function saveDetail($idMsk, $id, $jam, $jmlMsk, $ket = NULL, $status_msk = '0', $rak = NULL)
+    public function saveDetail($idMsk, $id, $jam, $jmlMsk, $ket = NULL, $status_msk = '0', $rak = NULL, $id_klr = NULL)
     {
 
-        $stmt = $this->conn->prepare("INSERT INTO detail_masuk (id_msk, id, jam, jml_msk, ket, rak, status_msk) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisssss", $idMsk, $id, $jam, $jmlMsk, $ket, $rak, $status_msk);
+        $stmt = $this->conn->prepare("INSERT INTO detail_masuk (id_msk, id, jam, jml_msk, ket, rak, status_msk, idKlr) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisssssi", $idMsk, $id, $jam, $jmlMsk, $ket, $rak, $status_msk, $id_klr);
         $success = $stmt->execute();
         return ['success' => $success, 'id' => $this->conn->insert_id];
     }

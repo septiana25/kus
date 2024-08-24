@@ -32,6 +32,18 @@ class Keluar
         return ['success' => $success];
     }
 
+    public function updateSisaRtr($id_det_klr, $sisaRtr)
+    {
+        $stmt = $this->conn->prepare("UPDATE detail_keluar SET sisaRtr = sisaRtr - ? WHERE id_det_klr = ? AND sisaRtr >= ?");
+        $stmt->bind_param("iii", $sisaRtr, $id_det_klr, $sisaRtr);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed"];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
     public function deleteDetailKeluarTahunProd($id_det_klr)
     {
         $stmt = $this->conn->prepare("DELETE FROM tahunprod_keluar WHERE id_det_klr=?");
@@ -42,6 +54,14 @@ class Keluar
         }
 
         return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function getByIdKlr($id_klr)
+    {
+        $stmt = $this->conn->prepare("SELECT id_klr, no_faktur FROM keluar WHERE id_klr = ?");
+        $stmt->bind_param("i", $id_klr);
+        $stmt->execute();
+        return $stmt->get_result();
     }
 
     public function getDetailKeluarTahunProd($id_det_klr)

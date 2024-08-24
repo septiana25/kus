@@ -3,428 +3,278 @@ require_once '../../function/koneksi.php';
 require_once '../../function/setjam.php';
 require_once '../../function/session.php';
 
+require_once '../class/saldo.php';
+require_once '../class/keluar.php';
+require_once '../class/masuk.php';
+require_once '../class/barang.php';
+require_once '../class/saldo.php';
+require_once '../class/detailsaldo.php';
+
+$saldoClass = new Saldo($koneksi);
+$keluarClass = new Keluar($koneksi);
+$masukClass = new Masuk($koneksi);
+$barangClass = new Barang($koneksi);
+$saldoClass = new Saldo($koneksi);
+$detailSaldoClass = new DetailSaldo($koneksi);
+
 $valid['success'] = array('success' => false, 'messages' => array());
 
-if ($_POST) {
-
-	$id_klr   = $koneksi->real_escape_string($_POST['NofakAwal']);
-	//$awalRtr   = $koneksi->real_escape_string($_POST['awalRtr']);
-	$fakturRetur = $koneksi->real_escape_string($_POST['fakturRetur']);
-	$tglRtr      = $koneksi->real_escape_string($_POST['tglRtr']);
-	$id_det_klr  = $koneksi->real_escape_string($_POST['id_det_klr']);
-	$id_rakRtr   = $koneksi->real_escape_string($_POST['id_rakRtr']);
-	$jmlRtr      = $koneksi->real_escape_string($_POST['jmlRtr']);
-	$keterangan  = $koneksi->real_escape_string($_POST['keterangan']);
-	$noRetrur    = "R" . date("y") . ".00000" . $fakturRetur;
-	$namaLogin   = $_SESSION['nama'];
-
-	//$tgl       = date("Y-m-d");
-	$jam         = date("H:i:s");
-	$tgl1        = date("Y-m-d H:i:s");
-	$bulan       = SUBSTR($tglRtr, 5, -3);
-	$tahun       = SUBSTR($tglRtr, 0, -6);
-
-	$cekTglSaldo    = $koneksi->query("SELECT MONTH(tgl) FROM saldo ORDER BY id_saldo DESC LIMIT 0,1");
-	$rowCekTglSldo  = $cekTglSaldo->fetch_array();
-	$bulanSaldo     = $rowCekTglSldo[0];
-
-	$sql_success = "";
-
-	//membuat fungsi transaksi
+try {
 	$koneksi->begin_transaction();
-
-
-	if ($bulanSaldo == $bulan) {
-
-		//$cekNoRetrur    = $koneksi->query("SELECT id_msk FROM masuk WHERE suratJln='$noRetrur'");
-
-		$keluar = $koneksi->query("SELECT no_faktur FROM keluar WHERE id_klr = $id_klr");
-		$rowKeluar = $keluar->fetch_array();
-		$NofakAwal = $rowKeluar['no_faktur'];
-
-		//cek jumlah retur di tabel keluar
-		$cekJml 		= $koneksi->query(
-			"SELECT id_brg, sisaRtr  FROM detail_keluar 
-										   JOIN keluar USING(id_klr)
-										   JOIN detail_brg USING(id)
-										   JOIN barang USING(id_brg)
-										   WHERE id_det_klr = $id_det_klr"
-		);
-		$rowCekJml 		= $cekJml->fetch_array();
-
-		$id_brgRtr 		= $rowCekJml[0];
-		$jmlMxRtr 		= $rowCekJml[1];
-
-
-		if ($jmlRtr > $jmlMxRtr) //cek jika Jumlah Retur Lebih Besar Dari Jumlah Keluar
-		{
-			$valid['success']  = false;
-			$valid['messages'] = "<strong>Warning! </strong> Jumlah Retur Lebih Besar Dari Jumlah Keluar/Sudah Retur, Error-AIG-006 Sisa " . $jmlMxRtr;
-		} else //jika lebih kecil atau sama dengan jumlah keluar
-		{
-
-
-			//query input dan update brg_msk
-			$masuk    = $koneksi->query("SELECT id_msk FROM masuk WHERE tgl='$tglRtr' AND suratJln = '$noRetrur' AND no_faktur='$NofakAwal'");
-			$rowMasuk = $masuk->fetch_array();
-			$id_msk   = $rowMasuk['id_msk'];
-
-			//query detail_brg
-			$detail_brg    = $koneksi->query("SELECT id FROM detail_brg WHERE id_brg = '$id_brgRtr' AND id_rak= $id_rakRtr");
-			$rowDetail_brg = $detail_brg->fetch_array();
-			$id            = $rowDetail_brg['id'];
-
-			//query cek no surat jalan
-			$cekNoRetrur    = $koneksi->query("SELECT id_msk FROM masuk WHERE suratJln='$noRetrur' AND MONTH(tgl)=$bulan AND YEAR(tgl)=$tahun ORDER BY id_msk DESC LIMIT 0,1");
-
-			$saldo    = $koneksi->query("SELECT id_saldo, saldo_awal, saldo_akhir FROM saldo WHERE id ='$id' AND MONTH(tgl)= '$bulan' AND YEAR(tgl)='$tahun'");
-			$rowSaldo = $saldo->fetch_array();
-			$id_saldo = $rowSaldo['id_saldo'];
-
-			//query Barang
-			$brg           = $koneksi->query("SELECT brg FROM barang WHERE id_brg = '$id_brgRtr'");
-			$rowBrg        = $brg->fetch_array();
-			$barang        = $rowBrg['brg'];
-
-			$ket           = "Masuk " . $barang;
-
-
-			# -------------------------< action table masuk >---------------------------------
-
-			if ($masuk->num_rows == 1) //cek jika masuk ada satu
-			{
-
-				if ($detail_brg->num_rows == 1) //cek jika detail barang ada satu
-				{
-
-					$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, idKlr, jam, jml_msk, ket)
-												  		VALUES  ('$id_msk', '$id', '$id_det_klr', '$jam', '$jmlRtr',
-												  				 '$keterangan')";
-
-					if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-					{
-
-						if ($saldo->num_rows == 1) //cek jika saldo ada satu
-						{
-
-							$sub_saldo   = $rowSaldo['saldo_akhir']; //get saldo akhir
-							$total_saldo = $sub_saldo + $jmlRtr; //saldo akhir tambah jumlah masuk
-
-							$update_saldo = "UPDATE saldo SET saldo_akhir = $total_saldo
-														  WHERE id_saldo  = $id_saldo";
-
-							if ($koneksi->query($update_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-							{
-
-								$sisa = $jmlMxRtr - $jmlRtr;
-
-								$updateDetKlr = "UPDATE detail_keluar SET sisaRtr = $sisa WHERE id_det_klr = $id_det_klr";
-
-								if ($koneksi->query($updateDetKlr) === TRUE) {
-
-									$valid['success']  = true;
-									$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-									$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) 
-																  			VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-									$sql_success .= "success";
-								} else {
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel Detail Keluar Error-AIG-0C01 " . $koneksi->error;
-								}
-							} else //cek jika data tabel saldo gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0C02 " . $koneksi->error;
-							}
-						} else //cek jika saldo tidak ada atau ganda
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Saldo Tidak Ada/Duplikat. Error-AIG-0C03 Id Detail Barang " . $id;
-						}
-					} else //cek jika data tabel detail masuk gagal disimpan
-					{
-
-						$valid['success']  = false;
-						$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail masuk Error-AIG-0C04 " . $koneksi->error;
-					}
-				} elseif ($detail_brg->num_rows == 0) //cek jika detail barang tidak ada
-				{
-
-					$insert_brg = "INSERT INTO detail_brg (id_brg, id_rak)
-												   VALUES ('$id_brgRtr', '$id_rakRtr')";
-
-					if ($koneksi->query($insert_brg) === TRUE) //cek jika data tabel masuk berhasil disimpan
-					{
-
-						$id             = $koneksi->insert_id; //get id masuk 
-
-						$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, idKlr, jam, jml_msk, ket)
-													  		VALUES  ('$id_msk', '$id', '$id_det_klr', '$jam', '$jmlRtr',
-													  				 '$keterangan')";
-
-						if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-						{
-
-							if ($saldo->num_rows == 0) //cek jika saldo kosong
-							{
-
-								$insert_saldo = "INSERT INTO saldo (id, tgl, saldo_awal, saldo_akhir)
-															    VALUES ('$id', '$tglRtr', '0', '$jmlRtr')";
-
-								if ($koneksi->query($insert_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-								{
-
-									$sisa = $jmlMxRtr - $jmlRtr;
-
-									$updateDetKlr = "UPDATE detail_keluar SET sisaRtr = $sisa WHERE id_det_klr = $id_det_klr";
-
-									if ($koneksi->query($updateDetKlr) === TRUE) {
-
-										$valid['success']  = true;
-										$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-										$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) 
-																	  			VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-										$sql_success .= "success";
-									} else {
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel Detail Keluar Error-AIG-0C05 " . $koneksi->error;
-									}
-								} else //cek jika data tabel saldo gagal disimpan
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0C06 " . $koneksi->error;
-								}
-							} else //cek jika saldo ada
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Error-AIG-0C07 Id Detail Barang " . $id;
-							}
-						} else //cek jika data tabel detail masuk gagal disimpan
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0C08 " . $koneksi->error;
-						}
-					} else //cek jika data tabel masuk gagal disimpan
-					{
-
-						$valid['success']  = false;
-						$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail barang Error-AIG-0C09 " . $koneksi->error;
-					}
-				} else //cek jika detail barang duplikat
-				{
-
-					$valid['success']  = false;
-					$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Detail Barang. Error-AIG-0C10 Id Detail Barang " . $id;
-				}
-			} elseif ($masuk->num_rows == 0) //cek jika masuk tidak ada
-			{
-
-				if ($cekNoRetrur->num_rows == 0) // cek jika surat jalan tidak ada
-				{
-
-					if ($detail_brg->num_rows == 1) //cek jika detail barang ada satu
-					{
-
-						$insert_msk = "INSERT INTO masuk (tgl, suratJln, no_faktur, retur)
-												   VALUES('$tglRtr', '$noRetrur','$NofakAwal', '1')";
-
-						if ($koneksi->query($insert_msk) === TRUE) //cek jika data tabel masuk berhasil disimpan
-						{
-
-							$id_msk = $koneksi->insert_id;
-
-							$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, idKlr, jam, jml_msk, ket)
-														  		VALUES  ('$id_msk', '$id', '$id_det_klr', '$jam', '$jmlRtr',
-														  				 '$keterangan')";
-
-							if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-							{
-
-								if ($saldo->num_rows == 1) //cek jika saldo kosong
-								{
-
-									$sub_saldo   = $rowSaldo['saldo_akhir']; //get saldo akhir
-									$total_saldo = $sub_saldo + $jmlRtr; //saldo akhir tambah jumlah masuk
-
-									$update_saldo = "UPDATE saldo SET saldo_akhir = $total_saldo
-																  WHERE id_saldo  = $id_saldo";
-
-									if ($koneksi->query($update_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-									{
-
-										$sisa = $jmlMxRtr - $jmlRtr;
-
-										$updateDetKlr = "UPDATE detail_keluar SET sisaRtr = $sisa WHERE id_det_klr = $id_det_klr";
-
-										if ($koneksi->query($updateDetKlr) === TRUE) {
-
-											$valid['success']  = true;
-											$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-											$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) 
-																		  			VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-											$sql_success .= "success";
-										} else {
-
-											$valid['success']  = false;
-											$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel Detail Keluar Error-AIG-0C11 " . $koneksi->error;
-										}
-									} else //cek jika data tabel saldo gagal disimpan
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0C12 " . $koneksi->error;
-									}
-								} else //cek jika saldo ada
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat/Tidak Ada. Error-AIG-0C13 Id Detail Barang " . $id;
-								}
-							} else //cek jika data tabel detail masuk gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0C14 " . $koneksi->error;
-							}
-						} else //cek jika data tabel masuk gagal disimpan
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Masuk Error-AIG-0C15 " . $koneksi->error;
-						}
-					} elseif ($detail_brg->num_rows == 0) //cek jika detail barang tidak ada
-					{
-
-						$insert_brg = "INSERT INTO detail_brg (id_brg, id_rak)
-													   VALUES ('$id_brgRtr', '$id_rakRtr')";
-
-						if ($koneksi->query($insert_brg) === TRUE) //cek jika data tabel detail barang berhasil disimpan
-						{
-
-							$id             = $koneksi->insert_id; //get id masuk 
-
-							$insert_msk = "INSERT INTO masuk (tgl, suratJln, no_faktur, retur)
-													   VALUES('$tglRtr', '$noRetrur','$NofakAwal', '1')";
-
-							if ($koneksi->query($insert_msk) === TRUE) //cek jika data tabel masuk berhasil disimpan
-							{
-
-								$id_msk = $koneksi->insert_id;
-
-								$insert_det_msk = "INSERT INTO detail_masuk (id_msk, id, idKlr, jam, jml_msk, ket)
-															  		VALUES  ('$id_msk', '$id', '$id_det_klr', '$jam', '$jmlRtr',
-															  				 '$keterangan')";
-
-								if ($koneksi->query($insert_det_msk) === TRUE) //cek jika data tabel detail masuk berhasil disimpan
-								{
-
-									if ($saldo->num_rows == 0) //cek jika saldo kosong
-									{
-
-										$insert_saldo = "INSERT INTO saldo (id, tgl, saldo_awal, saldo_akhir)
-																	    VALUES ('$id', '$tglRtr', '0', '$jmlRtr')";
-
-										if ($koneksi->query($insert_saldo) === TRUE) //cek jika data tabel saldo berhasil disimpan
-										{
-
-											$sisa = $jmlMxRtr - $jmlRtr;
-
-											$updateDetKlr = "UPDATE detail_keluar SET sisaRtr = $sisa WHERE id_det_klr = $id_det_klr";
-
-											if ($koneksi->query($updateDetKlr) === TRUE) {
-
-												$valid['success']  = true;
-												$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-
-												$insertLog = $koneksi->query("INSERT INTO log (nama, tgl, ket, action) 
-																			  			VALUES('$namaLogin', '$tgl1', '$ket', 't')");
-												$sql_success .= "success";
-											} else {
-
-												$valid['success']  = false;
-												$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel Detail Keluar Error-AIG-0C16 " . $koneksi->error;
-											}
-										} else //cek jika data tabel saldo gagal disimpan
-										{
-
-											$valid['success']  = false;
-											$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Saldo Error-AIG-0C17 " . $koneksi->error;
-										}
-									} else //cek jika saldo ada
-									{
-
-										$valid['success']  = false;
-										$valid['messages'] = "<strong>Error! </strong> Data Saldo Duplikat. Error-AIG-0C18 Id Detail Barang " . $id;
-									}
-								} else //cek jika data tabel detail masuk gagal disimpan
-								{
-
-									$valid['success']  = false;
-									$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk Error-AIG-0C19 " . $koneksi->error;
-								}
-							} else //cek jika data tabel masuk gagal disimpan
-							{
-
-								$valid['success']  = false;
-								$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Masuk Error-AIG-0C20 " . $koneksi->error;
-							}
-						} else //cek jika data tabel detail barang gagal disimpan
-						{
-
-							$valid['success']  = false;
-							$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di tabel detail barang Error-AIG-0C21 " . $koneksi->error;
-						}
-					} else //cek jika detail barang duplikat
-					{
-
-						$valid['success']  = false;
-						$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Detail Barang. Error-AIG-0C22 Id Detail Barang " . $id;
-					}
-				} else //cek jika surat jalan ada
-				{
-
-					$valid['success']  = false;
-					$valid['messages'] = "<strong>Warning! </strong> No Retur Sudah Ada/No Retur Tidak Sama Dengan No Faktur Sebelumnya Error-AIG-0002 ";
-				}
-			} else //cek jika masuk duplikat
-			{
-
-				$valid['success']  = false;
-				$valid['messages'] = "<strong>Warning! </strong> Data Duplikat Di Table Masuk. Error-AIG-0C23 Id Masuk " . $id_msk;
+	$inputs = getInputs($koneksi);
+	$inputs = handleAssigmentData($keluarClass, $inputs);
+
+	$checkSaldoLastDate    = $saldoClass->getSaldoByLastDate();
+	if (!$checkSaldoLastDate) {
+		throw new Exception("Gagal mendapatkan tanggal saldo terakhir.");
+	}
+
+	$monthSaldoLastDate = SUBSTR($checkSaldoLastDate, 5, -3);
+	$yearSaldoLastDate = SUBSTR($checkSaldoLastDate, 0, -6);
+
+	$lastSaldoDate = new DateTime($checkSaldoLastDate);
+	$returDate = new DateTime($inputs['tglRtr']);
+
+	if ($lastSaldoDate->format('Ym') !== $returDate->format('Ym')) {
+		throw new Exception("Hanya boleh input di bulan yang sama dengan saldo terakhir. Error-AIG-0005");
+	}
+
+	$inputs = handleSisaRetur($keluarClass, $barangClass, $inputs);
+
+	$inputs = handleExistBarang($barangClass, $inputs);
+
+	$inputs = handleMasuk($masukClass, $inputs);
+
+	handleDetailMasuk($masukClass, $inputs);
+
+	handleUpdateSaldo($saldoClass, $detailSaldoClass, $inputs, $monthSaldoLastDate, $yearSaldoLastDate);
+
+	$valid['success']  = true;
+	$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan ";
+	$koneksi->commit();
+} catch (Exception $e) {
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Warning! </strong>" . $e->getMessage();
+	$koneksi->rollback();
+} finally {
+	if (isset($koneksi)) {
+		$koneksi->close();
+	}
+	header('Content-Type: application/json');
+	echo json_encode($valid);
+	exit;
+}
+
+function handleUpdateSaldo($saldoClass, $detailSaldoClass, $inputs, $monthSaldoLastDate, $yearSaldoLastDate)
+{
+	$resulSaldoByid = $saldoClass->getSaldoByid($inputs['id'], $monthSaldoLastDate, $yearSaldoLastDate);
+	if (!$resulSaldoByid) {
+		throw new Exception("Gagal mendapatkan saldo.");
+	}
+
+	if ($resulSaldoByid->num_rows == 0) {
+		$insertSaldo = $saldoClass->save($inputs['id'], $inputs['tglRtr'], $inputs['jmlRtr']);
+		if (!$insertSaldo['success']) {
+			throw new Exception("Gagal menyimpan saldo. Error-AIG-0016");
+		}
+
+		if (!handleUpdateDetailSaldo($detailSaldoClass, $inputs)) {
+			throw new Exception("Gagal menyimpan detail saldo. Error-AIG-0019");
+		}
+
+		return;
+	}
+
+	$row = $resulSaldoByid->fetch_assoc();
+	$updateSaldo = $saldoClass->updateSaldoPlus($row['id_saldo'], $inputs['jmlRtr']);
+	if (!$updateSaldo['success']) {
+		throw new Exception("Gagal mengupdate saldo. Error-AIG-0020");
+	}
+	if (!handleUpdateDetailSaldo($detailSaldoClass, $inputs)) {
+		throw new Exception("Gagal menyimpan detail saldo. Error-AIG-0019");
+	}
+}
+
+function handleUpdateDetailSaldo($detailSaldoClass, $inputs)
+{
+	$result = $detailSaldoClass->getDetailSaldoByidAndYearProd($inputs['id'], $inputs['tahunprod']);
+	if (!$result) {
+		// throw new Exception("Gagal mendapatkan detail saldo. Error-AIG-0017");
+		return false;
+	}
+
+	if ($result->num_rows > 1) {
+		// throw new Exception("Duplikat detail saldo. Error-AIG-0017");
+		return false;
+	}
+
+	if ($result->num_rows == 0) {
+		$insertDetailSaldo = $detailSaldoClass->save($inputs['id'], $inputs['tahunprod'], $inputs['jmlRtr']);
+		if (!$insertDetailSaldo['success']) {
+			return false;
+		}
+
+		return true;
+	}
+	$row = $result->fetch_assoc();
+
+	$updateDetailSaldo = $detailSaldoClass->updatePlus($row['id_detailsaldo'], $inputs['jmlRtr']);
+	if (!$updateDetailSaldo['success']) {
+		return false;
+	}
+
+	return true;
+}
+
+function handleDetailMasuk($masukClass, $inputs)
+{
+	$jam         = date("H:i:s");
+	$status_msk  = '0';
+	$rak         = NULL;
+	$insertDetailMasuk = $masukClass->saveDetail($inputs['id_msk'], $inputs['id'], $jam, $inputs['jmlRtr'], $inputs['keterangan'], $status_msk, $rak, $inputs['id_klr']);
+	if (!$insertDetailMasuk['success']) {
+		throw new Exception("Gagal menyimpan detail masuk. Error-AIG-0009");
+	}
+
+	$id_det_msk = $insertDetailMasuk['id'];
+	$insertTahunProd = $masukClass->saveTahunProd($id_det_msk, $inputs['tahunprod']);
+	if (!$insertTahunProd['success']) {
+		throw new Exception("Gagal menyimpan tahun produksi. Error-AIG-0010");
+	}
+}
+
+function handleMasuk($masukClass, $inputs)
+{
+	$checkNoPO = $masukClass->getNoPO($inputs['noRetur']);
+	$checkNoPOByDate = $masukClass->getNoPOByDate($inputs['noRetur'], $inputs['tglRtr']);
+
+	$noPOCount = $checkNoPO->num_rows;
+	$noPOByDateCount = $checkNoPOByDate->num_rows;
+
+	if ($noPOCount > 1) {
+		throw new Exception("Nomor duplikat. Error-AIG-0007");
+	}
+
+	if ($noPOCount == 1) {
+		if ($noPOByDateCount == 1) {
+			$row = $checkNoPOByDate->fetch_assoc();
+			if (!$row) {
+				throw new Exception("Gagal mengambil data retur. Error-AIG-0008");
 			}
 
-			# -------------------------< action table masuk >---------------------------------			
-
+			$inputs['id_msk'] = $row['id_msk'];
+			return $inputs;
 		}
-	} else {
 
-		$valid['success']  = false;
-		$valid['messages'] = "<strong>Warning! </strong> Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005";
+		throw new Exception("Nomor retur sudah ada. Error-AIG-0007");
 	}
 
-	/*====================< Fungsi Rollback dan Commit >========================*/
-	if ($sql_success) {
+	$tgl = $inputs['tglRtr'];
+	$noPO = $inputs['noRetur'];
+	$nama = $inputs['user'];
+	$retur = 1;
+	$noFaktur = $inputs['noFaktur'];
+	$insertMasuk = $masukClass->save($tgl, $noPO, $nama, $retur, $noFaktur);
 
-		$koneksi->commit(); //simpan semua data simpan
-
-	} else {
-
-		$koneksi->rollback(); //batal semua data simpan
-
+	if (!$insertMasuk['success']) {
+		throw new Exception("Gagal menyimpan data masuk. Error-AIG-0008");
 	}
-	/*====================< Fungsi Rollback dan Commit >========================*/
 
-	$koneksi->close();
+	$inputs['id_msk'] = $insertMasuk['id'];
 
-	echo json_encode($valid);
+	return $inputs;
 }
+
+function handleExistBarang($barangClass, $inputs)
+{
+	$result = $barangClass->getItemById($inputs['id_brg'], $inputs['id_rakRtr']);
+	if (!$result) {
+		throw new Exception("Gagal mengambil data barang. Error-AIG-0014");
+	}
+
+	if ($result->num_rows == 0) {
+		$insertDetailBarang = $barangClass->saveDetail($inputs['id_brg'], $inputs['id_rakRtr']);
+		if (!$insertDetailBarang['success']) {
+			throw new Exception("Gagal menyimpan detail barang. Error-AIG-0015");
+		}
+
+		$inputs['id'] = $insertDetailBarang['id'];
+		return $inputs;
+	}
+
+	$row = $result->fetch_assoc();
+	$inputs['id'] = $row['id'];
+
+	return $inputs;
+}
+
+function handleSisaRetur($keluarClass, $barangClass, $inputs)
+{
+	$result = $keluarClass->getDetailKeluar($inputs['id_det_klr']);
+	$row = $result->fetch_assoc();
+	$sisaRtr = $row['sisaRtr'];
+
+	if ($sisaRtr < $inputs['jmlRtr']) {
+		throw new Exception("Jumlah retur tidak boleh lebih besar dari sisa retur " . $sisaRtr . ". Error-AIG-0006");
+	}
+
+	$updateSisaRtr = $keluarClass->updateSisaRtr($inputs['id_det_klr'], $inputs['jmlRtr']);
+	if (!$updateSisaRtr['success']) {
+		throw new Exception("Gagal mengupdate sisa retur. Error-AIG-0013");
+	}
+
+	$resulBarang = $barangClass->getItemJoinDetail($row['id']);
+	if (!$resulBarang || $resulBarang->num_rows == 0) {
+		throw new Exception("Gagal mengambil data barang. Error-AIG-0014");
+	}
+
+	$rowBarang = $resulBarang->fetch_assoc();
+
+	$inputs['id_brg'] = $rowBarang['id_brg'];
+
+	return $inputs;
+}
+
+function handleAssigmentData($keluarClass, $inputs)
+{
+	$result = $keluarClass->getByIdKlr($inputs['id_klr']);
+	if (!$result || $result->num_rows == 0) {
+		throw new Exception("Gagal mengambil data keluar. Error-AIG-0011");
+	}
+	$row = $result->fetch_assoc();
+
+	$inputs['noFaktur'] = $row['no_faktur'];
+	$inputs['noRetur'] = sprintf("R%s.%08d", date("y"), $inputs['fakturRetur']);
+	$inputs['user'] = $_SESSION['nama'];
+
+	return $inputs;
+}
+
+function getInputs($koneksi)
+{
+	$inputs = [
+		"id_klr" => trim($koneksi->real_escape_string($_POST["NofakAwal"])),
+		"fakturRetur" => trim($koneksi->real_escape_string($_POST["fakturRetur"])),
+		"tglRtr" => trim($koneksi->real_escape_string($_POST["tglRtr"])),
+		"id_det_klr" => trim($koneksi->real_escape_string($_POST["id_det_klr"])),
+		"id_rakRtr" => trim($koneksi->real_escape_string($_POST["id_rakRtr"])),
+		"jmlRtr" => trim($koneksi->real_escape_string($_POST["jmlRtr"])),
+		"tahunprod" => trim($koneksi->real_escape_string($_POST["tahunprod"])),
+		"keterangan" => trim($koneksi->real_escape_string($_POST["keterangan"]))
+	];
+	return $inputs;
+}
+
+/* 
+Testing:
+1. check Tanggal Saldo = Tanggal Retur (OK)
+2. check Sisa Retur (OK)
+3. check Gagal Insert Masuk (OK)
+4. check Nomor Retur sudah ada (OK)
+5. check Id Barang (OK)
+6. check Id Masuk (OK)
+7. check Id Detail Masuk (OK)
+8. check Insert Saldo (OK)
+9. check Update Saldo (OK)
+10. check Update Detail Saldo (OK)
+*/

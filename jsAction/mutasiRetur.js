@@ -73,13 +73,13 @@ $(document).ready(function() {
 
 		$("#submitRetur").unbind('submit').bind('submit', function() {
 			//variabel
-			var NofakAwal    = $("#NofakAwal").val();
-			var fakturRetur  = $("#fakturRetur").val();
-			//var keterangan   = $("#keterangan").val();
-			var id_det_klr   = $("#id_det_klr").val();
-			var id_rakRtr    = $("#id_rakRtr").val();
-			var jmlRtr       = $("#jmlRtr").val();
-
+			const NofakAwal    = $("#NofakAwal").val();
+			const fakturRetur  = $("#fakturRetur").val();
+			//const keterangan   = $("#keterangan").val();
+			const id_det_klr   = $("#id_det_klr").val();
+			const id_rakRtr    = $("#id_rakRtr").val();
+			const jmlRtr       = $("#jmlRtr").val();
+			const tahunprod       = $("#tahunprod").val();
 			//cek setiap filed input
 			if (NofakAwal == "") {
 				$("#NofakAwal").before('<span class="help-inline bawah">No Faktur Retur Masih Kosong</span>');
@@ -128,12 +128,20 @@ $(document).ready(function() {
 				$("#jmlRtr").find('.help-inline').remove();
 				$("span").remove(":contains('Jumlah Retur Masih Kosong')");
 			}
+
+			if (tahunprod == "") {
+				$("#tahunprod").before('<span class="help-inline ">Tahun Produksi Masih Kosong</span>');
+				$('#tahunprod').closest('.control-group').addClass('error');
+			}else{
+				$("#tahunprod").find('.help-inline').remove();
+				$("span").remove(":contains('Tahun Produksi Masih Kosong')");
+			}
 			//end cek jika kosong
 			
-			if (NofakAwal && fakturRetur && id_det_klr && id_rakRtr && jmlRtr)
+			if (NofakAwal && fakturRetur && id_det_klr && id_rakRtr && jmlRtr && tahunprod)
 			{
 				//ambil data form
-				var form = $(this);
+				const form = $(this);
 				//button simpan loading
 				$("#simpanReturnBtr").button('loading');
 
@@ -156,9 +164,9 @@ $(document).ready(function() {
 							
 							$("#keterangan").val("");
 							$("#jmlRtr").val("");
+							$("#tahunprod").val("");
 
 							//reset combobox
-							//$("#barang").trigger("chosen:updated");
 							$("#id_det_klr").val("");
 							$("#id_det_klr").trigger("chosen:updated");
 
