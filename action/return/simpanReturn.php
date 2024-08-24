@@ -131,7 +131,7 @@ function handleDetailMasuk($masukClass, $inputs)
 	$jam         = date("H:i:s");
 	$status_msk  = '0';
 	$rak         = NULL;
-	$insertDetailMasuk = $masukClass->saveDetail($inputs['id_msk'], $inputs['id'], $jam, $inputs['jmlRtr'], $inputs['keterangan'], $status_msk, $rak, $inputs['id_klr']);
+	$insertDetailMasuk = $masukClass->saveDetail($inputs['id_msk'], $inputs['id'], $jam, $inputs['jmlRtr'], $inputs['keterangan'], $status_msk, $rak, $inputs['id_det_klr']);
 	if (!$insertDetailMasuk['success']) {
 		throw new Exception("Gagal menyimpan detail masuk. Error-AIG-0009");
 	}
