@@ -8,7 +8,7 @@ class Masuk
         $this->conn = $conn;
     }
 
-    public function save($tgl, $noPO, $nama, $retur = 0, $noFaktur = NULL)
+    public function save($tgl, $noPO, $nama, $retur = 0, $noFaktur = "-")
     {
         $stmt = $this->conn->prepare("INSERT INTO masuk (tgl, suratJln, pembuat, retur, no_faktur) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $tgl, $noPO, $nama, $retur, $noFaktur);

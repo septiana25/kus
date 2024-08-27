@@ -9,8 +9,6 @@ require_once '../class/saldo.php';
 require_once '../class/detailsaldo.php';
 
 $valid['success'] = array('success' => false, 'messages' => array());
-$koneksi->begin_transaction();
-$sql_success   = "";
 
 $masukClass = new Masuk($koneksi);
 $barangClass = new Barang($koneksi);
@@ -18,6 +16,7 @@ $saldoClass = new Saldo($koneksi);
 $detailSaldoClass = new DetailSaldo($koneksi);
 
 try {
+	$koneksi->begin_transaction();
 	$inputs 	= getInputs($koneksi);
 	$namaLogin	= $_SESSION['nama'];
 	extract($inputs);
@@ -40,12 +39,16 @@ try {
 		if ($checkNoPO->num_rows == 1 && $checkNoPOByDate->num_rows == 1) {
 			$idMsk = $resultNoPO['id_msk'];
 		} elseif ($checkNoPO->num_rows == 0 && $checkNoPOByDate->num_rows == 0) {
-			$idMsk = handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin);
-		} else {
+			$resultMasuk = handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin);
 
-			$valid['success']  = false;
-			$valid['messages'] = "<strong>Warning! </strong> Data Masuk Duplikat. Error-AIG-0A19 Id Masuk ";
-			return $valid;
+
+			if (!$resultMasuk['success']) {
+				throw new Exception($resultMasuk['messages']);
+			}
+
+			$idMsk = $resultMasuk['id'];
+		} else {
+			throw new Exception("Data Masuk Duplikat. Error-AIG-0A19 Id Masuk ");
 		}
 
 		$result = handleCheckItem(
@@ -65,26 +68,20 @@ try {
 			$tahun
 		);
 
-		if ($result['success']) {
-			$valid['success']  = true;
-			$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
-			$sql_success .= "success";
+		if (!$result['success']) {
+			throw new Exception("Data Gagal Disimpan. Di Tabel Detail Masuk");
 		}
-	} else {
-		$valid['success']  = false;
-		$valid['messages'] = "<strong>Warning! </strong> Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005";
-		return $valid;
-	}
-} catch (\Throwable $th) {
-	error_log($th->getMessage());
-	$valid['success'] = false;
-	$valid['messages'] = "<strong>Error! </strong> Terjadi Kesalahan Hubungi Staf IT." . $th->getMessage();
-} finally {
-	if ($sql_success) {
+		$valid['success']  = true;
+		$valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
 		$koneksi->commit();
 	} else {
-		$koneksi->rollback();
+		throw new Exception("Hanya Boleh Input Di Bulan Sekarang Error-AIG-0005");
 	}
+} catch (Exception $th) {
+	$koneksi->rollback();
+	$valid['success'] = false;
+	$valid['messages'] = "<strong>Error! </strong> " . $th->getMessage() ? $th->getMessage() : "Error";
+} finally {
 	$koneksi->close();
 	echo json_encode($valid);
 }
@@ -133,20 +130,22 @@ function handleCheckItem(
 		$id = $resultItem['id'];
 	} elseif ($checkItem->num_rows == 0) {
 		$id = handleNewItem($barangClass, $idBrg, $idRak);
+		if (!$id['success']) {
+			throw new Exception($id['messages']);
+		}
 	} else {
-		$valid['success'] = false;
-		$valid['messages'] = "<strong>Error! </strong> Data Detail Barang Duplikat. Di Tabel Saldo ";
-		return $valid;
+		throw new Exception("Data Detail Barang Duplikat. Di Tabel Saldo ");
 	}
 	$handleMasukDetail = handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod);
-	$handleCheckSaldo = handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
 
-	if ($handleMasukDetail < 0) {
-		$valid['success'] = false;
-		$valid['messages'] = "<strong>Success! </strong>Data Gagal Disimpan. Di Tabel Detail Masuk";
-		return $valid;
+	if (!$handleMasukDetail['success']) {
+		throw new Exception($handleMasukDetail['messages']);
 	}
 
+	$handleCheckSaldo = handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $bulan, $tahun, $tahunprod, $jml, $tgl);
+	if (!$handleCheckSaldo['success']) {
+		throw new Exception($handleCheckSaldo['messages'] ? $handleCheckSaldo['messages'] : "Gagal Update Saldo");
+	}
 	return $handleCheckSaldo;
 }
 
@@ -177,7 +176,9 @@ function handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin)
 		return $valid;
 	}
 
-	return $insertMasuk['id'];
+	$valid['success'] = true;
+	$valid['id'] = $insertMasuk['id'];
+	return $valid;
 }
 
 function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunprod)
@@ -188,11 +189,13 @@ function handleMasukDetail($masukClass, $idMsk, $id, $jam, $jml, $ket, $tahunpro
 	$insertTahunProd = $masukClass->saveTahunProd($insertMasukDetail['id'], $tahunprod);
 
 	if ($insertMasukDetail['success'] && $insertTahunProd['success']) {
-		return $insertMasukDetail['id'];
+		$valid['success'] = true;
+		$valid['id'] = $insertMasukDetail['id'];
+		return $valid;
 	}
 
 	$valid['success'] = false;
-	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail Masuk ";
+	$valid['messages'] = "<strong>Error! </strong> Data Gagal Disimpan. Di Tabel Detail & Tahun Produksi Masuk ";
 	return $valid;
 }
 
@@ -210,7 +213,9 @@ function handleNewSaldo($saldoClass, $detailSaldoClass, $id, $tgl, $tahunprod, $
 	}
 
 	if ($insertSaldo['success'] && $detailSaldo['success']) {
-		return $insertSaldo;
+		$valid['success'] = true;
+		$valid['id'] = $insertSaldo['id'];
+		return $valid;
 	}
 
 	$valid['success'] = false;
@@ -285,7 +290,6 @@ function handleUpdateSaldo($saldoClass, $detailSaldoClass, $idSaldo, $id, $tahun
 function handleCheckSaldo($saldoClass, $detailSaldoClass, $id, $month, $year, $tahunprod, $jml, $tgl)
 {
 	global $valid;
-
 	try {
 		$checkSaldo = $saldoClass->getSaldoByid($id, $month, $year);
 	} catch (Exception $e) {
