@@ -52,7 +52,7 @@ $(document).ready(function() {
 					//ambil data form
 					const form = $(this);
 					//button loading
-					//$("#simpanBarangMskBtn").button('loading');
+					$("#simpanBarangMskBtn").button('loading');
 
 					$.ajax({//proses simpan
 						url : form.attr('action'),
@@ -61,7 +61,7 @@ $(document).ready(function() {
 						dataType: 'json',
 						success:function(response) {
 							//button reset
-							//$("#simpanBarangMskBtn").button('reset');
+							$("#simpanBarangMskBtn").button('reset');
 
 							if (response.success == true) {
 
