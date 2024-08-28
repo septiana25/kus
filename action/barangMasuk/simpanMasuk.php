@@ -161,7 +161,9 @@ function handleNewItem($barangClass, $id_barang, $idRak)
 		return $valid;
 	}
 
-	return $insertDetailItem['id'];
+	$valid['success'] = true;
+	$valid['id'] = $insertDetailItem['id'];
+	return $valid;
 }
 
 function handleMasuk($masukClass, $tgl, $suratJLN, $namaLogin)
