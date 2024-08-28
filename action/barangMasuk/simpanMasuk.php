@@ -21,6 +21,8 @@ try {
 	$namaLogin	= $_SESSION['nama'];
 	extract($inputs);
 
+	/* var_dump($idBrg . " ID Barang, " . $idRak . " ID Rak, " . $tgl . " TGL, " . $suratJLN . " Surat Jalan, " . $tahunprod . " Tahun Produksi, " . $jml . " Jumlah, " . $ket);
+	die(); */
 	$jam           = date("H:i:s");
 	$tgl1          = date("Y-m-d H:i:s");
 	$bulan         = SUBSTR($tgl, 5, -3);
@@ -129,10 +131,11 @@ function handleCheckItem(
 	if ($checkItem->num_rows == 1) {
 		$id = $resultItem['id'];
 	} elseif ($checkItem->num_rows == 0) {
-		$id = handleNewItem($barangClass, $idBrg, $idRak);
-		if (!$id['success']) {
-			throw new Exception($id['messages']);
+		$resultNewItem = handleNewItem($barangClass, $idBrg, $idRak);
+		if (!$resultNewItem['success']) {
+			throw new Exception($resultNewItem['messages']);
 		}
+		$id = $resultNewItem['id'];
 	} else {
 		throw new Exception("Data Detail Barang Duplikat. Di Tabel Saldo ");
 	}
