@@ -1,8 +1,12 @@
 <?php
+/* fetchSelectedUkuran */
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
+require_once '../class/keluar.php';
 
 header('Content-Type: application/json');
+
+$keluarClass = new Keluar($koneksi);
 
 try {
 	if (!isset($_POST['nofak']) || empty($_POST['nofak'])) {
@@ -14,31 +18,46 @@ try {
 		throw new Exception('Nomor faktur tidak valid');
 	}
 
-	$query = "SELECT dk.id_det_klr, b.brg 
-              FROM keluar k
-              JOIN detail_keluar dk ON k.id_klr = dk.id_klr
-              JOIN detail_brg db ON dk.id = db.id
-              JOIN barang b ON db.id_brg = b.id_brg
-              WHERE k.id_klr = ?
-              ORDER BY b.brg ASC";
-
-	$stmt = $koneksi->prepare($query);
-	if (!$stmt) {
-		throw new Exception('Prepare statement gagal: ' . $koneksi->error);
+	$result = $keluarClass->getByIdKlrJoinItem($nofak);
+	if (!$result) {
+		throw new Exception('Gagal mengambil data');
+	}
+	$tmpReturn = $keluarClass->fetchTmpReturn();
+	if (!$tmpReturn) {
+		throw new Exception('Gagal mengambil data');
 	}
 
-	$stmt->bind_param('s', $nofak);
-	if (!$stmt->execute()) {
-		throw new Exception('Execute statement gagal: ' . $stmt->error);
+	$dataKeluar = [];
+	while ($row = $result->fetch_assoc()) {
+		$dataKeluar[] = [
+			'id_det_klr' => $row['id_det_klr'],
+			'id_brg' => $row['id_brg'],
+			'brg' => $row['brg']
+		];
 	}
 
-	$result = $stmt->get_result();
+
+	$dataReturn = [];
+	while ($row = $tmpReturn->fetch_assoc()) {
+		$dataReturn[] = [
+			'id_brg' => $row['id_brg'],
+			'id_rak' => $row['id_rak'],
+			'brg' => $row['brg'],
+			'rak' => $row['rak'],
+			'sisa' => $row['sisa']
+		];
+	}
+	$mergedAndFilteredData = mergeAndFilterArrays($dataKeluar, $dataReturn);
+
 	$output = ['data' => []];
 
-	while ($row = $result->fetch_assoc()) {
+	foreach ($mergedAndFilteredData as $row) {
 		$output['data'][] = [
 			'id' => $row['id_det_klr'],
-			'nama' => htmlspecialchars($row['brg'], ENT_QUOTES, 'UTF-8')
+			'id_rak' => $row['id_rak'],
+			'rak' => $row['rak'],
+			'nama' => htmlspecialchars($row['brg'], ENT_QUOTES, 'UTF-8'),
+			'sisa' => $row['sisa']
 		];
 	}
 
@@ -47,10 +66,24 @@ try {
 	http_response_code(400);
 	echo json_encode(['error' => $e->getMessage()]);
 } finally {
-	if (isset($stmt)) {
-		$stmt->close();
+	$koneksi->close();
+}
+
+function mergeAndFilterArrays($dataKeluar, $dataReturn)
+{
+	$mergedData = [];
+
+	foreach ($dataKeluar as $keluar) {
+		$matchingReturns = array_filter($dataReturn, function ($return) use ($keluar) {
+			return $return['id_brg'] == $keluar['id_brg'];
+		});
+
+		if (!empty($matchingReturns)) {
+			foreach ($matchingReturns as $return) {
+				$mergedData[] = array_merge($keluar, $return);
+			}
+		}
 	}
-	if (isset($koneksi)) {
-		$koneksi->close();
-	}
+
+	return $mergedData;
 }

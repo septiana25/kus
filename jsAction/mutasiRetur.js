@@ -1,3 +1,4 @@
+/* mutasiRetur */
 let tabelRetur;
 let tabelMutasi;
 let comboboxSaldo;
@@ -52,9 +53,9 @@ $(document).ready(function() {
 						data: { nofak: nofak },
 						success: function(response) {
 							if (response.data && response.data.length > 0) {
-								var options = '<option value="">Pilih Ukuran...</option>';
+								let options = '<option value="">Pilih Ukuran...</option>';
 								$.each(response.data, function(index, item) {
-									options += '<option value="' + item.id + '">' + item.nama + '</option>';
+									options += '<option value="' + item.id + '" data-id-rak="' + item.id_rak + '" data-rak="' + item.rak + '">' + item.nama + ' (' + item.rak +')'+'</option>';
 								});
 								$("#id_det_klr").html(options).prop('disabled', false);
 							} else {
@@ -69,6 +70,15 @@ $(document).ready(function() {
 				} else {
 					$("#id_det_klr").html('<option value="">Pilih No Faktur terlebih dahulu</option>').prop('disabled', true);
 				}
+			});
+
+			$("#id_det_klr").change(function() {
+				const selectedOption = $(this).find("option:selected");
+				const idRak = selectedOption.data("id-rak");
+				const rak = selectedOption.data("rak");
+				$("#id_rakRtr").val(idRak);
+				$("#rakRtr").val(rak);
+				// Lakukan sesuatu dengan id dan idRak
 			});
 
 		$("#submitRetur").unbind('submit').bind('submit', function() {

@@ -1,4 +1,5 @@
 <?php
+/* class keluar */
 class Keluar
 {
     private $conn;
@@ -64,6 +65,19 @@ class Keluar
         return $stmt->get_result();
     }
 
+    public function getByIdKlrJoinItem($id_klr)
+    {
+        $stmt = $this->conn->prepare("SELECT id_det_klr, id_brg, brg 
+                                    FROM keluar
+                                    LEFT JOIN detail_keluar USING(id_klr)
+                                    LEFT JOIN detail_brg USING(id)
+                                    LEFT JOIN barang USING(id_brg)
+                                    WHERE id_klr = ?");
+        $stmt->bind_param("i", $id_klr);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getDetailKeluarTahunProd($id_det_klr)
     {
         $stmt = $this->conn->prepare("SELECT tahunprod FROM tahunprod_keluar WHERE id_det_klr =?");
@@ -110,6 +124,20 @@ class Keluar
                 ORDER BY id_klr 
                 DESC LIMIT 1");
         $stmt->bind_param("s", $status);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function fetchTmpReturn()
+    {
+        $zero = 0;
+        $stmt = $this->conn->prepare(" SELECT id_brg, id_rak, brg, rak, sum(qty) as sisa
+        FROM tmp_retur
+        LEFT JOIN barang USING(id_brg)
+        LEFT JOIN rak USING(id_rak)
+        WHERE sisa_qty > ?
+        GROUP BY id_brg, id_rak");
+        $stmt->bind_param("i", $zero);
         $stmt->execute();
         return $stmt->get_result();
     }

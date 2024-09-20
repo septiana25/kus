@@ -1,6 +1,7 @@
 <?php require_once 'function/koneksi.php';
 require_once 'function/setjam.php';
 require_once 'function/session.php';
+/* mutasiRetur */
 
 $tahun          = date("Y");
 $bulan          = date("m");
@@ -206,16 +207,8 @@ if ($p == 'retur') {
                           </td>
                           <td>
                             <div>
-                              <select id="id_rakRtr" name="id_rakRtr" class="chosen-select" data-placeholder="Pilih Lokasi Rak...">
-                                <option value=""></option>
-                                <?php
-                                $rak = "SELECT id_rak, rak FROM rak ORDER BY rak ASC";
-                                $rak1 = $koneksi->query($rak);
-                                while ($rak2 = $rak1->fetch_array()) {
-                                  echo "<option value='$rak2[0]'>$rak2[1]</option>";
-                                }
-                                ?>
-                              </select>
+                              <input class="span12 " id="rakRtr" name="rakRtr" type="text" readonly />
+                              <input class="span12 " id="id_rakRtr" name="id_rakRtr" type="hidden" />
                             </div>
                           </td>
                           <td>
