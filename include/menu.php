@@ -137,6 +137,30 @@
             </li>
             ';
 
+            /* $promosi = '
+            <li class="sub-menu" id="activePromosi">
+                <a class="" href="promosi.php">
+                    <i class="fa fa-gift"></i>
+                    <span>Promosi</span>
+                </a>
+            </li>
+            '; */
+
+            $promosi = '
+                  <li class="sub-menu" id="activePromosi">
+                      <a href="javascript:;" class="">
+                          <i class="fa fa-gift"></i>
+                          <span>Promosi</span>
+                          <span class="arrow"></span>
+                      </a>
+                      <ul class="sub">
+                          <li id="activeDataPromosi"><a class="" href="promosi.php?p=tambahPromosi">Data Promosi</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activePromosiMasuk"><a class="" href="promosi.php?p=promosiMasuk">Promosi Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activePromosiKeluar"><a class="" href="promosi.php?p=promosiKeluar">Promosi Keluar</a><i class="icon-circle-arrow-right kanan"></i></li>
+                      </ul>
+                  </li>
+                  ';
+
 
             $laporan = '
                   <li class="sub-menu" id="activeLaporan">
@@ -199,6 +223,7 @@
                 echo $masterBarang;
                 echo $toko;
                 echo $ekspedisi;
+                echo $promosi;
                 echo $laporan;
                 echo $upload;
                 echo $setting;
