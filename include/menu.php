@@ -231,7 +231,7 @@
                 echo $transaksi;
                 echo $masterBarang;
                 echo $toko;
-                echo $ekspedisi;
+                echo $promosi;
                 echo $laporan;
             } elseif ($_SESSION['level'] == 'tamu') {
                 echo $transaksi;
