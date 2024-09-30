@@ -17,7 +17,7 @@ echo "<div class='div-request div-hide'>promosi</div>";
         <div class="row-fluid">
             <div class="span12">
                 <h3 class="page-title">
-                    Data Promosi
+                    Promosi Masuk
                 </h3>
                 <ul class="breadcrumb">
                     <li>
@@ -29,7 +29,7 @@ echo "<div class='div-request div-hide'>promosi</div>";
                         <span class="divider">/</span>
                     </li>
                     <li class="active">
-                        Data Promosi
+                        Promosi Masuk
                     </li>
 
                 </ul>
@@ -44,25 +44,22 @@ echo "<div class='div-request div-hide'>promosi</div>";
                 <!-- BEGIN EXAMPLE TABLE widget-->
                 <div class="widget red">
                     <div class="widget-title">
-                        <a href="#addModalPromosi" role="button" class="btn btn-primary tambah" id="addBtnModalEkspedisi" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
+                        <a href="#addModalPromosi" role="button" class="btn btn-primary tambah" id="addBtnModalPromosiMasuk" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
                         <span class="tools">
                             <a href="javascript:;" class="icon-chevron-down"></a>
                             <!-- <a href="javascript:;" class="icon-remove"></a> -->
                         </span>
                     </div>
                     <div class="widget-body">
-                        <table class="table table-striped table-bordered" id="tabelEkspedisi">
+                        <table class="table table-striped table-bordered" id="tabelPromosiMasuk">
                             <thead>
                                 <tr>
+                                    <th width="15%">No Transaksi</th>
                                     <th width="10%">Divisi</th>
                                     <th>Item</th>
-                                    <th width="30%">Jenis</th>
-                                    <th width="10%">Saldo</th>
-                                    <?php
-                                    if ($_SESSION['level'] == "administrator") {
-                                        echo '<th width="15%" class="hidden-phone">Action</th>';
-                                    }
-                                    ?>
+                                    <th width="10%">Qty</th>
+                                    <th width="30%">Tanggal</th>
+                                    <th width="10%" class="hidden-phone">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -75,20 +72,27 @@ echo "<div class='div-request div-hide'>promosi</div>";
             </div>
         </div>
 
-        <!-- BEGIN MODAL Tambah Ekspedisi-->
+        <!-- BEGIN MODAL Tambah PromosiMasuk-->
         <div id="addModalPromosi" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
                 <h3 id="myModalLabel">Tambah Promosi</h3>
             </div>
-            <form class="form-horizontal" id="submitAddPromosi" action="action/promosi/simpanpromosi.php" method="POST">
+            <form class="form-horizontal" id="submitAddPromosi" action="action/promosi/simpanpromosimasuk.php" method="POST">
                 <div class="modal-body modal-full">
                     <div class="control-group">
                         <div id="infoSO"></div>
                         <div id="pesan"></div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="divisi">Divisi Item</label>
+                        <label class="control-label" for="norek">No Transaksi</label>
+                        <div class="controls">
+                            <input class="span4" type="text" id="noAwal" name="noAwal" readonly>
+                            <input class="span8" type="text" id="noAkhir" name="noAkhir" autocomplete="off" placeholder="3 Digit Terakhir" onkeyup="validAngka(this)" minlength="3" maxlength="3">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label" for="divisi">Divisi</label>
                         <div class="controls">
                             <select id="divisi" name="divisi" class="span12">
                                 <option value="">Pilih Divisi...</option>
@@ -100,13 +104,15 @@ echo "<div class='div-request div-hide'>promosi</div>";
                     <div class="control-group">
                         <label class="control-label" for="item">Item</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="item" name="item" autocomplete="off" placeholder="Item Promosi" onkeydown="HurufBesar(this)">
+                            <select class="span12" id="item" name="item">
+                                <option value="">Pilih Ukuran..</option>
+                            </select>
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="jenis">Jenis</label>
+                        <label class="control-label" for="qty">Qty</label>
                         <div class="controls">
-                            <input class="span12" type="text" id="jenis" name="jenis" autocomplete="off" placeholder="Jenis Promosi" onkeydown="HurufBesar(this)">
+                            <input class="span12" type="text" id="qty" name="qty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
                         </div>
                     </div>
                     <div class="control-group">
@@ -122,7 +128,7 @@ echo "<div class='div-request div-hide'>promosi</div>";
                 </div>
             </form>
         </div>
-        <!-- END MODAL Tambah Ekspedisi-->
+        <!-- END MODAL Tambah PromosiMasuk-->
 
         <!-- BEGIN MODAL EDIT Sales Order-->
         <div id="editModalKoreksiSaldo" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -137,7 +143,7 @@ echo "<div class='div-request div-hide'>promosi</div>";
                         <div id="pesan"></div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="nopol">Ekspedisi</label>
+                        <label class="control-label" for="nopol">PromosiMasuk</label>
                         <div class="controls">
                             <input class="span12" type="hidden" id="id_so" name="id_so" readonly>
                             <input class="span12" type="text" id="nopol" name="nopol" autocomplete="off" placeholder="Plat Nomor">
@@ -156,9 +162,9 @@ echo "<div class='div-request div-hide'>promosi</div>";
                         </div>
                     </div>
                     <div class="control-group">
-                        <label class="control-label" for="qty">QTY</label>
+                        <label class="control-label" for="qtyEdit">Qty</label>
                         <div class="controls">
-                            <input class="span12" type="number" id="qty" name="qty" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
+                            <input class="span12" type="number" id="qtyEdit" name="qtyEdit" autocomplete="off" placeholder="Quantiti" onkeyup="validAngka(this)">
                         </div>
                     </div>
                 </div>
@@ -212,6 +218,6 @@ echo "<div class='div-request div-hide'>promosi</div>";
 
 <?php require_once 'include/footer.php'; ?>
 
-<script src="jsAction/promosi.js"></script>
+<script src="jsAction/promosimasuk.js"></script>
 
 <script src="assets/chosen/chosen1.jquery.min.js"></script>

@@ -23,6 +23,16 @@ class Promosi
         return $stmt->get_result();
     }
 
+    public function fetchAllPromosiMasuk()
+    {
+        $stmt = $this->conn->prepare("SELECT no_tran, promosi_masuk.divisi, promosi_masuk.id_promo, item, qty, promosi_masuk.at_create
+                                        FROM promosi_masuk 
+                                        LEFT JOIN promosi USING(id_promo)
+                                        WHERE promosi_masuk.at_delete IS NULL");
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function fetchPromosiByid($id_promo)
     {
         $stmt = $this->conn->prepare("SELECT id_promo, divisi, item, jenis, saldo, note
@@ -43,11 +53,28 @@ class Promosi
         return $stmt->get_result();
     }
 
+    public function getPromosiByDivisi($divisi)
+    {
+        $stmt = $this->conn->prepare("SELECT id_promo, item, jenis, saldo
+                                        FROM promosi
+                                        WHERE divisi = ? AND at_delete IS NULL");
+        $stmt->bind_param("s", $divisi);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function insert($inputs)
     {
 
-        $stmt = $this->conn->prepare("INSERT INTO promosi (divisi, item, jenis, note) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $inputs['divisi'], $inputs['item'], $inputs['jenis'], $inputs['note']);
+        $stmt = $this->conn->prepare("INSERT INTO promosi (divisi, item, jenis, note, user) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $inputs['divisi'], $inputs['item'], $inputs['jenis'], $inputs['note'], $inputs['user']);
+        return $stmt->execute();
+    }
+
+    public function insertPromosiMasuk($inputs)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO promosi_masuk (no_tran, id_promo, divisi, qty, note, user) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $inputs['no_tran'], $inputs['item'], $inputs['divisi'], $inputs['qty'], $inputs['note'], $inputs['user']);
         return $stmt->execute();
     }
 
@@ -55,6 +82,18 @@ class Promosi
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ?, kdbrg = ?, kode_toko = ?, qty = ? WHERE id_so = ?");
         $stmt->bind_param("sssii", $inputs['nopol'], $inputs['kdbrg'], $inputs['kode_toko'], $inputs['qty'], $inputs['id_so']);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function updateSaldo($id_promo, $qty)
+    {
+        $stmt = $this->conn->prepare("UPDATE promosi SET saldo = saldo + ? WHERE id_promo = ?");
+        $stmt->bind_param("ss", $qty, $id_promo);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];

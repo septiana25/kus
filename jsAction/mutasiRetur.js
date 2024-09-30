@@ -42,8 +42,8 @@ $(document).ready(function() {
 		$("#bulanfaktur").val(nilaifak);
 
 		$("#addReturnBtnModal").unbind('click').bind('click', function() {
-
-			$("#NofakAwal").change(function () {
+			$("#NofakAwal").off('change');
+			$("#NofakAwal").on('change', function () {
 				const nofak = $(this).val();
 				if (nofak) {
 					$.ajax({

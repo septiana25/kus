@@ -10,7 +10,8 @@ $valid['success'] =  array('success' => false, 'messages' => array());
 try {
     $inputs = getInputs($koneksi);
     $inputs['user'] = $_SESSION['nama'];
-    $result = handleInsertPromosi($promosiClass, $inputs);
+    $inputs['no_tran'] = $inputs['noAwal'] . '-0000' . $inputs['noAkhir'];
+    $result = handleInsertPromosiMasuk($promosiClass, $inputs);
     if (!$result['success']) {
         $valid['success'] = false;
         $valid['messages'] = $result['messages'];
@@ -25,19 +26,20 @@ try {
     echo json_encode($valid);
 }
 
-function handleInsertPromosi($promosiClass, $inputs)
+function handleInsertPromosiMasuk($promosiClass, $inputs)
 {
 
-    $item = $promosiClass->getPromosiByItem($inputs['item']);
-    if ($item->num_rows > 0) {
+    $item = $promosiClass->fetchPromosiByid($inputs['item']);
+    if ($item->num_rows == 0) {
         return [
             'success' => false,
-            'messages' => "<strong>Error! </strong> Plat Nomor Sudah Ada"
+            'messages' => "<strong>Error! </strong> Item Tidak Ada"
         ];
     }
 
-    $result = $promosiClass->insert($inputs);
-    if ($result) {
+    $result = $promosiClass->insertPromosiMasuk($inputs);
+    $updateSaldo = $promosiClass->updateSaldo($inputs['item'], $inputs['qty']);
+    if ($result && $updateSaldo) {
         return [
             'success' => true
         ];
@@ -54,8 +56,10 @@ function getInputs($koneksi)
     $inputs = [
         "divisi" => trim($koneksi->real_escape_string($_POST["divisi"])),
         "item" => trim($koneksi->real_escape_string($_POST["item"])),
-        "jenis" => trim($koneksi->real_escape_string($_POST["jenis"])),
-        "note" => trim($koneksi->real_escape_string($_POST["note"]))
+        "qty" => trim($koneksi->real_escape_string($_POST["qty"])),
+        "note" => trim($koneksi->real_escape_string($_POST["note"])),
+        "noAwal" => trim($koneksi->real_escape_string($_POST["noAwal"])),
+        "noAkhir" => trim($koneksi->real_escape_string($_POST["noAkhir"]))
     ];
 
     return $inputs;

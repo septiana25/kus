@@ -155,8 +155,8 @@
                       </a>
                       <ul class="sub">
                           <li id="activeDataPromosi"><a class="" href="promosi.php?p=tambahPromosi">Data Promosi</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activePromosiMasuk"><a class="" href="promosi.php?p=promosiMasuk">Promosi Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
-                          <li id="activePromosiKeluar"><a class="" href="promosi.php?p=promosiKeluar">Promosi Keluar</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activePromosiMasuk"><a class="" href="promosimasuk.php">Promosi Masuk</a><i class="icon-circle-arrow-right kanan"></i></li>
+                          <li id="activePromosiKeluar"><a class="" href="promosikeluar.php">Promosi Keluar</a><i class="icon-circle-arrow-right kanan"></i></li>
                       </ul>
                   </li>
                   ';
