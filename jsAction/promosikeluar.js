@@ -2,7 +2,7 @@ $(document).ready(function(){
 	let tabelPromosiKeluar;
 	//active menu pengirim
 	$("#activePromosi").addClass('active');
-	$("#activePromosiMasuk").addClass('active');
+	$("#activePromosiKeluar").addClass('active');
 
 	tabelPromosiKeluar = $('#tabelPromosiKeluar').DataTable({
 		'ajax' : 'action/promosi/fetchpromosikeluar.php',
