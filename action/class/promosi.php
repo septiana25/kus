@@ -33,6 +33,17 @@ class Promosi
         return $stmt->get_result();
     }
 
+    public function fetchAllPromosiKeluar()
+    {
+        $stmt = $this->conn->prepare("SELECT no_trank, promosi_keluar.divisi, promosi_keluar.id_promo, sales, toko, item, qty, promosi_keluar.at_create
+                                        FROM promosi_keluar 
+                                        LEFT JOIN promosi USING(id_promo)
+                                        LEFT JOIN toko USING(id_toko)
+                                        WHERE promosi_keluar.at_delete IS NULL");
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function fetchPromosiByid($id_promo)
     {
         $stmt = $this->conn->prepare("SELECT id_promo, divisi, item, jenis, saldo, note
@@ -78,6 +89,13 @@ class Promosi
         return $stmt->execute();
     }
 
+    public function insertPromosiKeluar($inputs)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO promosi_keluar (no_trank, id_promo, divisi, sales, id_toko, qty, note, user) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssssss", $inputs['no_tran'], $inputs['item'], $inputs['divisi'], $inputs['sales'], $inputs['toko'], $inputs['qty'], $inputs['note'], $inputs['user']);
+        return $stmt->execute();
+    }
+
     public function update($inputs)
     {
         $stmt = $this->conn->prepare("UPDATE tmp_salesorder SET nopol = ?, kdbrg = ?, kode_toko = ?, qty = ? WHERE id_so = ?");
@@ -94,6 +112,18 @@ class Promosi
     {
         $stmt = $this->conn->prepare("UPDATE promosi SET saldo = saldo + ? WHERE id_promo = ?");
         $stmt->bind_param("ss", $qty, $id_promo);
+        $stmt->execute();
+        if ($stmt->affected_rows == 0) {
+            return ['success' => false, 'message' => "Execute failed: "];
+        }
+
+        return ['success' => true, 'affected_rows' => $stmt->affected_rows];
+    }
+
+    public function updateSaldoKeluar($id_promo, $qty)
+    {
+        $stmt = $this->conn->prepare("UPDATE promosi SET saldo = saldo - ? WHERE id_promo = ? AND saldo >= ?");
+        $stmt->bind_param("sss", $qty, $id_promo, $qty);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];
