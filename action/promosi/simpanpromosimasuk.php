@@ -8,6 +8,7 @@ $promosiClass = new Promosi($koneksi);
 $valid['success'] =  array('success' => false, 'messages' => array());
 
 try {
+    $koneksi->begin_transaction();
     $inputs = getInputs($koneksi);
     $inputs['user'] = $_SESSION['nama'];
     $inputs['no_tran'] = $inputs['noAwal'] . '-0000' . $inputs['noAkhir'];
@@ -15,11 +16,14 @@ try {
     if (!$result['success']) {
         $valid['success'] = false;
         $valid['messages'] = $result['messages'];
+        $koneksi->rollback();
     } else {
         $valid['success'] = true;
         $valid['messages'] = "<strong>Success! </strong>Data Berhasil Disimpan";
+        $koneksi->commit();
     }
 } catch (Exception $e) {
+    $koneksi->rollback();
     echo $e->getMessage();
 } finally {
     $koneksi->close();
