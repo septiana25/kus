@@ -1,6 +1,7 @@
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
+require_once '../../function/setjam.php';
 require_once '../class/promosi.php';
 
 $promosiClass = new Promosi($koneksi);
@@ -37,6 +38,30 @@ function handleInsertPromosiKeluar($promosiClass, $inputs)
             'success' => false,
             'messages' => "<strong>Error! </strong> Item Tidak Ada"
         ];
+    }
+
+    $promosi = $promosiClass->getPromosiByNoTran($inputs['no_tran']);
+    $resultPromosi = $promosi->fetch_assoc();
+    $at_create = new DateTime($resultPromosi['at_create']);
+    $now = new DateTime();
+
+    if ($resultPromosi['no_trank'] == $inputs['no_tran']) {
+        if ($at_create->format('Y-m-d') !== $now->format('Y-m-d')) {
+            return [
+                'success' => false,
+                'messages' => "<strong>Error! </strong> No Transaksi Sudah Ada"
+            ];
+        }
+
+        if ($at_create->format('Y-m-d') == $now->format('Y-m-d')) {
+
+            if ($resultPromosi['id_toko'] != $inputs['toko']) {
+                return [
+                    'success' => false,
+                    'messages' => "<strong>Error! </strong> No Transaksi Sudah Ada"
+                ];
+            }
+        }
     }
 
     $result = $promosiClass->insertPromosiKeluar($inputs);

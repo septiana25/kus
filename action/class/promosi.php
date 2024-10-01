@@ -74,6 +74,17 @@ class Promosi
         return $stmt->get_result();
     }
 
+    public function getPromosiByNoTran($no_tran)
+    {
+        $stmt = $this->conn->prepare("SELECT no_trank, id_toko, sales, id_promo, qty, at_create
+                                        FROM promosi_keluar 
+                                        WHERE no_trank = ? AND at_delete IS NULL
+                                        ORDER BY at_create ASC LIMIT 1");
+        $stmt->bind_param("s", $no_tran);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function insert($inputs)
     {
 
