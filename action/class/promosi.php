@@ -25,7 +25,7 @@ class Promosi
 
     public function fetchAllPromosiMasuk()
     {
-        $stmt = $this->conn->prepare("SELECT no_tran, promosi_masuk.divisi AS divisi, promosi_masuk.id_promo AS id_promo, item, qty, promosi_masuk.at_create AS at_create
+        $stmt = $this->conn->prepare("SELECT id_promsk, no_tran, promosi_masuk.divisi AS divisi, promosi_masuk.id_promo AS id_promo, item, qty, promosi_masuk.at_create AS at_create
                                         FROM promosi_masuk 
                                         LEFT JOIN promosi USING(id_promo)
                                         WHERE promosi_masuk.at_delete IS NULL");
@@ -35,7 +35,7 @@ class Promosi
 
     public function fetchAllPromosiKeluar()
     {
-        $stmt = $this->conn->prepare("SELECT no_trank, promosi_keluar.divisi AS divisi, promosi_keluar.id_promo AS id_promo, sales, toko, item, qty, promosi_keluar.at_create AS at_create
+        $stmt = $this->conn->prepare("SELECT id_proklr, no_trank, promosi_keluar.divisi AS divisi, promosi_keluar.id_promo AS id_promo, sales, toko, item, qty, promosi_keluar.at_create AS at_create
                                         FROM promosi_keluar 
                                         LEFT JOIN promosi USING(id_promo)
                                         LEFT JOIN toko USING(id_toko)
@@ -74,12 +74,34 @@ class Promosi
         return $stmt->get_result();
     }
 
+    public function getPromosiKeluarById($id_proklr)
+    {
+        $stmt = $this->conn->prepare("SELECT no_trank, id_toko, sales, id_promo, qty, at_create
+                                        FROM promosi_keluar 
+                                        WHERE id_proklr = ? AND at_delete IS NULL");
+        $stmt->bind_param("s", $id_proklr);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
     public function getPromosiByNoTran($no_tran)
     {
         $stmt = $this->conn->prepare("SELECT no_trank, id_toko, sales, id_promo, qty, at_create
                                         FROM promosi_keluar 
                                         WHERE no_trank = ? AND at_delete IS NULL
                                         ORDER BY at_create ASC LIMIT 1");
+        $stmt->bind_param("s", $no_tran);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
+
+    public function getPromosiByNoTranPrint($no_tran)
+    {
+        $stmt = $this->conn->prepare("SELECT no_trank, promosi_keluar.divisi AS divisi, promosi_keluar.id_promo AS id_promo, sales, toko, alamat, item, qty, promosi_keluar.note, promosi_keluar.at_create AS at_create
+                                        FROM promosi_keluar 
+                                        LEFT JOIN promosi USING(id_promo)
+                                        LEFT JOIN toko USING(id_toko)
+                                        WHERE no_trank = ? AND promosi_keluar.at_delete IS NULL");
         $stmt->bind_param("s", $no_tran);
         $stmt->execute();
         return $stmt->get_result();

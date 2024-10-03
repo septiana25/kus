@@ -216,6 +216,24 @@ echo "<div class='div-request div-hide'>promosi</div>";
             </form>
         </div>
         <!-- END MODAL HAPUS Sales Order-->
+        <!-- BEGIN MODAL PRINT NOTA -->
+        <div id="printNota" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel">Print Bukti Terima</h3>
+            </div>
+            <div class="modal-body modal-full">
+                <h3 id="noNota" style="color: #dc5d3a"></h3>
+                <input class="span12" type="hidden" id="noTrans" name="noTrans" readonly>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-primary" type="button" id="printNotaBtn">Print</button>
+            </div>
+
+        </div>
+        <!-- END MODAL PRINT NOTA-->
+
         <!-- BEGIN MODAL DISABLE Sales Order-->
         <div id="disableaccess" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-header">

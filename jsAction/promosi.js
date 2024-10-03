@@ -126,7 +126,6 @@ function deleteEkspedisi(id_so) {
 	}); */
 }
 
-
 function HurufBesar(a){
 setTimeout(function(){
     a.value = a.value.toUpperCase();

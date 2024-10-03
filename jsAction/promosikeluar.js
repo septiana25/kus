@@ -105,6 +105,63 @@ $(document).ready(function(){
 		return false;
 	});
 
+	$('#printNotaBtn').click(function() {
+		const noTrans = $('#noTrans').val();
+		if(noTrans){
+			$.ajax({
+				url: 'action/promosi/printnotapromosikeluar.php',
+			type: 'POST',
+			data: { noTrans: noTrans },
+			dataType: 'text',
+			success: handlePrintPromosiNotaKeluar
+			});
+		} else {
+			alert("No Nota Tidak Ada");
+		}
+	});
+
+	function handlePrintPromosiNotaKeluar(response) {
+		const printWindow = window.open('', '_blank', 'height=600,width=800,scrollbars=yes,resizable=yes');
+		
+		if (!printWindow) {
+			alert('Popup blocker mungkin mencegah pencetakan. Mohon izinkan popup untuk situs ini dan coba lagi.');
+			return;
+		}
+
+		const htmlContent = `
+			<!DOCTYPE html>
+			<html lang="id">
+			<head>
+				<meta charset="UTF-8">
+				<meta name="viewport" content="width=device-width, initial-scale=1.0">
+				<title>Cetak Bukti Terima - Aplikasi Inventori Gudang KUS</title>
+				<style>
+					body { font-family: Arial, sans-serif; }
+					@media print {
+						body { width: 21cm; height: 29.7cm; }
+					}
+				</style>
+			</head>
+			<body>
+				${response}
+			</body>
+			</html>
+		`;
+
+		printWindow.document.write(htmlContent);
+		printWindow.document.close();
+
+		printWindow.onload = function() {
+			setTimeout(function() {
+				printWindow.focus();
+				printWindow.print();
+				printWindow.onafterprint = function() {
+					printWindow.close();
+				};
+			}, 250);
+		};
+	}
+
 
 	function validateInput(value, selector, errorMessage) {
 		if (value === "") {
@@ -182,6 +239,19 @@ function deleteEkspedisi(id_so) {
 			$('#pesanHapus').text('Apakah anda yakin ingin menghapus data '+ data.no_faktur + ' & ' + data.brg + ' ?');
 		}
 	}); */
+}
+
+function printNota(idProKlr) {
+	$.ajax({
+		url: 'action/promosi/fetchpromosikeluarbyid.php',
+		type: 'POST',
+		data: { id_proklr: idProKlr },
+		dataType: 'json',
+		success: function(data) {
+			$('#noTrans').val(data.no_trank);
+			$('#noNota').text('Print No Nota '+ data.no_trank);
+		}
+	});
 }
 
 function generatePromoCode() {

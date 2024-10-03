@@ -16,12 +16,13 @@ try {
 	$koneksi->close();
 }
 
-function generateButton($id_promo)
+function generateButton($id_proklr)
 {
 	return '<div class="btn-group">
         <button data-toggle="dropdown" class="btn btn-small btn-primary dropdown-toggle">Action <span class="caret"></span></button>
         <ul class="dropdown-menu">
-            <li><a href="#disableaccess" onclick="editEkpedisi(' . $id_promo . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+            <li><a href="#disableaccess" onclick="editEkpedisi(' . $id_proklr . ')" data-toggle="modal"><i class="icon-pencil"></i> Edit</a></li>
+            <li><a href="#printNota" onclick="printNota(' . $id_proklr . ')" data-toggle="modal"><i class="icon-print"></i> Print</a></li>
         </ul>
     </div>';
 }
@@ -34,7 +35,7 @@ function handleFetchPromosi($ekspedisiClass)
 	while ($row = $result->fetch_array()) {
 		$date = new DateTime($row['at_create']);
 		$formattedDate = $date->format('d-m-Y');
-		$button = generateButton($row['id_promo']);
+		$button = generateButton($row['id_proklr']);
 		$output['data'][] = array(
 			$row['no_trank'],
 			$row['divisi'],
