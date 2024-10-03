@@ -1,8 +1,10 @@
+<link href="assets/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
 require_once '../../function/setjam.php';
 require_once '../class/promosi.php';
+
 
 $promosiClass = new Promosi($koneksi);
 
@@ -242,7 +244,9 @@ function generateCompleteTable($data)
 
             // Tambahkan pemisah halaman jika ini adalah cetakan pertama
             if ($i == 0) {
-                $html .= '<br>';
+                $html .= '<div style="border-top: 1px dashed black; width: 100%; margin: 20px 0; position: relative; text-align: center;">
+                            <i class="fa fa-scissors" aria-hidden="true" style="position: absolute; left: 50%; top: -10px; transform: translateX(-50%); font-size: 20px; background-color: white; padding: 0 10px;"></i>
+                        </div>';
             }
         }
     }
