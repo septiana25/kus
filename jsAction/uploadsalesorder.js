@@ -16,6 +16,7 @@ $(document).ready(function() {
 	});
 	
 	$('#checkingData').click(function() {
+		$("#checkingData").button('loading');
 		$.ajax({
 			url: 'action/upload/checkingsalesorder.php',
 			type: 'POST',
@@ -23,14 +24,17 @@ $(document).ready(function() {
 			dataType: 'json',
 			success: handleResponse
 		});
+		
 	});
 
 	$('#processData').click(function() {
+		$("#processData").button('loading');
 		$.ajax({
 			url: 'action/upload/processsalesorder.php',
 			dataType: 'json',
 			success: handleResponse
 		});
+		$("#processData").button('reset');
 	});
 
 	$('#submitDataSO').unbind('submit').bind('submit', function() {
@@ -141,9 +145,13 @@ $(document).ready(function() {
 		}
 	}
 	function handleResponse(response) {
-	
-		tabelSalesOrder.ajax.reload();
-		tabelProsessSalesOrder.ajax.reload();
+		if (response.success === true || response.success === false) {
+			$("#checkingData").button('reset');
+			$("#processData").button('reset');
+			tabelSalesOrder.ajax.reload();
+			tabelProsessSalesOrder.ajax.reload();
+		}
+
 		if (response.success === true) {
 			$('.modal').modal('hide');
 			displayMessagePopup(response.messages, 'success');
