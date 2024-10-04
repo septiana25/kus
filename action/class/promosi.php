@@ -110,7 +110,7 @@ class Promosi
     public function insert($inputs)
     {
 
-        $stmt = $this->conn->prepare("INSERT INTO promosi (divisi, item, jenis, note, user) VALUES (?, ?, ?, ?)");
+        $stmt = $this->conn->prepare("INSERT INTO promosi (divisi, item, jenis, note, user) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $inputs['divisi'], $inputs['item'], $inputs['jenis'], $inputs['note'], $inputs['user']);
         return $stmt->execute();
     }
