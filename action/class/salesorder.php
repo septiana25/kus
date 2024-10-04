@@ -33,7 +33,8 @@ class Salesorder
                                         LEFT JOIN toko USING(kode_toko)
                                         LEFT JOIN barang USING(kdbrg)
                                         LEFT JOIN ekspedisi USING(nopol)
-                                        WHERE tmp_salesorder.at_update IS NULL AND tmp_salesorder.at_delete IS NULL AND tmp_salesorder.status = ?");
+                                        WHERE tmp_salesorder.at_update IS NULL AND tmp_salesorder.at_delete IS NULL AND tmp_salesorder.status = ?
+                                        LIMIT 5");
         $stmt->bind_param("s", $status);
         $stmt->execute();
         return $stmt->get_result();
