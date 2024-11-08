@@ -37,9 +37,16 @@ $(document).ready(function(){
 						if (response.data && response.data.length > 0) {
 							let options = '<option value="">Pilih Item...</option>';
 							$.each(response.data, function(index, item) {
-								options += '<option value="' + item.id + '">' + item.item + ' - ' + item.saldo +'</option>';
+								if (item.saldo > 0) {
+									options += '<option value="' + item.id + '">' + item.item + ' - ' + item.saldo + '</option>';
+								}
 							});
-							$("#item").html(options).prop('disabled', false);
+							
+							if (options === '<option value="">Pilih Item...</option>') {
+								$("#item").html('<option value="">Tidak ada item tersedia</option>').prop('disabled', true);
+							} else {
+								$("#item").html(options).prop('disabled', false);
+							}
 						} else {
 							$("#item").html('<option value="">Tidak ada data</option>').prop('disabled', true);
 						}
