@@ -43,7 +43,7 @@ function handleInsertPromosiMasuk($promosiClass, $inputs)
 
     $result = $promosiClass->insertPromosiMasuk($inputs);
     $updateSaldo = $promosiClass->updateSaldo($inputs['item'], $inputs['qty']);
-    if ($result && $updateSaldo) {
+    if ($result && $updateSaldo['success']) {
         return [
             'success' => true
         ];

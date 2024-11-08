@@ -28,7 +28,8 @@ class Promosi
         $stmt = $this->conn->prepare("SELECT id_promsk, no_tran, promosi_masuk.divisi AS divisi, promosi_masuk.id_promo AS id_promo, item, qty, promosi_masuk.at_create AS at_create
                                         FROM promosi_masuk 
                                         LEFT JOIN promosi USING(id_promo)
-                                        WHERE promosi_masuk.at_delete IS NULL");
+                                        WHERE promosi_masuk.at_delete IS NULL
+                                        ORDER BY promosi_masuk.id_promsk DESC");
         $stmt->execute();
         return $stmt->get_result();
     }
@@ -39,7 +40,8 @@ class Promosi
                                         FROM promosi_keluar 
                                         LEFT JOIN promosi USING(id_promo)
                                         LEFT JOIN toko USING(id_toko)
-                                        WHERE promosi_keluar.at_delete IS NULL");
+                                        WHERE promosi_keluar.at_delete IS NULL
+                                        ORDER BY promosi_keluar.id_proklr DESC");
         $stmt->execute();
         return $stmt->get_result();
     }

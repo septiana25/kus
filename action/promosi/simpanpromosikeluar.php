@@ -66,7 +66,7 @@ function handleInsertPromosiKeluar($promosiClass, $inputs)
 
     $result = $promosiClass->insertPromosiKeluar($inputs);
     $updateSaldo = $promosiClass->updateSaldoKeluar($inputs['item'], $inputs['qty']);
-    if ($result && $updateSaldo) {
+    if ($result && $updateSaldo['success']) {
         return [
             'success' => true
         ];
