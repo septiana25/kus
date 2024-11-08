@@ -45,6 +45,7 @@ echo "<div class='div-request div-hide'>promosi</div>";
                 <div class="widget red">
                     <div class="widget-title">
                         <a href="#addModalPromosi" role="button" class="btn btn-primary tambah" id="addBtnModalPromosiKeluar" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
+                        <a href="action/promosi/exportpromosikeluar.php" class="btn btn-success tambah"><i class="icon-file-excel"></i> Export Excel</a>
                         <span class="tools">
                             <a href="javascript:;" class="icon-chevron-down"></a>
                             <!-- <a href="javascript:;" class="icon-remove"></a> -->
