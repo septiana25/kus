@@ -99,11 +99,12 @@ class Promosi
 
     public function getPromosiByNoTranPrint($no_tran)
     {
-        $stmt = $this->conn->prepare("SELECT no_trank, promosi_keluar.divisi AS divisi, promosi_keluar.id_promo AS id_promo, sales, toko, alamat, item, qty, promosi_keluar.note, promosi_keluar.at_create AS at_create
+        $stmt = $this->conn->prepare("SELECT no_trank, promosi_keluar.divisi AS divisi, promosi_keluar.id_promo AS id_promo, sales, toko, alamat, item, SUM(qty) AS qty, promosi_keluar.note, promosi_keluar.at_create AS at_create
                                         FROM promosi_keluar 
                                         LEFT JOIN promosi USING(id_promo)
                                         LEFT JOIN toko USING(id_toko)
-                                        WHERE no_trank = ? AND promosi_keluar.at_delete IS NULL");
+                                        WHERE no_trank = ? AND promosi_keluar.at_delete IS NULL
+                                        GROUP BY id_promo");
         $stmt->bind_param("s", $no_tran);
         $stmt->execute();
         return $stmt->get_result();
