@@ -110,9 +110,9 @@ echo "<div class='div-request div-hide'>promosi</div>";
                             <select id="toko" name="toko" class="span12 chosen-select" data-placeholder="Pilih Toko...">
                                 <option value=""></option>
                                 <?php
-                                $toko = $koneksi->query("SELECT id_toko, toko FROM toko ORDER BY toko ASC");
+                                $toko = $koneksi->query("SELECT id_toko, toko, alamat FROM toko ORDER BY toko ASC");
                                 while ($row = $toko->fetch_assoc()) {
-                                    echo "<option value='$row[id_toko]'>$row[toko]</option>";
+                                    echo "<option value='$row[id_toko]'>$row[toko] - $row[alamat]</option>";
                                 }
                                 ?>
                             </select>
