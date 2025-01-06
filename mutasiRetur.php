@@ -520,7 +520,8 @@ if ($p == 'retur') {
             <div class="widget-title">
               <?php
               if ($_SESSION['aksi'] == "1") {
-                echo '<a href="#myModalMutasiRak" role="button" class="btn btn-primary tambah" id="addMTSRakBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>';
+                echo '<a href="#myModalMutasiRak" role="button" class="btn btn-primary tambah" id="addMTSRakBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
+                      <a href="datamutasi.php" target="_blank" role="button" class="btn btn-success tambah"> <i class="fa fa-eye"></i> Item Mutasi</a>';
               }
               ?>
               <span class="tools">

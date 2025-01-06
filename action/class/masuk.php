@@ -114,4 +114,14 @@ class Masuk
         $stmt->execute();
         return $stmt->get_result();
     }
+
+    public function getLastNoSuratJln($retur)
+    {
+        /* 0 = masuk, 1 = retur, 3 = mutasi */
+        $stmt = $this->conn->prepare("SELECT id_msk, suratJln 
+                FROM masuk WHERE retur = ? ORDER BY id_msk DESC LIMIT 1");
+        $stmt->bind_param("s", $retur);
+        $stmt->execute();
+        return $stmt->get_result();
+    }
 }
