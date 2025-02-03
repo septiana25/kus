@@ -53,6 +53,11 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                 <!-- BEGIN EXAMPLE TABLE widget-->
                 <div class="widget red">
                     <div class="widget-title">
+                        <?php
+                        if ($_SESSION['aksi'] == "1") {
+                            echo '<a href="#addModalMasuk" role="button" class="btn btn-primary tambah" id="addReturBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>';
+                        }
+                        ?>
                         <span class="tools">
                             <a href="javascript:;" class="icon-chevron-down"></a>
                             <!-- <a href="javascript:;" class="icon-remove"></a> -->
@@ -78,6 +83,67 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
             </div>
             <!-- END ADVANCED TABLE widget-->
         </div>
+
+        <!-- BEGIN MODAL TAMBAH BARANG  RETUR-->
+        <div id="addModalMasuk" class="modal modal-form hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h3 id="myModalLabel1" class="center"><i class="icon-plus-sign-alt"></i> FORM INPUT ITEM RETUR</h3>
+            </div>
+            <form class="cmxform form-horizontal" id="submitItemReur" action="action/return/simpanitemretur.php" method="POST">
+                <div class="modal-body modal-full tinggi">
+                    <div class="control-group ">
+                        <label class="control-label"><strong>Kategori</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select id="barang" name="barang" class="choiceChosen" data-placeholder="Pilih Barang...">
+                                <option value=""></option>
+                                <?php
+                                $barang = $koneksi->query("SELECT id_brg, kdbrg, brg FROM barang ORDER BY brg ASC");
+                                while ($rowBrg = $barang->fetch_array()) {
+                                    echo "<option value='$rowBrg[0]'> $rowBrg[1] - $rowBrg[2]</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group ">
+                        <label class="control-label"><strong>Rak</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <select id="addrak" name="addrak" class="choiceChosen" data-placeholder="Pilih Rak...">
+                                <option value=""></option>
+                                <?php
+                                $rak = $koneksi->query("SELECT id_rak, rak FROM rak ORDER BY rak ASC");
+                                while ($rowRak = $rak->fetch_array()) {
+                                    echo "<option value='$rowRak[0]'> $rowRak[1]</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="control-group ">
+                        <label for="addqty" class="control-label"><strong>Qty</strong>
+                            <p class="titik2">:</p>
+                        </label>
+                        <div class="controls">
+                            <input class="span12 " id="addqty" name="addqty" type="text" placeholder="Quantity" maxlength="5" onkeydown="validAngka(this)" />
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <div id="pesan"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button class="btn btn-primary" id="simpanBarangBtn" type="submit" data-loading-text="Loading..." autocomplete="off"><i class="fa fa-floppy-o"></i> Simpan</button>
+                    <button class="btn" data-dismiss="modal" aria-hidden="true"><i class="fa fa-times-circle"></i> Close</button>
+                </div>
+            </form>
+        </div>
+        <!-- END MODAL TAMBAH BARANG RETUR-->
 
         <!-- BEGIN MODAL CLOSE RETUR-->
         <div id="modalApproved" class="modal modal-form hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">

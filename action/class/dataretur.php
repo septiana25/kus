@@ -58,6 +58,13 @@ class DataRetur
         return $stmt->execute();
     }
 
+    public function insertItemRetur($inputs)
+    {
+        $stmt = $this->conn->prepare("INSERT INTO tmp_retur (id_brg, id_rak, qty, sisa_qty, user) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $inputs['barang'], $inputs['rak'], $inputs['qty'], $inputs['qty'], $inputs['user']);
+        return $stmt->execute();
+    }
+
     public function update($id_retur)
     {
         $zero = 0;

@@ -29,6 +29,29 @@ $(document).ready(function() {
 	});
 
 
+	$('#submitItemReur').unbind('submit').bind('submit', function() {
+		const barang = $('#barang').val().trim();
+		const rak = $('#addrak').val().trim();
+		const qty = $('#addqty').val().trim();
+
+		validateInput(barang, '#barang', 'Nama Barang tidak boleh kosong');
+		validateInput(rak, '#addrak', 'Rak tidak boleh kosong');
+		validateInput(qty, '#addqty', 'Quantity tidak boleh kosong');
+
+		if (barang && rak && qty) {
+			const form = $(this);
+
+			$.ajax({
+				url: form.attr('action'),
+				type: form.attr('method'),
+				data: form.serialize(),
+				dataType: 'json',
+				success: handleResponse
+			});
+		}
+		return false;
+	});
+
 	$('#submitCloseRetur').unbind('submit').bind('submit', function() {
 		const id = $('#id_retur').val().trim();
 
@@ -48,7 +71,7 @@ $(document).ready(function() {
 
 	function validateInput(value, selector, errorMessage) {
 		if (value === "") {
-			$(selector).after(`<span class="help-inline">${errorMessage}</span>`);
+			$(selector).after(`<span class="help-inline">${errorMessage}</span> </br>`);
 			$(selector).closest('.control-group').addClass('error');
 		} else {
 			$(selector).closest('.control-group').addClass('success');
