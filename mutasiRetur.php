@@ -87,7 +87,6 @@ if ($p == 'retur') {
               <?php
               if ($_SESSION['aksi'] == "1") {
                 echo '<a href="#myModalRetur" role="button" class="btn btn-primary tambah" id="addReturnBtnModal" data-toggle="modal"> <i class=" icon-plus"></i>Tambah Data</a>
-                      <a href="#alternatfRetur" role="button" class="btn btn-warning tambah" id="addReturnBtnModal" data-toggle="modal"> <i class=" icon-plus"></i> Retur Alternatif</a>
                       <a href="dataretur.php" target="_blank" role="button" class="btn btn-success tambah"> <i class="fa fa-eye"></i> Item Retur</a>';
               }
               ?>

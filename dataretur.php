@@ -9,7 +9,7 @@ $bulan          = date("m");
 
 require_once 'include/header.php';
 require_once 'include/menu.php';
-echo "<div class='div-request div-hide'>barcodebrg</div>";
+echo "<div class='div-request div-hide'>retur</div>";
 ?>
 <style>
     @media screen and (max-width: 631px) {
@@ -70,6 +70,7 @@ echo "<div class='div-request div-hide'>barcodebrg</div>";
                                     <th>Nama Barang</th>
                                     <th>Rak</th>
                                     <th>Qty</th>
+                                    <th>User</th>
                                     <th class="d-none-mobile">Action</th>
                                 </tr>
                             </thead>

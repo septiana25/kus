@@ -17,7 +17,7 @@ class DataRetur
     public function fetchAll()
     {
         $zero = 0;
-        $stmt = $this->conn->prepare("SELECT id_retur, brg, rak, qty, sisa_qty AS sisa
+        $stmt = $this->conn->prepare("SELECT id_retur, brg, rak, qty, sisa_qty AS sisa, user
                                         FROM tmp_retur
                                         LEFT JOIN barang USING(id_brg)
                                         LEFT JOIN rak USING(id_rak)

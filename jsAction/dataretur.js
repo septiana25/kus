@@ -3,11 +3,11 @@ $(document).ready(function() {
 	//mengambil data div class div-request
 	const divRequest = $(".div-request").text();
 	// active manu barang
-	$('#activeMaster').addClass('active');
+	$('#activeTransaksi').addClass('active');
 	
-	if (divRequest == 'barcodebrg') {
+	if (divRequest == 'retur') {
 		// active submenu barang masuk
-		$('#activeBarcodeBrg').addClass('active');
+		$('#activeRetur').addClass('active');
 
 	}
 
