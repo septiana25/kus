@@ -1,6 +1,7 @@
 <?php
 require_once '../../function/koneksi.php';
 require_once '../../function/session.php';
+require_once '../../function/setjam.php';
 require_once '../class/dataretur.php';
 
 $classRetur = new DataRetur($koneksi);
@@ -26,8 +27,8 @@ try {
 
 function handleCloseRetur($classRetur, $id)
 {
-
-    $result = $classRetur->update($id);
+    $dateTime = date(date('Y-m-d H:i:s'));
+    $result = $classRetur->update($id, $dateTime);
 
     return $result;
 }

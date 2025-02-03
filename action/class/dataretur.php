@@ -65,11 +65,11 @@ class DataRetur
         return $stmt->execute();
     }
 
-    public function update($id_retur)
+    public function update($id_retur, $dateTime)
     {
         $zero = 0;
-        $stmt = $this->conn->prepare("UPDATE tmp_retur SET sisa_qty = ? WHERE id_retur = ?");
-        $stmt->bind_param("ii", $zero, $id_retur);
+        $stmt = $this->conn->prepare("UPDATE tmp_retur SET sisa_qty = ?, at_update = ? WHERE id_retur = ?");
+        $stmt->bind_param("isi", $zero, $dateTime, $id_retur);
         $stmt->execute();
         if ($stmt->affected_rows == 0) {
             return ['success' => false, 'message' => "Execute failed: "];
